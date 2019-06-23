@@ -1,0 +1,32 @@
+scalar Date
+
+type Query {
+  bookById(id: ID): Book
+  buchungById(id: ID): Buchung
+  buchungen: [Buchung]
+}
+
+type Book {
+  id: ID
+  name: String
+  pageCount: Int
+}
+
+type Buchung{
+  id: ID
+  betrag: Float
+  waehrung: String
+  buchungstext: String
+  verwendungszweck: String
+  selfPartner: Transaktionspartner
+  otherPartner: Transaktionspartner
+  buchungstag: Date
+  valutadatum: Date
+}
+
+type Transaktionspartner{
+  id: ID
+  iban: String
+  bic: String
+  name: String
+}

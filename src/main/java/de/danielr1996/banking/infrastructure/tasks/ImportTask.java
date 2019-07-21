@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Component
 @PropertySource("classpath:application.yml")
 public class ImportTask {
-  private static final int INTERVAL_IN_MINUTES = 1;
+  private static final int INTERVAL_IN_MINUTES = 100;
 
   @Autowired
   private BuchungRepository buchungRepository;

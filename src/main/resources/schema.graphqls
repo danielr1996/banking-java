@@ -1,15 +1,8 @@
 scalar Date
 
 type Query {
-  bookById(id: ID): Book
-  buchungById(id: ID): Buchung
-  buchungen: [Buchung]
-}
-
-type Book {
-  id: ID
-  name: String
-  pageCount: Int
+  buchungById(id: ID ): Buchung
+  buchungen(page: Int, size: Int): [Buchung]
 }
 
 type Buchung{

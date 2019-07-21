@@ -50,8 +50,6 @@ public class GraphQLProvider {
         return RuntimeWiring.newRuntimeWiring()
                 .scalar(ExtendedScalars.Date)
                 .type(newTypeWiring("Query")
-                        .dataFetcher("bookById", graphQLDataFetchers.getBookByIdDataFetcher()))
-                .type(newTypeWiring("Query")
                         .dataFetcher("buchungById", graphQLDataFetchers.getBuchungByIdDataFetcher()))
                 .type(newTypeWiring("Query")
                         .dataFetcher("buchungen", graphQLDataFetchers.getBuchungDataFetcher()))

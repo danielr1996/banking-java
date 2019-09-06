@@ -16,3 +16,6 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
+  liquibase:
+    enabled: true
+    change-log: 'classpath:liquibase-changeLog.yaml'

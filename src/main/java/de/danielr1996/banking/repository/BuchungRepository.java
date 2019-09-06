@@ -11,6 +11,6 @@ import java.util.UUID;
 
 @Repository
 @Service
-public interface BuchungRepository extends JpaRepository<Buchung, UUID> {
+public interface BuchungRepository extends JpaRepository<Buchung, String> {
 
 }

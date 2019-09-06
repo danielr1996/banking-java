@@ -21,38 +21,43 @@ import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
 @Component
 public class GraphQLProvider {
-    private GraphQL graphQL;
+  private GraphQL graphQL;
+  private String TYPE_QUERY = "Query";
 
-    @Autowired
-    GraphQLDataFetchers graphQLDataFetchers;
+  @Autowired
+  GraphQLDataFetchers graphQLDataFetchers;
 
-    @Bean
-    public GraphQL graphQL() {
-        return graphQL;
-    }
+  @Bean
+  public GraphQL graphQL() {
+    return graphQL;
+  }
 
-    @PostConstruct
-    public void init() throws IOException {
-        URL url = Resources.getResource("schema.graphqls");
-        String sdl = Resources.toString(url, Charsets.UTF_8);
-        GraphQLSchema schema = buildSchema(sdl);
-        this.graphQL = GraphQL.newGraphQL(schema).build();
-    }
+  @PostConstruct
+  public void init() throws IOException {
+    URL url = Resources.getResource("schema.graphqls");
+    String sdl = Resources.toString(url, Charsets.UTF_8);
+    GraphQLSchema schema = buildSchema(sdl);
+    this.graphQL = GraphQL.newGraphQL(schema).build();
+  }
 
-    private GraphQLSchema buildSchema(String sdl) {
-        TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
-        RuntimeWiring runtimeWiring = buildWiring();
-        SchemaGenerator schemaGenerator = new SchemaGenerator();
-        return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
-    }
+  private GraphQLSchema buildSchema(String sdl) {
+    TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
+    RuntimeWiring runtimeWiring = buildWiring();
+    SchemaGenerator schemaGenerator = new SchemaGenerator();
+    return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
+  }
 
-    private RuntimeWiring buildWiring() {
-        return RuntimeWiring.newRuntimeWiring()
-                .scalar(ExtendedScalars.Date)
-                .type(newTypeWiring("Query")
-                        .dataFetcher("buchungById", graphQLDataFetchers.getBuchungByIdDataFetcher()))
-                .type(newTypeWiring("Query")
-                        .dataFetcher("buchungen", graphQLDataFetchers.getBuchungDataFetcher()))
-                .build();
-    }
+  private RuntimeWiring buildWiring() {
+    return RuntimeWiring.newRuntimeWiring()
+      .scalar(ExtendedScalars.Date)
+      .type(newTypeWiring(TYPE_QUERY)
+        .dataFetcher("buchungById", graphQLDataFetchers.getBuchungByIdDataFetcher()))
+      .type(newTypeWiring(TYPE_QUERY)
+        .dataFetcher("buchungen", graphQLDataFetchers.getBuchungDataFetcher()))
+      .type(newTypeWiring(TYPE_QUERY)
+        .dataFetcher("saldo", graphQLDataFetchers.getSaldoDataFetcher()))
+      .type(newTypeWiring(TYPE_QUERY)
+        .dataFetcher("saldi", graphQLDataFetchers.getSaldiDataFetcher()))
+      .build();
+  }
 }

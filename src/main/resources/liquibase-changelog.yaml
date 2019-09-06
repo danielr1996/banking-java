@@ -1,0 +1,100 @@
+databaseChangeLog:
+- changeSet:
+    id: 1567592687558-1
+    author: Daniel (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              constraints:
+                nullable: false
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: betrag
+            type: numeric(19, 2)
+        - column:
+            name: buchungstag
+            type: date
+        - column:
+            name: buchungstext
+            type: VARCHAR(255)
+        - column:
+            name: kategorie
+            type: VARCHAR(255)
+        - column:
+            name: valutadatum
+            type: date
+        - column:
+            name: verwendungszweck
+            type: VARCHAR(255)
+        - column:
+            name: waehrung
+            type: VARCHAR(255)
+        tableName: buchung
+- changeSet:
+    id: 1567592687558-2
+    author: Daniel (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              constraints:
+                nullable: false
+            name: id
+            type: UUID
+        - column:
+            name: betrag
+            type: numeric(19, 2)
+        - column:
+            name: datum
+            type: date
+        tableName: saldo
+- changeSet:
+    id: 1567592687558-3
+    author: Daniel (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              constraints:
+                nullable: false
+            name: iban
+            type: VARCHAR(255)
+        - column:
+            name: bic
+            type: VARCHAR(255)
+        - column:
+            name: id
+            type: UUID
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: transaktionspartner
+- changeSet:
+    id: 1567592687558-4
+    author: Daniel (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: id
+        constraintName: buchung_pkey
+        tableName: buchung
+- changeSet:
+    id: 1567592687558-5
+    author: Daniel (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: id
+        constraintName: saldo_pkey
+        tableName: saldo
+- changeSet:
+    id: 1567592687558-6
+    author: Daniel (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: iban
+        constraintName: transaktionspartner_pkey
+        tableName: transaktionspartner

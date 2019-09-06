@@ -2,7 +2,15 @@ scalar Date
 
 type Query {
   buchungById(id: ID ): Buchung
-  buchungen(page: Int, size: Int): [Buchung]
+  buchungen(page: Int, size: Int): BuchungContainer
+  saldo: Saldo
+  saldi: [Saldo]
+}
+
+type BuchungContainer{
+  buchungen: [Buchung],
+  totalPages: Int,
+  totalElements: Int
 }
 
 type Buchung{
@@ -15,6 +23,7 @@ type Buchung{
   otherPartner: Transaktionspartner
   buchungstag: Date
   valutadatum: Date
+  kategorie: String
 }
 
 type Transaktionspartner{
@@ -22,4 +31,10 @@ type Transaktionspartner{
   iban: String
   bic: String
   name: String
+}
+
+type Saldo{
+  id: ID
+  betrag: Float
+  datum: Date
 }

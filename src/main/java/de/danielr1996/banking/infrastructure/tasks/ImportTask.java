@@ -1,8 +1,11 @@
 package de.danielr1996.banking.infrastructure.tasks;
 
 import de.danielr1996.banking.domain.Buchung;
-import de.danielr1996.banking.fints.mt940.HbciFintsCamtImporter;
+import de.danielr1996.banking.domain.Saldo;
+import de.danielr1996.banking.fints.HbciFintsCamtImporter;
+import de.danielr1996.banking.fints.SaldoImporter;
 import de.danielr1996.banking.repository.BuchungRepository;
+import de.danielr1996.banking.repository.SaldoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -21,12 +24,28 @@ public class ImportTask {
   @Autowired
   private BuchungRepository buchungRepository;
 
+  @Autowired
+  private SaldoRepository saldoRepository;
+
   private HbciFintsCamtImporter importer = new HbciFintsCamtImporter();
+  private SaldoImporter saldoImporter = new SaldoImporter();
 
   @Scheduled(fixedRate = 60000 * INTERVAL_IN_MINUTES)
   public void reportCurrentTime() {
     List<Buchung> buchungen = importer.doImport().collect(Collectors.toList());
-    buchungRepository.saveAll(buchungen);
+    Saldo saldo = saldoImporter.doImport();
+    // FIXME: INSERT IF NOT EXISTS auf Datenbankebene
+    buchungen.forEach(buchung -> {
+      if (!buchungRepository.existsById(buchung.getId())) {
+        buchungRepository.save(buchung);
+      }else{
+        System.out.println(buchung);
+      }
+    });
+    saldoRepository.save(saldo);
+//    Buchung buchung = buchungen.get(0);
+//    System.out.println(buchung);
+//    System.out.println(buchungRepository.existsById(buchung.getId()));
     log.info("Saved {} Buchungen to Database", buchungen.size());
   }
 }

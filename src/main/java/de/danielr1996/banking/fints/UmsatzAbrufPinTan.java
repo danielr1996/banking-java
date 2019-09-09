@@ -1,77 +1,208 @@
 package de.danielr1996.banking.fints;
 
-import de.danielr1996.banking.Config;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+
+import org.kapott.hbci.GV.HBCIJob;
+import org.kapott.hbci.GV_Result.GVRKUms;
+import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
+import org.kapott.hbci.GV_Result.GVRSaldoReq;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
+import org.kapott.hbci.manager.BankInfo;
+import org.kapott.hbci.manager.HBCIHandler;
+import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.manager.HBCIVersion;
+import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.status.HBCIExecStatus;
+import org.kapott.hbci.structures.Konto;
+import org.kapott.hbci.structures.Value;
 
-import java.io.*;
-import java.util.Date;
-import java.util.Properties;
-import java.util.Scanner;
+/**
+ * Demo zum Abruf von Umsaetzen per PIN/TAN-Verfahren.
+ *
+ * Die folgende Demo zeigt mit dem minimal noetigen Code, wie eine Umsatz-Abfrage
+ * fuer ein Konto durchgefuehrt werden kann. Hierzu wird der Einfachheit halber
+ * das Verfahren PIN/TAN verwendet, da es von den meisten Banken unterstuetzt wird.
+ *
+ * Trage vor dem Ausfuehren des Programms die Zugangsdaten zu deinem Konto ein.
+ */
+public class UmsatzAbrufPinTan
+{
+  /**
+   * Die BLZ deiner Bank.
+   */
+  private final static String BLZ = "76050101";
 
-public class ConsoleHBCICallback extends AbstractHBCICallback {
-    public final static String BLZ = Config.HBCI_BLZ;
-    private final static String USER = Config.HBCI_USER;
-    private static String PIN = Config.HBCI_PIN;
+  /**
+   * Deine Benutzerkennung.
+   */
+  private final static String USER = "518222";
 
-    public ConsoleHBCICallback() {
+  /**
+   * Deine PIN.
+   */
+  private final static String PIN = "Reich";
 
+  /**
+   * Die zu verwendende HBCI-Version.
+   */
+  private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
-        PIN = loadParams();
-        if (PIN == null) {
-            Scanner s = new Scanner(System.in);
-            System.out.println("Bitte geben Sie Ihren PIN/Passwort ein!");
-            PIN = s.next();
-            saveParamChanges(PIN);
+  /**
+   * Main-Methode.
+   * @param args
+   * @throws Exception
+   */
+  public static void main(String[] args) throws Exception
+  {
+    // HBCI4Java initialisieren
+    // In "props" koennen optional Kernel-Parameter abgelegt werden, die in der Klasse
+    // org.kapott.hbci.manager.HBCIUtils (oben im Javadoc) beschrieben sind.
+    Properties props = new Properties();
+    HBCIUtils.init(props,new MyHBCICallback());
+
+    // In der Passport-Datei speichert HBCI4Java die Daten des Bankzugangs (Bankparameterdaten, Benutzer-Parameter, etc.).
+    // Die Datei kann problemlos geloescht werden. Sie wird beim naechsten mal automatisch neu erzeugt,
+    // wenn der Parameter "client.passport.PinTan.init" den Wert "1" hat (siehe unten).
+    // Wir speichern die Datei der Einfachheit halber im aktuellen Verzeichnis.
+    final File passportFile = new File("testpassport.dat");
+
+    // Wir setzen die Kernel-Parameter zur Laufzeit. Wir koennten sie alternativ
+    // auch oben in "props" setzen.
+    HBCIUtils.setParam("client.passport.default","PinTan"); // Legt als Verfahren PIN/TAN fest.
+    HBCIUtils.setParam("client.passport.PinTan.filename",passportFile.getAbsolutePath());
+    HBCIUtils.setParam("client.passport.PinTan.init","1");
+
+    // Erzeugen des Passport-Objektes.
+    HBCIPassport passport = AbstractHBCIPassport.getInstance();
+
+    // Konfigurieren des Passport-Objektes.
+    // Das kann alternativ auch alles ueber den Callback unten geschehen
+
+    // Das Land.
+    passport.setCountry("DE");
+
+    // Server-Adresse angeben. Koennen wir entweder manuell eintragen oder direkt von HBCI4Java ermitteln lassen
+    BankInfo info = HBCIUtils.getBankInfo(BLZ);
+    passport.setHost(info.getPinTanAddress());
+
+    // TCP-Port des Servers. Bei PIN/TAN immer 443, da das ja ueber HTTPS laeuft.
+    passport.setPort(443);
+
+    // Art der Nachrichten-Codierung. Bei Chipkarte/Schluesseldatei wird
+    // "None" verwendet. Bei PIN/TAN kommt "Base64" zum Einsatz.
+    passport.setFilterType("Base64");
+
+    // Das Handle ist die eigentliche HBCI-Verbindung zum Server
+    HBCIHandler handle = null;
+
+    try
+    {
+      // Verbindung zum Server aufbauen
+      handle = new HBCIHandler(VERSION.getId(),passport);
+
+      // Wir verwenden einfach das erste Konto, welches wir zur Benutzerkennung finden
+      Konto[] konten = passport.getAccounts();
+      if (konten == null || konten.length == 0)
+        error("Keine Konten ermittelbar");
+
+      log("Anzahl Konten: " + konten.length);
+      Konto k = konten[3];
+
+      // 1. Auftrag fuer das Abrufen des Saldos erzeugen
+      HBCIJob saldoJob = handle.newJob("SaldoReq");
+      saldoJob.setParam("my",k); // festlegen, welches Konto abgefragt werden soll.
+      saldoJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
+
+      // 2. Auftrag fuer das Abrufen der Umsaetze erzeugen
+      HBCIJob umsatzJob = handle.newJob("KUmsAll");
+      umsatzJob.setParam("my",k); // festlegen, welches Konto abgefragt werden soll.
+      umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
+
+      // Hier koennen jetzt noch weitere Auftraege fuer diesen Bankzugang hinzugefuegt
+      // werden. Z.Bsp. Ueberweisungen.
+
+      // Alle Auftraege aus der Liste ausfuehren.
+      HBCIExecStatus status = handle.execute();
+
+      // Pruefen, ob die Kommunikation mit der Bank grundsaetzlich geklappt hat
+      if (!status.isOK())
+        error(status.toString());
+
+      // Auswertung des Saldo-Abrufs.
+      GVRSaldoReq saldoResult = (GVRSaldoReq) saldoJob.getJobResult();
+      if (!saldoResult.isOK())
+        error(saldoResult.toString());
+
+      Value s = saldoResult.getEntries()[0].ready.value;
+      log("Saldo: " + s.toString());
+      System.out.println(Arrays.asList(saldoResult.getEntries()));
+
+      // Das Ergebnis des Jobs koennen wir auf "GVRKUms" casten. Jobs des Typs "KUmsAll"
+      // liefern immer diesen Typ.
+      GVRKUms result = (GVRKUms) umsatzJob.getJobResult();
+
+      // Pruefen, ob der Abruf der Umsaetze geklappt hat
+      if (!result.isOK())
+        error(result.toString());
+
+      // Alle Umsatzbuchungen ausgeben
+      List<UmsLine> buchungen = result.getFlatData();
+      for (UmsLine buchung:buchungen)
+      {
+        StringBuilder sb = new StringBuilder();
+        sb.append(buchung.valuta);
+
+        Value v = buchung.value;
+        if (v != null)
+        {
+          sb.append(": ");
+          sb.append(v);
         }
+
+        List<String> zweck = buchung.usage;
+        if (zweck != null && zweck.size() > 0)
+        {
+          sb.append(" - ");
+          // Die erste Zeile des Verwendungszwecks ausgeben
+          sb.append(zweck.get(0));
+        }
+
+        // Ausgeben der Umsatz-Zeile
+        log(sb.toString());
+      }
+    }
+    finally
+    {
+      // Sicherstellen, dass sowohl Passport als auch Handle nach Beendigung geschlossen werden.
+      if (handle !=null)
+        handle.close();
+
+      if (passport != null)
+        passport.close();
     }
 
-    public String loadParams() {
-        Properties props = new Properties();
-        InputStream is = null;
+  }
 
-        // First try loading from the current directory
-        try {
-            File f = new File("user.properties");
-            is = new FileInputStream(f);
-        } catch (Exception e) {
-            is = null;
-        }
-
-        try {
-            if (is == null) {
-                // Try loading from classpath
-                is = getClass().getResourceAsStream("user.properties");
-            }
-
-            // Try loading properties from the file (if found)
-            props.load(is);
-        } catch (Exception e) {
-        }
-
-        return props.getProperty("Password");
-    }
-
-    public void saveParamChanges(String password) {
-        try {
-            Properties props = new Properties();
-            props.setProperty("Password", password);
-            File f = new File("user.properties");
-            OutputStream out = new FileOutputStream(f);
-            props.store(out, "This is an optional header comment string");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+  /**
+   * Ueber diesen Callback kommuniziert HBCI4Java mit dem Benutzer und fragt die benoetigten
+   * Informationen wie Benutzerkennung, PIN usw. ab.
+   */
+  private static class MyHBCICallback extends AbstractHBCICallback
+  {
     /**
      * @see org.kapott.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
      */
     @Override
-    public void log(String msg, int level, Date date, StackTraceElement trace) {
-        // Ausgabe von Log-Meldungen bei Bedarf
-        // System.out.println(msg);
+    public void log(String msg, int level, Date date, StackTraceElement trace)
+    {
+      // Ausgabe von Log-Meldungen bei Bedarf
+       System.out.println(msg);
     }
 
     /**
@@ -142,7 +273,7 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
             // Die Variable "msg" aus der Methoden-Signatur enthaelt uebrigens
             // den bankspezifischen Text mit den Instruktionen fuer den User.
             // Der Text aus "msg" sollte daher im Dialog dem User angezeigt
-            // werden.
+            // werden. 
             String tan = null;
             retData.replace(0,retData.length(),tan);
           }
@@ -265,7 +396,7 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
 
         // Manche Fehlermeldungen werden hier ausgegeben
         case HAVE_ERROR:
-          System.err.println(msg);
+          UmsatzAbrufPinTan.log(msg);
           break;
 
         default:
@@ -279,8 +410,30 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
      * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
      */
     @Override
-    public void status(HBCIPassport passport, int statusTag, Object[] o) {
-        // So aehnlich wie log(String,int,Date,StackTraceElement) jedoch fuer Status-Meldungen.
+    public void status(HBCIPassport passport, int statusTag, Object[] o)
+    {
+      // So aehnlich wie log(String,int,Date,StackTraceElement) jedoch fuer Status-Meldungen.
     }
+
+  }
+
+  /**
+   * Gibt die angegebene Meldung aus.
+   * @param msg die Meldung.
+   */
+  private static void log(String msg)
+  {
+    System.out.println(msg);
+  }
+
+  /**
+   * Beendet das Programm mit der angegebenen Fehler-Meldung.
+   * @param msg die Meldung.
+   */
+  private static void error(String msg)
+  {
+    System.err.println(msg);
+    System.exit(1);
+  }
 
 }

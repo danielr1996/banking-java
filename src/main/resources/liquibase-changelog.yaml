@@ -1,14 +1,13 @@
 databaseChangeLog:
 - changeSet:
-    id: 1567592687558-1
-    author: Daniel (generated)
+    id: tbl_buchung
+    author: Daniel Richter
     changes:
     - createTable:
         columns:
         - column:
             constraints:
-              constraints:
-                nullable: false
+              - primary_key: true
             name: id
             type: VARCHAR(255)
         - column:
@@ -34,15 +33,14 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: buchung
 - changeSet:
-    id: 1567592687558-2
-    author: Daniel (generated)
+    id: tbl_saldo
+    author: Daniel Richter
     changes:
     - createTable:
         columns:
         - column:
             constraints:
-              constraints:
-                nullable: false
+              - primary_key: true
             name: id
             type: UUID
         - column:
@@ -53,15 +51,14 @@ databaseChangeLog:
             type: date
         tableName: saldo
 - changeSet:
-    id: 1567592687558-3
-    author: Daniel (generated)
+    id: tbl_transaktionspartner
+    author: Daniel Richter
     changes:
     - createTable:
         columns:
         - column:
             constraints:
-              constraints:
-                nullable: false
+              - primary_key: true
             name: iban
             type: VARCHAR(255)
         - column:
@@ -73,28 +70,4 @@ databaseChangeLog:
         - column:
             name: name
             type: VARCHAR(255)
-        tableName: transaktionspartner
-- changeSet:
-    id: 1567592687558-4
-    author: Daniel (generated)
-    changes:
-    - addPrimaryKey:
-        columnNames: id
-        constraintName: buchung_pkey
-        tableName: buchung
-- changeSet:
-    id: 1567592687558-5
-    author: Daniel (generated)
-    changes:
-    - addPrimaryKey:
-        columnNames: id
-        constraintName: saldo_pkey
-        tableName: saldo
-- changeSet:
-    id: 1567592687558-6
-    author: Daniel (generated)
-    changes:
-    - addPrimaryKey:
-        columnNames: iban
-        constraintName: transaktionspartner_pkey
         tableName: transaktionspartner

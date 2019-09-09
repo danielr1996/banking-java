@@ -39,13 +39,9 @@ public class ImportTask {
       if (!buchungRepository.existsById(buchung.getId())) {
         buchungRepository.save(buchung);
       }else{
-        System.out.println(buchung);
       }
     });
     saldoRepository.save(saldo);
-//    Buchung buchung = buchungen.get(0);
-//    System.out.println(buchung);
-//    System.out.println(buchungRepository.existsById(buchung.getId()));
     log.info("Saved {} Buchungen to Database", buchungen.size());
   }
 }

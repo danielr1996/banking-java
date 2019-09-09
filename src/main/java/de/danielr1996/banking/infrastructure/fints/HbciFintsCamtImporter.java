@@ -1,6 +1,6 @@
-package de.danielr1996.banking.fints;
+package de.danielr1996.banking.infrastructure.fints;
 
-import de.danielr1996.banking.domain.Buchung;
+import de.danielr1996.banking.domain.entities.Buchung;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRKUms;
@@ -16,14 +16,16 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class HbciFintsCamtImporter {
-  private Konto self = getKonto();
+  private HBCIPassport passport = UmsatzAbrufPinTan.getPassport();
+  private Konto self = getKonto(this.passport);
+
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
 
   @Deprecated
-  public Konto getKonto() {
-    HBCIPassport passport = HBCIPassportFactory.getPassport();
+  public Konto getKonto(HBCIPassport passport) {
     Konto[] konten = passport.getAccounts();
+
     Konto k = konten[3];
     return k;
   }
@@ -36,7 +38,7 @@ public class HbciFintsCamtImporter {
   private Stream<GVRKUms.UmsLine> getUmsLines(Konto self) {
     log.info("Using konto {}", self);
     HBCIHandler handle = null;
-    HBCIPassport passport = HBCIPassportFactory.getPassport();
+    HBCIPassport passport = this.passport;
     try {
       handle = new HBCIHandler(VERSION.getId(), passport);
       HBCIJob umsatzJob = handle.newJob("KUmsAllCamt");

@@ -1,4 +1,4 @@
-package de.danielr1996.banking.domain;
+package de.danielr1996.banking.domain.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

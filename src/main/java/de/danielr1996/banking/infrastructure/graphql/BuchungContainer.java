@@ -1,6 +1,6 @@
 package de.danielr1996.banking.infrastructure.graphql;
 
-import de.danielr1996.banking.domain.Buchung;
+import de.danielr1996.banking.domain.entities.Buchung;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

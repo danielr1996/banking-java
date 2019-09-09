@@ -1,7 +1,9 @@
 package de.danielr1996.banking.services;
 
-import de.danielr1996.banking.domain.Buchung;
-import de.danielr1996.banking.domain.Saldo;
+import de.danielr1996.banking.domain.services.AggregateSaldoService;
+import de.danielr1996.banking.domain.entities.Buchung;
+import de.danielr1996.banking.domain.entities.Saldo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -9,12 +11,12 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SaldoServiceTest {
+class AggregateSaldoServiceTest {
 
   @Test
-  void getSaldos() {
+  void aggregateSaldi() {
     Saldo currentSaldo = Saldo.builder().datum(LocalDate.now()).betrag(BigDecimal.valueOf(100)).build();
 
     List<Buchung> buchungen = Arrays.asList(
@@ -38,6 +40,6 @@ class SaldoServiceTest {
       Saldo.builder().betrag(BigDecimal.valueOf(200)).datum(LocalDate.now().minusDays(7)).build()
     );
 
-    assertEquals(saldi, SaldoService.getSaldi(buchungen, currentSaldo));
+    assertEquals(saldi, AggregateSaldoService.aggregateSaldi(buchungen, currentSaldo));
   }
 }

@@ -1,12 +1,10 @@
-package de.danielr1996.banking.fints;
+package de.danielr1996.banking.infrastructure.fints;
 
-import de.danielr1996.banking.domain.Buchung;
+import de.danielr1996.banking.domain.entities.Buchung;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIVersion;
-import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.status.HBCIExecStatus;
 import org.kapott.hbci.structures.Konto;
 
 import java.util.stream.Stream;
@@ -24,17 +22,17 @@ public class HbciFintsMt940Importer {
 
     public Konto getKonto() {
         HBCIHandler handle = null;
-        HBCIPassport passport = HBCIPassportFactory.getPassport();
-        Konto[] konten = passport.getAccounts();
-        Konto k = konten[3];
-        return k;
+//        HBCIPassport passport = HBCIPassportFactory.getPassport();
+//        Konto[] konten = passport.getAccounts();
+//        Konto k = konten[3];
+        return null;
     }
 
     public Stream<GVRKUms.UmsLine> getUmsLines(Konto self) {
         HBCIHandler handle = null;
-        HBCIPassport passport = HBCIPassportFactory.getPassport();
+//        HBCIPassport passport = HBCIPassportFactory.getPassport();
         try {
-            handle = new HBCIHandler(VERSION.getId(), passport);
+            handle = new HBCIHandler(VERSION.getId(), null);
             HBCIJob umsatzJob = handle.newJob("KUmsAll");
             umsatzJob.setParam("my", self); // festlegen, welches Konto abgefragt werden soll.
             /*umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
@@ -54,8 +52,8 @@ public class HbciFintsMt940Importer {
             if (handle != null)
                 handle.close();
 
-            if (passport != null)
-                passport.close();
+            /*if (passport != null)
+                passport.close();*/
         }
     }
 }

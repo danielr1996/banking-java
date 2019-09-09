@@ -1,9 +1,9 @@
 package de.danielr1996.banking.infrastructure.tasks;
 
-import de.danielr1996.banking.domain.Buchung;
-import de.danielr1996.banking.domain.Saldo;
-import de.danielr1996.banking.fints.HbciFintsCamtImporter;
-import de.danielr1996.banking.fints.SaldoImporter;
+import de.danielr1996.banking.domain.entities.Buchung;
+import de.danielr1996.banking.domain.entities.Saldo;
+import de.danielr1996.banking.infrastructure.fints.HbciFintsCamtImporter;
+import de.danielr1996.banking.infrastructure.fints.SaldoImporter;
 import de.danielr1996.banking.repository.BuchungRepository;
 import de.danielr1996.banking.repository.SaldoRepository;
 import lombok.extern.slf4j.Slf4j;

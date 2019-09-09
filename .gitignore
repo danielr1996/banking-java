@@ -48,4 +48,5 @@ testem.log
 Thumbs.db
 
 testpassport.*
+*.dat*
 *.db

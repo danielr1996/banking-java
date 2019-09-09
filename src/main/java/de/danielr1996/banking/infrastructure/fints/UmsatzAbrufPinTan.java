@@ -1,10 +1,7 @@
-package de.danielr1996.banking.fints;
+package de.danielr1996.banking.infrastructure.fints;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRKUms;
@@ -24,15 +21,14 @@ import org.kapott.hbci.structures.Value;
 
 /**
  * Demo zum Abruf von Umsaetzen per PIN/TAN-Verfahren.
- *
+ * <p>
  * Die folgende Demo zeigt mit dem minimal noetigen Code, wie eine Umsatz-Abfrage
  * fuer ein Konto durchgefuehrt werden kann. Hierzu wird der Einfachheit halber
  * das Verfahren PIN/TAN verwendet, da es von den meisten Banken unterstuetzt wird.
- *
+ * <p>
  * Trage vor dem Ausfuehren des Programms die Zugangsdaten zu deinem Konto ein.
  */
-public class UmsatzAbrufPinTan
-{
+public class UmsatzAbrufPinTan {
   /**
    * Die BLZ deiner Bank.
    */
@@ -53,30 +49,24 @@ public class UmsatzAbrufPinTan
    */
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
-  /**
-   * Main-Methode.
-   * @param args
-   * @throws Exception
-   */
-  public static void main(String[] args) throws Exception
-  {
+  public static HBCIPassport getPassport(){
     // HBCI4Java initialisieren
     // In "props" koennen optional Kernel-Parameter abgelegt werden, die in der Klasse
     // org.kapott.hbci.manager.HBCIUtils (oben im Javadoc) beschrieben sind.
     Properties props = new Properties();
-    HBCIUtils.init(props,new MyHBCICallback());
+    HBCIUtils.init(props, new MyHBCICallback());
 
     // In der Passport-Datei speichert HBCI4Java die Daten des Bankzugangs (Bankparameterdaten, Benutzer-Parameter, etc.).
     // Die Datei kann problemlos geloescht werden. Sie wird beim naechsten mal automatisch neu erzeugt,
     // wenn der Parameter "client.passport.PinTan.init" den Wert "1" hat (siehe unten).
     // Wir speichern die Datei der Einfachheit halber im aktuellen Verzeichnis.
-    final File passportFile = new File("testpassport.dat");
+    final File passportFile = new File("passport.dat");
 
     // Wir setzen die Kernel-Parameter zur Laufzeit. Wir koennten sie alternativ
     // auch oben in "props" setzen.
-    HBCIUtils.setParam("client.passport.default","PinTan"); // Legt als Verfahren PIN/TAN fest.
-    HBCIUtils.setParam("client.passport.PinTan.filename",passportFile.getAbsolutePath());
-    HBCIUtils.setParam("client.passport.PinTan.init","1");
+    HBCIUtils.setParam("client.passport.default", "PinTan"); // Legt als Verfahren PIN/TAN fest.
+    HBCIUtils.setParam("client.passport.PinTan.filename", passportFile.getAbsolutePath());
+    HBCIUtils.setParam("client.passport.PinTan.init", "1");
 
     // Erzeugen des Passport-Objektes.
     HBCIPassport passport = AbstractHBCIPassport.getInstance();
@@ -97,14 +87,24 @@ public class UmsatzAbrufPinTan
     // Art der Nachrichten-Codierung. Bei Chipkarte/Schluesseldatei wird
     // "None" verwendet. Bei PIN/TAN kommt "Base64" zum Einsatz.
     passport.setFilterType("Base64");
+    System.out.println(passport.getAccounts().length);
+    return passport;
+  }
 
+  /**
+   * Main-Methode.
+   *
+   * @param args
+   * @throws Exception
+   */
+  public static void main(String[] args) throws Exception {
+    HBCIPassport passport = getPassport();
     // Das Handle ist die eigentliche HBCI-Verbindung zum Server
     HBCIHandler handle = null;
 
-    try
-    {
+    try {
       // Verbindung zum Server aufbauen
-      handle = new HBCIHandler(VERSION.getId(),passport);
+      handle = new HBCIHandler(VERSION.getId(), passport);
 
       // Wir verwenden einfach das erste Konto, welches wir zur Benutzerkennung finden
       Konto[] konten = passport.getAccounts();
@@ -116,12 +116,12 @@ public class UmsatzAbrufPinTan
 
       // 1. Auftrag fuer das Abrufen des Saldos erzeugen
       HBCIJob saldoJob = handle.newJob("SaldoReq");
-      saldoJob.setParam("my",k); // festlegen, welches Konto abgefragt werden soll.
+      saldoJob.setParam("my", k); // festlegen, welches Konto abgefragt werden soll.
       saldoJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
 
       // 2. Auftrag fuer das Abrufen der Umsaetze erzeugen
       HBCIJob umsatzJob = handle.newJob("KUmsAll");
-      umsatzJob.setParam("my",k); // festlegen, welches Konto abgefragt werden soll.
+      umsatzJob.setParam("my", k); // festlegen, welches Konto abgefragt werden soll.
       umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
 
       // Hier koennen jetzt noch weitere Auftraege fuer diesen Bankzugang hinzugefuegt
@@ -153,21 +153,18 @@ public class UmsatzAbrufPinTan
 
       // Alle Umsatzbuchungen ausgeben
       List<UmsLine> buchungen = result.getFlatData();
-      for (UmsLine buchung:buchungen)
-      {
+      for (UmsLine buchung : buchungen) {
         StringBuilder sb = new StringBuilder();
         sb.append(buchung.valuta);
 
         Value v = buchung.value;
-        if (v != null)
-        {
+        if (v != null) {
           sb.append(": ");
           sb.append(v);
         }
 
         List<String> zweck = buchung.usage;
-        if (zweck != null && zweck.size() > 0)
-        {
+        if (zweck != null && zweck.size() > 0) {
           sb.append(" - ");
           // Die erste Zeile des Verwendungszwecks ausgeben
           sb.append(zweck.get(0));
@@ -176,11 +173,9 @@ public class UmsatzAbrufPinTan
         // Ausgeben der Umsatz-Zeile
         log(sb.toString());
       }
-    }
-    finally
-    {
+    } finally {
       // Sicherstellen, dass sowohl Passport als auch Handle nach Beendigung geschlossen werden.
-      if (handle !=null)
+      if (handle != null)
         handle.close();
 
       if (passport != null)
@@ -193,55 +188,51 @@ public class UmsatzAbrufPinTan
    * Ueber diesen Callback kommuniziert HBCI4Java mit dem Benutzer und fragt die benoetigten
    * Informationen wie Benutzerkennung, PIN usw. ab.
    */
-  private static class MyHBCICallback extends AbstractHBCICallback
-  {
+  public static class MyHBCICallback extends AbstractHBCICallback {
     /**
      * @see org.kapott.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
      */
     @Override
-    public void log(String msg, int level, Date date, StackTraceElement trace)
-    {
+    public void log(String msg, int level, Date date, StackTraceElement trace) {
       // Ausgabe von Log-Meldungen bei Bedarf
-       System.out.println(msg);
+      System.out.println(msg);
     }
 
     /**
      * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
      */
     @Override
-    public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData)
-    {
+    public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
       // Diese Funktion ist wichtig. Ueber die fragt HBCI4Java die benoetigten Daten von uns ab.
-      switch (reason)
-      {
+      switch (reason) {
         // Mit dem Passwort verschluesselt HBCI4Java die Passport-Datei.
         // Wir nehmen hier der Einfachheit halber direkt die PIN. In der Praxis
         // sollte hier aber ein staerkeres Passwort genutzt werden.
         // Die Ergebnis-Daten muessen in dem StringBuffer "retData" platziert werden.
         case NEED_PASSPHRASE_LOAD:
         case NEED_PASSPHRASE_SAVE:
-          retData.replace(0,retData.length(),PIN);
+          retData.replace(0, retData.length(), PIN);
           break;
 
         // PIN wird benoetigt
         case NEED_PT_PIN:
-          retData.replace(0,retData.length(),PIN);
+          retData.replace(0, retData.length(), PIN);
           break;
 
         // BLZ wird benoetigt
         case NEED_BLZ:
-          retData.replace(0,retData.length(),BLZ);
+          retData.replace(0, retData.length(), BLZ);
           break;
 
         // Die Benutzerkennung
         case NEED_USERID:
-          retData.replace(0,retData.length(),USER);
+          retData.replace(0, retData.length(), USER);
           break;
 
         // Die Kundenkennung. Meist identisch mit der Benutzerkennung.
         // Bei manchen Banken kann man die auch leer lassen
         case NEED_CUSTOMERID:
-          retData.replace(0,retData.length(),USER);
+          retData.replace(0, retData.length(), USER);
           break;
 
         ////////////////////////////////////////////////////////////////////////
@@ -259,8 +250,7 @@ public class UmsatzAbrufPinTan
         // fotografiert und die App ihm die TAN angezeigt hat)
         case NEED_PT_PHOTOTAN:
           // Die Klasse "MatrixCode" kann zum Parsen der Daten verwendet werden
-          try
-          {
+          try {
             // MatrixCode code = new MatrixCode(retData.toString());
 
             // Liefert den Mime-Type der grafik (i.d.R. "image/png").
@@ -273,12 +263,10 @@ public class UmsatzAbrufPinTan
             // Die Variable "msg" aus der Methoden-Signatur enthaelt uebrigens
             // den bankspezifischen Text mit den Instruktionen fuer den User.
             // Der Text aus "msg" sollte daher im Dialog dem User angezeigt
-            // werden. 
+            // werden.
             String tan = null;
-            retData.replace(0,retData.length(),tan);
-          }
-          catch (Exception e)
-          {
+            retData.replace(0, retData.length(), tan);
+          } catch (Exception e) {
             throw new HBCI_Exception(e);
           }
 
@@ -286,8 +274,7 @@ public class UmsatzAbrufPinTan
 
         case NEED_PT_QRTAN:
           // Die Klasse "QRCode" kann zum Parsen der Daten verwendet werden
-          try
-          {
+          try {
             // QRCode code = new QRCode(retData.toString(),msg);
 
             // Der Stream enthaelt jetzt die Binaer-Daten des Bildes
@@ -302,10 +289,8 @@ public class UmsatzAbrufPinTan
             // der von QRCode - dort ist dann die ggf. enthaltene Base64-codierte QR-Grafik entfernt
             // msg = code.getMessage();
             String tan = null;
-            retData.replace(0,retData.length(),tan);
-          }
-          catch (Exception e)
-          {
+            retData.replace(0, retData.length(), tan);
+          } catch (Exception e) {
             throw new HBCI_Exception(e);
           }
 
@@ -328,7 +313,7 @@ public class UmsatzAbrufPinTan
           // In "code" muss der 3-stellige Code des vom User gemaess obigen
           // Optionen ausgewaehlte Verfahren eingetragen werden
           String code = "";
-          retData.replace(0,retData.length(),code);
+          retData.replace(0, retData.length(), code);
           break;
 
         // HBCI4Java benoetigt die TAN per smsTAN/chipTAN/weiteren TAN-Verfahren
@@ -345,8 +330,7 @@ public class UmsatzAbrufPinTan
           // werden.
 
           String flicker = retData.toString();
-          if (flicker != null && flicker.length() > 0)
-          {
+          if (flicker != null && flicker.length() > 0) {
             // Ist chipTAN optisch. Es muss ein animierter Barcode angezeigt
             // werden. Hierfuer kann die Hilfsklasse "FlickerRenderer" verwendet
             // werden. Diese enthalt bereits das Parsen. Es muss lediglich die
@@ -356,14 +340,12 @@ public class UmsatzAbrufPinTan
             // Hier TAN-Abfrage mit dem animierten Barcode anzeigen sowie
             // Eingabefeld fuer die TAN
             String tan = null;
-            retData.replace(0,retData.length(),tan);
-          }
-          else
-          {
+            retData.replace(0, retData.length(), tan);
+          } else {
             // Ist smsTAN, iTAN, o.ae.
             // Dialog zur TAN-Eingabe anzeigen mit dem Text aus "msg".
             String tan = null;
-            retData.replace(0,retData.length(),tan);
+            retData.replace(0, retData.length(), tan);
           }
 
           break;
@@ -410,8 +392,7 @@ public class UmsatzAbrufPinTan
      * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
      */
     @Override
-    public void status(HBCIPassport passport, int statusTag, Object[] o)
-    {
+    public void status(HBCIPassport passport, int statusTag, Object[] o) {
       // So aehnlich wie log(String,int,Date,StackTraceElement) jedoch fuer Status-Meldungen.
     }
 
@@ -419,19 +400,19 @@ public class UmsatzAbrufPinTan
 
   /**
    * Gibt die angegebene Meldung aus.
+   *
    * @param msg die Meldung.
    */
-  private static void log(String msg)
-  {
+  private static void log(String msg) {
     System.out.println(msg);
   }
 
   /**
    * Beendet das Programm mit der angegebenen Fehler-Meldung.
+   *
    * @param msg die Meldung.
    */
-  private static void error(String msg)
-  {
+  private static void error(String msg) {
     System.err.println(msg);
     System.exit(1);
   }

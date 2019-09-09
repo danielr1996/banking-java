@@ -1,10 +1,11 @@
 package de.danielr1996.banking.infrastructure.graphql;
 
-import de.danielr1996.banking.domain.Buchung;
-import de.danielr1996.banking.domain.Saldo;
+import de.danielr1996.banking.application.GetNewestSaldoService;
+import de.danielr1996.banking.application.PageBuchungService;
+import de.danielr1996.banking.application.PageSaldoService;
+import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.repository.BuchungRepository;
 import de.danielr1996.banking.repository.SaldoRepository;
-import de.danielr1996.banking.services.SaldoService;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,11 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class GraphQLDataFetchers {
@@ -25,6 +22,15 @@ public class GraphQLDataFetchers {
 
   @Autowired
   private SaldoRepository saldoRepository;
+
+  @Autowired
+  PageSaldoService saldoService;
+
+  @Autowired
+  GetNewestSaldoService getNewestSaldoService;
+
+  @Autowired
+  PageBuchungService pageBuchungService;
 
   public DataFetcher getBuchungByIdDataFetcher() {
     return dataFetchingEnvironment -> {
@@ -38,44 +44,20 @@ public class GraphQLDataFetchers {
     return dataFetchingEnvironment -> {
       Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
       Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-      Page<Buchung> buchungen = buchungRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Order.desc("id"))));
-
-      return BuchungContainer.builder()
-        .buchungen(buchungen.getContent())
-        .totalElements(buchungen.getTotalElements())
-        .totalPages(buchungen.getTotalPages())
-        .build();
+      return pageBuchungService.getBuchungContainer(page, size);
     };
   }
 
   public DataFetcher getSaldoDataFetcher() {
-    return dataFetchingEnvironment -> {
-      return saldoRepository.findAll().get(0);
-    };
+    return dataFetchingEnvironment -> getNewestSaldoService.getNewestSaldo();
   }
 
   public DataFetcher getSaldiDataFetcher() {
     return dataFetchingEnvironment -> {
       Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
       Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-      // FIXME: Kein Element vorhanden
-      List<Saldo> saldi = SaldoService.getSaldi(
-        buchungRepository.findAll(),
-        saldoRepository
-          .findAll()
-          .stream()
-          .min(Comparator.comparing(Saldo::getDatum))
-          .get());
-      List<Saldo> filtered = saldi
-        .stream()
-        .skip(page * size)
-        .limit(size)
-        .collect(Collectors.toList());
-      return SaldiContainer.builder()
-        .saldi(filtered)
-        .totalPages((long)Math.ceil((double)saldi.size() / size))
-        .totalElements(saldi.size())
-        .build();
+
+      return saldoService.getSaldiContainer(page, size);
     };
   }
 }

@@ -1,6 +1,6 @@
-package de.danielr1996.banking.fints;
+package de.danielr1996.banking.infrastructure.fints;
 
-import de.danielr1996.banking.domain.Saldo;
+import de.danielr1996.banking.domain.entities.Saldo;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRSaldoReq;
@@ -15,7 +15,8 @@ import java.util.function.Function;
 
 @Slf4j
 public class SaldoImporter {
-  private Konto self = getKonto();
+  private HBCIPassport passport = UmsatzAbrufPinTan.getPassport();
+  private Konto self = getKonto(this.passport);
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
   public Saldo doImport() {
@@ -23,9 +24,9 @@ public class SaldoImporter {
   }
 
   @Deprecated
-  private Konto getKonto() {
-    HBCIPassport passport = HBCIPassportFactory.getPassport();
+  public Konto getKonto(HBCIPassport passport) {
     Konto[] konten = passport.getAccounts();
+
     Konto k = konten[3];
     return k;
   }
@@ -33,7 +34,7 @@ public class SaldoImporter {
   private GVRSaldoReq getSaldo(Konto self) {
     log.info("Using konto {}", self);
     HBCIHandler handle = null;
-    HBCIPassport passport = HBCIPassportFactory.getPassport();
+    HBCIPassport passport = this.passport;
     try {
       handle = new HBCIHandler(VERSION.getId(), passport);
       HBCIJob umsatzJob = handle.newJob("SaldoReq");

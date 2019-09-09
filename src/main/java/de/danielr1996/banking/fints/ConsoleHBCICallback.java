@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class ConsoleHBCICallback extends AbstractHBCICallback {
     public final static String BLZ = Config.HBCI_BLZ;
     private final static String USER = Config.HBCI_USER;
-    private static String PIN = Config.HBCI_PIN;
+    private static String PIN = "";
 
     public ConsoleHBCICallback() {
 

@@ -1,0 +1,20 @@
+package de.danielr1996.banking.infrastructure.graphql;
+
+import de.danielr1996.banking.domain.Buchung;
+import de.danielr1996.banking.domain.Saldo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class SaldiContainer {
+  private List<Saldo> saldi;
+  private long totalElements;
+  private long totalPages;
+}

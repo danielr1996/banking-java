@@ -4,11 +4,17 @@ type Query {
   buchungById(id: ID ): Buchung
   buchungen(page: Int, size: Int): BuchungContainer
   saldo: Saldo
-  saldi: [Saldo]
+  saldi(page: Int, size: Int): SaldiContainer
 }
 
 type BuchungContainer{
   buchungen: [Buchung],
+  totalPages: Int,
+  totalElements: Int
+}
+
+type SaldiContainer{
+  saldi: [Saldo],
   totalPages: Int,
   totalElements: Int
 }

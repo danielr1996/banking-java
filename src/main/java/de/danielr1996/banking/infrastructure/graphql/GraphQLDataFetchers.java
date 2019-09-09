@@ -1,6 +1,7 @@
 package de.danielr1996.banking.infrastructure.graphql;
 
 import de.danielr1996.banking.domain.Buchung;
+import de.danielr1996.banking.domain.Saldo;
 import de.danielr1996.banking.repository.BuchungRepository;
 import de.danielr1996.banking.repository.SaldoRepository;
 import de.danielr1996.banking.services.SaldoService;
@@ -11,9 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class GraphQLDataFetchers {
@@ -33,9 +36,9 @@ public class GraphQLDataFetchers {
 
   public DataFetcher getBuchungDataFetcher() {
     return dataFetchingEnvironment -> {
-      Optional<Integer> page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page"));
-      Optional<Integer> size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size"));
-      Page<Buchung> buchungen = buchungRepository.findAll(PageRequest.of(page.orElse(0), size.orElse(10), Sort.by(Sort.Order.desc("id"))));
+      Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
+      Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
+      Page<Buchung> buchungen = buchungRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Order.desc("id"))));
 
       return BuchungContainer.builder()
         .buchungen(buchungen.getContent())
@@ -45,14 +48,32 @@ public class GraphQLDataFetchers {
     };
   }
 
-  public DataFetcher getSaldoDataFetcher(){
+  public DataFetcher getSaldoDataFetcher() {
     return dataFetchingEnvironment -> {
       return saldoRepository.findAll().get(0);
     };
   }
-  public DataFetcher getSaldiDataFetcher(){
+
+  public DataFetcher getSaldiDataFetcher() {
     return dataFetchingEnvironment -> {
-      return SaldoService.getSaldi(buchungRepository.findAll(), saldoRepository.findAll().get(0));
+      Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
+      Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
+      // FIXME: Kein Element vorhanden
+      List<Saldo> saldi = SaldoService.getSaldi(
+        buchungRepository.findAll(),
+        saldoRepository
+          .findAll()
+          .stream()
+          .min(Comparator.comparing(Saldo::getDatum))
+          .get())
+        .stream()
+        .skip(page * size)
+        .limit(size)
+        .collect(Collectors.toList());
+      return SaldiContainer.builder()
+        .saldi(saldi)
+        .totalElements(saldi.size())
+        .build();
     };
   }
 }

@@ -65,13 +65,15 @@ public class GraphQLDataFetchers {
           .findAll()
           .stream()
           .min(Comparator.comparing(Saldo::getDatum))
-          .get())
+          .get());
+      List<Saldo> filtered = saldi
         .stream()
         .skip(page * size)
         .limit(size)
         .collect(Collectors.toList());
       return SaldiContainer.builder()
-        .saldi(saldi)
+        .saldi(filtered)
+        .totalPages((long)Math.ceil((double)saldi.size() / size))
         .totalElements(saldi.size())
         .build();
     };

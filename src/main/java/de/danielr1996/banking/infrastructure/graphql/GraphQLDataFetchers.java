@@ -3,19 +3,17 @@ package de.danielr1996.banking.infrastructure.graphql;
 import de.danielr1996.banking.application.GetNewestSaldoService;
 import de.danielr1996.banking.application.PageBuchungService;
 import de.danielr1996.banking.application.PageSaldoService;
-import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.repository.BuchungRepository;
 import de.danielr1996.banking.repository.SaldoRepository;
 import graphql.schema.DataFetcher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class GraphQLDataFetchers {
   @Autowired
   private BuchungRepository buchungRepository;
@@ -54,6 +52,7 @@ public class GraphQLDataFetchers {
 
   public DataFetcher getSaldiDataFetcher() {
     return dataFetchingEnvironment -> {
+      log.info("Context: {}", dataFetchingEnvironment.getContext().toString());
       Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
       Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
 

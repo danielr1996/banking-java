@@ -83,6 +83,11 @@
       <version>1.0</version>
     </dependency>
     <dependency>
+      <groupId>com.graphql-java</groupId>
+      <artifactId>graphql-java-spring-webmvc</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>26.0-jre</version>
@@ -142,7 +147,7 @@
     <dependency>
       <groupId>com.github.hbci4j</groupId>
       <artifactId>hbci4j-core</artifactId>
-      <version>3.1.5-SNAPSHOT-local</version>
+      <version>3.1.5</version>
     </dependency>
 
     <!-- Test -->

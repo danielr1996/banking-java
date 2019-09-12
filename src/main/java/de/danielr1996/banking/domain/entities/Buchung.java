@@ -1,10 +1,12 @@
 package de.danielr1996.banking.domain.entities;
 
+import de.danielr1996.banking.domain.Ownable;
 import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -12,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
-public class Buchung {
+public class Buchung implements Ownable {
   @Id
   private String id;
   private BigDecimal betrag;
@@ -21,14 +23,20 @@ public class Buchung {
   private LocalDate valutadatum;
   private String buchungstext;
   private String verwendungszweck;
+  private UUID ownerId;
 //  @OneToOne(cascade = CascadeType.ALL)
 //  private TransaktionsPartner selfPartner;
 //  @OneToOne(cascade = CascadeType.ALL)
 //  private TransaktionsPartner otherPartner;
 
 
-    @EqualsAndHashCode.Exclude
-    private String kategorie;
+  @EqualsAndHashCode.Exclude
+  private String kategorie;
+
+  @Override
+  public UUID getOwner() {
+    return this.ownerId;
+  }
 //    @EqualsAndHashCode.Exclude
 //    private GeoLocation location;
 //    @EqualsAndHashCode.Exclude

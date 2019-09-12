@@ -1,73 +1,97 @@
 databaseChangeLog:
-- changeSet:
-    id: tbl_buchung
-    author: Daniel Richter
-    changes:
-    - createTable:
-        columns:
-        - column:
-            constraints:
-              - primary_key: true
-            name: id
-            type: VARCHAR(255)
-        - column:
-            name: betrag
-            type: numeric(19, 2)
-        - column:
-            name: buchungstag
-            type: date
-        - column:
-            name: buchungstext
-            type: VARCHAR(255)
-        - column:
-            name: kategorie
-            type: VARCHAR(255)
-        - column:
-            name: valutadatum
-            type: date
-        - column:
-            name: verwendungszweck
-            type: VARCHAR(255)
-        - column:
-            name: waehrung
-            type: VARCHAR(255)
-        tableName: buchung
-- changeSet:
-    id: tbl_saldo
-    author: Daniel Richter
-    changes:
-    - createTable:
-        columns:
-        - column:
-            constraints:
-              - primary_key: true
-            name: id
-            type: UUID
-        - column:
-            name: betrag
-            type: numeric(19, 2)
-        - column:
-            name: datum
-            type: date
-        tableName: saldo
-- changeSet:
-    id: tbl_transaktionspartner
-    author: Daniel Richter
-    changes:
-    - createTable:
-        columns:
-        - column:
-            constraints:
-              - primary_key: true
-            name: iban
-            type: VARCHAR(255)
-        - column:
-            name: bic
-            type: VARCHAR(255)
-        - column:
-            name: id
-            type: UUID
-        - column:
-            name: name
-            type: VARCHAR(255)
-        tableName: transaktionspartner
+  - changeSet:
+      id: tbl_buchung
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: id
+                  type: VARCHAR(255)
+              - column:
+                  name: betrag
+                  type: numeric(19, 2)
+              - column:
+                  name: buchungstag
+                  type: date
+              - column:
+                  name: buchungstext
+                  type: VARCHAR(255)
+              - column:
+                  name: kategorie
+                  type: VARCHAR(255)
+              - column:
+                  name: valutadatum
+                  type: date
+              - column:
+                  name: verwendungszweck
+                  type: VARCHAR(255)
+              - column:
+                  name: waehrung
+                  type: VARCHAR(255)
+              - column:
+                  name: ownerId
+                  type: UUID
+            tableName: buchung
+  - changeSet:
+      id: tbl_saldo
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: id
+                  type: UUID
+              - column:
+                  name: betrag
+                  type: numeric(19, 2)
+              - column:
+                  name: datum
+                  type: date
+              - column:
+                  name: ownerId
+                  type: UUID
+            tableName: saldo
+  - changeSet:
+      id: tbl_transaktionspartner
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: iban
+                  type: VARCHAR(255)
+              - column:
+                  name: bic
+                  type: VARCHAR(255)
+              - column:
+                  name: id
+                  type: UUID
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: transaktionspartner
+  - changeSet:
+      id: tbl_user
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: id
+                  type: UUID
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+            tableName: user

@@ -1,7 +1,7 @@
 package de.danielr1996.banking.application;
 
 import de.danielr1996.banking.domain.entities.Saldo;
-import de.danielr1996.banking.repository.SaldoRepository;
+import de.danielr1996.banking.domain.repository.SaldoRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

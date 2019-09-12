@@ -30,6 +30,7 @@ public class AggregateSaldoService {
       Saldo s = Saldo.builder()
         .betrag(lastSaldo.getBetrag().subtract(buchung.getBetrag()))
         .datum(buchung.getValutadatum())
+        .ownerId(buchung.getOwnerId())
         .build();
       saldi.add(s);
       lastSaldo = s;

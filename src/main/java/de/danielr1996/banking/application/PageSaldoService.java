@@ -4,12 +4,11 @@ import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
 import de.danielr1996.banking.domain.services.AggregateSaldoService;
 import de.danielr1996.banking.infrastructure.graphql.SaldiContainer;
-import de.danielr1996.banking.repository.BuchungRepository;
-import de.danielr1996.banking.repository.SaldoRepository;
+import de.danielr1996.banking.domain.repository.BuchungRepository;
+import de.danielr1996.banking.domain.repository.SaldoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 

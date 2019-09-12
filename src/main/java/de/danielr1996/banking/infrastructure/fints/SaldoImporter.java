@@ -55,7 +55,7 @@ public class SaldoImporter {
 //        return Stream.empty();
       }
 //      return result.getR;
-      System.out.println(result.getEntries());
+//      System.out.println(result.getEntries());
       return result;
     } finally {
       if (handle != null)

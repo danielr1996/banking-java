@@ -2,7 +2,6 @@ package de.danielr1996.banking.infrastructure.graphql;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import graphql.ExecutionInput;
 import graphql.GraphQL;
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLSchema;
@@ -15,11 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 
 import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
@@ -27,6 +23,7 @@ import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 public class GraphQLProvider {
   private GraphQL graphQL;
   private String TYPE_QUERY = "Query";
+  private String TYPE_MUTATION = "Mutation";
 
   @Autowired
   GraphQLDataFetchers graphQLDataFetchers;
@@ -62,6 +59,10 @@ public class GraphQLProvider {
         .dataFetcher("saldo", graphQLDataFetchers.getSaldoDataFetcher()))
       .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("saldi", graphQLDataFetchers.getSaldiDataFetcher()))
+      .type(newTypeWiring(TYPE_MUTATION)
+        .dataFetcher("createUser", graphQLDataFetchers.createUser()))
+      .type(newTypeWiring(TYPE_MUTATION)
+        .dataFetcher("signIn", graphQLDataFetchers.signin()))
       .build();
   }
 }

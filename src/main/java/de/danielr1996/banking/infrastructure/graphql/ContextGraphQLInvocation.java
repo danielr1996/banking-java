@@ -11,36 +11,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
 @Primary
-public class ContextGraphQLInvocation  implements GraphQLInvocation {
-
+public class ContextGraphQLInvocation implements GraphQLInvocation {
+  private static final String HEADER_AUTHORIZATION = "Authorization";
   @Autowired
   GraphQL graphQL;
 
   @Autowired(required = false)
   DataLoaderRegistry dataLoaderRegistry;
 
-//  @Autowired
-//  ExecutionInputCustomizer executionInputCustomizer;
-
   @Override
   public CompletableFuture<ExecutionResult> invoke(GraphQLInvocationData invocationData, WebRequest webRequest) {
-    log.info("Invoked ContextGraphQLInvocation");
+    Optional<String> auth = Optional.ofNullable(webRequest.getHeader(HEADER_AUTHORIZATION));
+    auth.ifPresent(log::info);
     ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
       .query(invocationData.getQuery())
-      .context("Userid: abc88")
+      .context(GraphQLContext.builder()
+        .jwt(auth.orElse(""))
+        .build())
       .operationName(invocationData.getOperationName())
       .variables(invocationData.getVariables());
     if (dataLoaderRegistry != null) {
       executionInputBuilder.dataLoaderRegistry(dataLoaderRegistry);
     }
     ExecutionInput executionInput = executionInputBuilder.build();
-    CompletableFuture<ExecutionInput> customizedExecutionInput = CompletableFuture.completedFuture(executionInput);
-    return customizedExecutionInput.thenCompose(graphQL::executeAsync);
+    return CompletableFuture.completedFuture(executionInput).thenCompose(graphQL::executeAsync);
   }
 
 }

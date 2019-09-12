@@ -1,4 +1,4 @@
-package de.danielr1996.banking.repository;
+package de.danielr1996.banking.domain.repository;
 
 import de.danielr1996.banking.domain.entities.Saldo;
 import org.springframework.data.jpa.repository.JpaRepository;

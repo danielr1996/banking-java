@@ -87,7 +87,7 @@ public class UmsatzAbrufPinTan {
     // Art der Nachrichten-Codierung. Bei Chipkarte/Schluesseldatei wird
     // "None" verwendet. Bei PIN/TAN kommt "Base64" zum Einsatz.
     passport.setFilterType("Base64");
-    System.out.println(passport.getAccounts().length);
+//    System.out.println(passport.getAccounts().length);
     return passport;
   }
 
@@ -141,7 +141,7 @@ public class UmsatzAbrufPinTan {
 
       Value s = saldoResult.getEntries()[0].ready.value;
       log("Saldo: " + s.toString());
-      System.out.println(Arrays.asList(saldoResult.getEntries()));
+//      System.out.println(Arrays.asList(saldoResult.getEntries()));
 
       // Das Ergebnis des Jobs koennen wir auf "GVRKUms" casten. Jobs des Typs "KUmsAll"
       // liefern immer diesen Typ.
@@ -195,7 +195,7 @@ public class UmsatzAbrufPinTan {
     @Override
     public void log(String msg, int level, Date date, StackTraceElement trace) {
       // Ausgabe von Log-Meldungen bei Bedarf
-      System.out.println(msg);
+//      System.out.println(msg);
     }
 
     /**
@@ -404,7 +404,7 @@ public class UmsatzAbrufPinTan {
    * @param msg die Meldung.
    */
   private static void log(String msg) {
-    System.out.println(msg);
+//    System.out.println(msg);
   }
 
   /**

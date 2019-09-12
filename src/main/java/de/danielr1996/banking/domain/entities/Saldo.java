@@ -1,5 +1,6 @@
 package de.danielr1996.banking.domain.entities;
 
+import de.danielr1996.banking.domain.Ownable;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity
-public class Saldo {
+public class Saldo implements Ownable {
   @Id
   @GeneratedValue
   @ToString.Exclude
@@ -22,5 +23,10 @@ public class Saldo {
   private UUID id;
   private BigDecimal betrag;
   private LocalDate datum;
+  private UUID ownerId;
 
+  @Override
+  public UUID getOwner() {
+    return this.ownerId;
+  }
 }

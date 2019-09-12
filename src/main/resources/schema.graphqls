@@ -7,6 +7,20 @@ type Query {
   saldi(page: Int, size: Int): SaldiContainer
 }
 
+type Mutation {
+  createUser(user: UserInput): User
+  signIn(user: UserInput): String
+}
+
+type User {
+  id: ID!
+  name: String
+}
+input UserInput {
+  name: String
+  password: String
+}
+
 type BuchungContainer{
   buchungen: [Buchung],
   totalPages: Int,
@@ -21,6 +35,7 @@ type SaldiContainer{
 
 type Buchung{
   id: ID
+  ownerId: ID
   betrag: Float
   waehrung: String
   buchungstext: String
@@ -43,4 +58,5 @@ type Saldo{
   id: ID
   betrag: Float
   datum: Date
+  ownerId: ID
 }

@@ -4,8 +4,8 @@ import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
 import de.danielr1996.banking.infrastructure.fints.HbciFintsCamtImporter;
 import de.danielr1996.banking.infrastructure.fints.SaldoImporter;
-import de.danielr1996.banking.repository.BuchungRepository;
-import de.danielr1996.banking.repository.SaldoRepository;
+import de.danielr1996.banking.domain.repository.BuchungRepository;
+import de.danielr1996.banking.domain.repository.SaldoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,10 +37,12 @@ public class ImportTask {
     Saldo saldo = saldoImporter.doImport();
     // FIXME: INSERT IF NOT EXISTS auf Datenbankebene
     buchungen.forEach(buchung -> {
-      if (!buchungRepository.existsById(buchung.getId())) {
-        buchungRepository.save(buchung);
-      }else{
-      }
+//      if (!buchungRepository.existsById(buchung.getId())) {
+      buchung.setOwnerId(UUID.fromString("360c5a1c-d95a-47fe-9b25-5416a504da3f"));
+      buchungRepository.save(buchung);
+//      }else{
+//        buchungRepository.
+//      }
     });
     saldoRepository.save(saldo);
     log.info("Saved {} Buchungen to Database", buchungen.size());

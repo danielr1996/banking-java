@@ -49,7 +49,7 @@ public class PassportFactory {
     // Art der Nachrichten-Codierung. Bei Chipkarte/Schluesseldatei wird
     // "None" verwendet. Bei PIN/TAN kommt "Base64" zum Einsatz.
     passport.setFilterType("Base64");
-    System.out.println(passport.getAccounts().length);
+//    System.out.println(passport.getAccounts().length);
     return passport;
   }
 }

@@ -15,7 +15,8 @@ import java.util.function.Function;
 
 @Slf4j
 public class SaldoImporter {
-  private HBCIPassport passport = UmsatzAbrufPinTan.getPassport();
+  private HBCIPassport passport = null;
+//  private HBCIPassport passport = UmsatzAbrufPinTan.getPassport();
   private Konto self = getKonto(this.passport);
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 

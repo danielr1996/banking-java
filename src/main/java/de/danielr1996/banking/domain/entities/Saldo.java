@@ -23,10 +23,10 @@ public class Saldo implements Ownable {
   private UUID id;
   private BigDecimal betrag;
   private LocalDate datum;
-  private UUID ownerId;
+  private UUID ownerid;
 
   @Override
   public UUID getOwner() {
-    return this.ownerId;
+    return this.ownerid;
   }
 }

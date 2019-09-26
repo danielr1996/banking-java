@@ -1,8 +1,8 @@
 package de.danielr1996.banking.application;
 
 import de.danielr1996.banking.domain.entities.Buchung;
-import de.danielr1996.banking.infrastructure.graphql.BuchungContainer;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
+import de.danielr1996.banking.infrastructure.graphql.BuchungContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

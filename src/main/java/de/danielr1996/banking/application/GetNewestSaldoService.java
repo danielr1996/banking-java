@@ -14,6 +14,15 @@ public class GetNewestSaldoService {
   private SaldoRepository saldoRepository;
 
   public Saldo getNewestSaldo() {
-    return saldoRepository.findAll().stream().max(Comparator.comparing(Saldo::getDatum)).get();
+    System.out.println(
+      saldoRepository
+        .findAll()
+    );
+    return saldoRepository
+      .findAll()
+      .stream()
+      .max(Comparator.comparing(Saldo::getDatum))
+      .get();
+//      .orElse(Saldo.builder().build());
   }
 }

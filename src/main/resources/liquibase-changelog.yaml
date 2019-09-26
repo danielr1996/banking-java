@@ -53,7 +53,7 @@ databaseChangeLog:
                   name: datum
                   type: date
               - column:
-                  name: ownerId
+                  name: ownerid
                   type: UUID
             tableName: saldo
   - changeSet:
@@ -95,3 +95,27 @@ databaseChangeLog:
                   name: password
                   type: VARCHAR(255)
             tableName: user
+  - changeSet:
+      id: tbl_konto
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: id
+                  type: UUID
+              - column:
+                  name: blz
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+              - column:
+                  name: kontonummer
+                  type: VARCHAR(255)
+              - column:
+                  name: userId
+                  type: UUID
+            tableName: konto

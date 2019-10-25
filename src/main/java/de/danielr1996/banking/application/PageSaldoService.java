@@ -2,17 +2,23 @@ package de.danielr1996.banking.application;
 
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
+import de.danielr1996.banking.domain.exception.NewestSaldoNotFoundException;
 import de.danielr1996.banking.domain.services.AggregateSaldoService;
 import de.danielr1996.banking.infrastructure.graphql.SaldiContainer;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
 import de.danielr1996.banking.domain.repository.SaldoRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PageSaldoService {
 
   @Autowired
@@ -29,7 +35,8 @@ public class PageSaldoService {
 
   public SaldiContainer getSaldiContainer(int page, int size) {
     List<Buchung> buchungen = buchungRepository.findAll();
-    Saldo lastSaldo = getNewestSaldoService.getNewestSaldo();
+    Saldo lastSaldo = null;
+    lastSaldo = getNewestSaldoService.getNewestSaldo();
 
     List<Saldo> saldi = aggregateSaldoService.aggregateSaldi(buchungen, lastSaldo);
     List<Saldo> filtered = saldi

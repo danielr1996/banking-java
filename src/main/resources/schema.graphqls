@@ -10,6 +10,7 @@ type Query {
 type Mutation {
   createUser(user: UserInput): User
   signIn(user: UserInput): String
+
 }
 
 type User {

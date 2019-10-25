@@ -1,6 +1,7 @@
 package de.danielr1996.banking.application;
 
 import de.danielr1996.banking.domain.entities.Saldo;
+import de.danielr1996.banking.domain.exception.NewestSaldoNotFoundException;
 import de.danielr1996.banking.domain.repository.SaldoRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ class GetNewestSaldoServiceTest {
   }
 
   @Test
-  void getNewestSaldoOfThree() {
+  void getNewestSaldoOfThree() throws NewestSaldoNotFoundException {
     Saldo saldoNeu = Saldo.builder().datum(LocalDate.now()).build();
     Saldo saldoMittel = Saldo.builder().datum(LocalDate.now().minusDays(1)).build();
     Saldo saldoAlt = Saldo.builder().datum(LocalDate.now().minusDays(2)).build();
@@ -46,7 +47,7 @@ class GetNewestSaldoServiceTest {
   }
 
   @Test
-  void getNewestSaldoOfOne() {
+  void getNewestSaldoOfOne() throws NewestSaldoNotFoundException {
     Saldo saldo = Saldo.builder().datum(LocalDate.now()).build();
 
     saldoRepository.save(saldo);

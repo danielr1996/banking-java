@@ -21,9 +21,9 @@ public class AggregateSaldoService {
    * @return
    */
   public static List<Saldo> aggregateSaldi(List<Buchung> buchungen, Saldo currentSaldo) {
+    List<Saldo> saldi = new ArrayList<>();
     Collections.sort(buchungen, Comparator.comparing(Buchung::getValutadatum));
     Collections.reverse(buchungen);
-    List<Saldo> saldi = new ArrayList<>();
     Saldo lastSaldo = currentSaldo;
     saldi.add(currentSaldo);
     for (Buchung buchung : buchungen) {

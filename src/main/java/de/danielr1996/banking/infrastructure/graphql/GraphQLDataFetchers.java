@@ -11,6 +11,7 @@ import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
 import de.danielr1996.banking.domain.repository.UserRepository;
+import de.danielr1996.banking.infrastructure.tasks.ImportTask;
 import graphql.GraphQLException;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,11 @@ public class GraphQLDataFetchers {
 
   @Autowired
   OwnershipService ownershipService;
+
+  //FIXME: Sollte in ordentlichen DomainService ausgelagert werden
+  @Autowired
+  @Deprecated
+  ImportTask importTask;
 
   DataFetcher<Optional<Buchung>> getBuchungByIdDataFetcher() {
     return dataFetchingEnvironment -> {

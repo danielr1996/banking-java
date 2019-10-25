@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Slf4j
 public class MyHBCICallback extends AbstractHBCICallback {
@@ -21,12 +23,16 @@ public class MyHBCICallback extends AbstractHBCICallback {
   private String pin = "Reich";
   private final static String PASSPORT_PIN = "PASSPORTPIN";
   private String tanAlias = null;
+  private Supplier<String> tanSp;
+  private Supplier<String> tanMediumSp;
 
 
-  public MyHBCICallback(String blz, String user, String pin){
+  public MyHBCICallback(String blz, String user, String pin, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
     this.blz = blz;
     this.pin = pin;
     this.user = user;
+    this.tanSp = tanSp;
+    this.tanMediumSp = tanMediumSp;
   }
 
   /**
@@ -42,7 +48,7 @@ public class MyHBCICallback extends AbstractHBCICallback {
    */
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
     // Diese Funktion ist wichtig. Ueber die fragt HBCI4Java die benoetigten Daten von uns ab.
-    System.out.println(reason);
+    log.info("{}", reason);
     switch (reason) {
       // Mit dem Passwort verschluesselt HBCI4Java die Passport-Datei.
       // Wir nehmen hier der Einfachheit halber direkt die PIN. In der Praxis
@@ -109,7 +115,8 @@ public class MyHBCICallback extends AbstractHBCICallback {
           // den bankspezifischen Text mit den Instruktionen fuer den User.
           // Der Text aus "msg" sollte daher im Dialog dem User angezeigt
           // werden.
-          String tan = new Scanner(System.in).nextLine();
+//          String tan = new Scanner(System.in).nextLine();
+          String tan = tanSp.get();
           retData.replace(0, retData.length(), tan);
         } catch (Exception e) {
           log.error("Fehler beim Anzeigen der PhotoTan");
@@ -220,7 +227,8 @@ public class MyHBCICallback extends AbstractHBCICallback {
         // Fall ist keine Auswahl noetig und "retData" kann unveraendert
         // bleiben
         if (tanAlias == null) {
-          tanAlias = new Scanner(System.in).nextLine();
+//          tanAlias = new Scanner(System.in).nextLine();
+          tanAlias = tanMediumSp.get();
         }
         retData.replace(0, retData.length(), tanAlias);
 

@@ -20,6 +20,7 @@ import java.io.File;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 
@@ -29,9 +30,9 @@ import java.util.stream.Stream;
 public class FinTSUmsatzAbrufService implements BuchungAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
-  private List<GVRKUms.UmsLine> getUmsaetze(Konto konto) {
+  private List<GVRKUms.UmsLine> getUmsaetze(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
     Properties props = new Properties();
-    HBCIUtils.init(props, new MyHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword()));
+    HBCIUtils.init(props, new MyHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), tanSp, tanMediumSp));
     final File passportFile = new File(konto.getId() + ".dat");
     HBCIUtils.setParam("client.passport.default", "PinTan"); // Legt als Verfahren PIN/TAN fest.
     HBCIUtils.setParam("client.passport.PinTan.init", "1"); // Stellt sicher, dass der Passport initialisiert wird
@@ -83,8 +84,8 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
   }
 
   @Override
-  public Stream<Buchung> getBuchungen(Konto konto) {
-    return getUmsaetze(konto).stream().map(umsLine -> Buchung.builder()
+  public Stream<Buchung> getBuchungen(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
+    return getUmsaetze(konto, tanSp, tanMediumSp).stream().map(umsLine -> Buchung.builder()
       .id(umsLine.id)
       .buchungstag(umsLine.bdate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
       .valutadatum(umsLine.valuta.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())

@@ -1,4 +1,5 @@
 databaseChangeLog:
+  # Tables
   - changeSet:
       id: tbl_buchung
       author: Daniel Richter
@@ -32,7 +33,7 @@ databaseChangeLog:
                   name: waehrung
                   type: VARCHAR(255)
               - column:
-                  name: ownerId
+                  name: kontoId
                   type: UUID
             tableName: buchung
   - changeSet:
@@ -53,7 +54,7 @@ databaseChangeLog:
                   name: datum
                   type: date
               - column:
-                  name: ownerid
+                  name: kontoId
                   type: UUID
             tableName: saldo
   - changeSet:
@@ -119,3 +120,13 @@ databaseChangeLog:
                   name: userId
                   type: UUID
             tableName: konto
+  # Data
+  - changeSet:
+      id: DATA_TEST
+      author: Daniel Richter
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: data-test.sql
+            relativeToChangeLogFile: true
+            stripComments: true

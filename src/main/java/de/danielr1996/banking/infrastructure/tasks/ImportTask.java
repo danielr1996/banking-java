@@ -51,7 +51,7 @@ public class ImportTask {
         saldoRepository.save(saldo);
         List<Buchung> buchungen = buchungAbrufService.getBuchungen(konto, tanSp, tanMediumSp).collect(Collectors.toList());
         buchungen.forEach(buchung -> {
-          buchung.setOwnerId(konto.getUserId());
+          buchung.setKontoId(konto.getUserId());
           buchungRepository.save(buchung);
         });
         log.info("{} Buchungen importiert", buchungRepository.findAll().size());

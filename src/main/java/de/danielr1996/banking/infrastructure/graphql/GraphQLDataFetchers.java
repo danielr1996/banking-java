@@ -1,5 +1,9 @@
 package de.danielr1996.banking.infrastructure.graphql;
 
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.Scanner;
+import java.util.UUID;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.danielr1996.banking.application.GetNewestSaldoService;
 import de.danielr1996.banking.application.PageBuchungService;
@@ -18,10 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @Slf4j
@@ -55,9 +55,9 @@ public class GraphQLDataFetchers {
       String jwt = dataFetchingEnvironment.<GraphQLContext>getContext().getJwt();
       Buchung buchung = buchungRepository.findById(buchungId).get();
 
-      if(ownershipService.isOwner(UUID.fromString(jwt), buchung)){
+      if (ownershipService.isOwner(UUID.fromString(jwt), buchung)) {
         return Optional.of(buchung);
-      }else{
+      } else {
         throw new GraphQLException("Not Authorized");
       }
     };
@@ -116,6 +116,13 @@ public class GraphQLDataFetchers {
       } else {
         throw new GraphQLException("Invalid credentials");
       }
+    };
+  }
+
+  DataFetcher<String> refresh() {
+    return dataFetchingEnvironment -> {
+      importTask.importIntoDb(() -> new Scanner(System.in).next(), () -> new Scanner(System.in).next());
+      return null;
     };
   }
 }

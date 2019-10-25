@@ -23,7 +23,7 @@ public class Buchung implements Ownable {
   private LocalDate valutadatum;
   private String buchungstext;
   private String verwendungszweck;
-  private UUID ownerId;
+  private UUID kontoId;
 //  @OneToOne(cascade = CascadeType.ALL)
 //  private TransaktionsPartner selfPartner;
 //  @OneToOne(cascade = CascadeType.ALL)
@@ -35,7 +35,7 @@ public class Buchung implements Ownable {
 
   @Override
   public UUID getOwner() {
-    return this.ownerId;
+    return this.kontoId;
   }
 //    @EqualsAndHashCode.Exclude
 //    private GeoLocation location;

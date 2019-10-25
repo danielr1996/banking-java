@@ -16,7 +16,7 @@ public class MockSaldoAbrufService implements SaldoAbrufService {
     return Saldo.builder()
       .betrag(BigDecimal.TEN)
       .datum(LocalDate.now())
-      .ownerid(UUID.randomUUID())
+      .kontoId(UUID.randomUUID())
       .build();
   }
 }

@@ -1,7 +1,13 @@
 package de.danielr1996.banking.infrastructure.fints;
 
-import de.danielr1996.banking.domain.entities.Konto;
+import java.io.File;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Properties;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import de.danielr1996.banking.domain.entities.Buchung;
+import de.danielr1996.banking.domain.entities.Konto;
 import de.danielr1996.banking.domain.services.BuchungAbrufService;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.GV.HBCIJob;
@@ -15,13 +21,6 @@ import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.status.HBCIExecStatus;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Properties;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 
 @Service
@@ -54,9 +53,10 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
 
       log.info("Anzahl Konten: {}", konten.length);
       org.kapott.hbci.structures.Konto k = konten[3];
-
+      System.out.println("Konto: " + k.bic);
       HBCIJob umsatzJob = handle.newJob("KUmsAllCamt");
       umsatzJob.setParam("my", k); // festlegen, welches Konto abgefragt werden soll.
+      umsatzJob.setParam("my.bic", k.bic); // festlegen, welches Konto abgefragt werden soll.
       umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
 
 
@@ -85,14 +85,18 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
 
   @Override
   public Stream<Buchung> getBuchungen(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
-    return getUmsaetze(konto, tanSp, tanMediumSp).stream().map(umsLine -> Buchung.builder()
-      .id(umsLine.id)
-      .buchungstag(umsLine.bdate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
-      .valutadatum(umsLine.valuta.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
-      .waehrung(umsLine.value.getCurr())
-      .buchungstext(umsLine.text)
-      .verwendungszweck(String.join("", umsLine.usage))
-      .betrag(umsLine.value.getBigDecimalValue())
-      .build());
+    System.out.println(konto);
+    return getUmsaetze(konto, tanSp, tanMediumSp).stream().map(umsLine -> {
+      log.info("{}", umsLine);
+      return Buchung.builder()
+        .id(umsLine.id)
+        .buchungstag(umsLine.bdate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+        .valutadatum(umsLine.valuta.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+        .waehrung(umsLine.value.getCurr())
+        .buchungstext(umsLine.text)
+        .verwendungszweck(String.join("", umsLine.usage))
+        .betrag(umsLine.value.getBigDecimalValue())
+        .build();
+    });
   }
 }

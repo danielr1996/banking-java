@@ -1,5 +1,9 @@
 package de.danielr1996.banking.infrastructure.graphql;
 
+import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
+import java.io.IOException;
+import java.net.URL;
+import javax.annotation.PostConstruct;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import graphql.GraphQL;
@@ -12,12 +16,6 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.net.URL;
-
-import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
 @Component
 public class GraphQLProvider {
@@ -63,6 +61,8 @@ public class GraphQLProvider {
         .dataFetcher("createUser", graphQLDataFetchers.createUser()))
       .type(newTypeWiring(TYPE_MUTATION)
         .dataFetcher("signIn", graphQLDataFetchers.signin()))
+      .type(newTypeWiring(TYPE_MUTATION)
+        .dataFetcher("refresh", graphQLDataFetchers.refresh()))
       .build();
   }
 }

@@ -2,15 +2,12 @@ package de.danielr1996.banking.domain.services;
 
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
-import de.danielr1996.banking.infrastructure.graphql.SaldiContainer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 @Service
 public class AggregateSaldoService {
@@ -30,7 +27,7 @@ public class AggregateSaldoService {
       Saldo s = Saldo.builder()
         .betrag(lastSaldo.getBetrag().subtract(buchung.getBetrag()))
         .datum(buchung.getValutadatum())
-        .ownerid(buchung.getOwnerId())
+        .kontoId(buchung.getKontoId())
         .build();
       saldi.add(s);
       lastSaldo = s;

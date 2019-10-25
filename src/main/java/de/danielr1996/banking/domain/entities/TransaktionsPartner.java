@@ -14,7 +14,7 @@ import java.util.UUID;
 public class TransaktionsPartner {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+//    private UUID id;
     @Id
     private String iban;
     private String bic;

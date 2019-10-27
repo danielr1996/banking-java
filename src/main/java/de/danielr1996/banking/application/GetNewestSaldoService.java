@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 
 @Service
@@ -26,7 +27,7 @@ public class GetNewestSaldoService {
       .max(Comparator.comparing(Saldo::getDatum))
       .orElseGet(() -> {
         Saldo lastSaldo = Saldo.builder()
-          .datum(LocalDate.now())
+          .datum(LocalDateTime.now())
           .betrag(BigDecimal.ZERO)
           .build();
 

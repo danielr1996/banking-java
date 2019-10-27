@@ -69,6 +69,6 @@ public class SaldoImporter {
 
   private Function<GVRSaldoReq, Saldo> caster = saldo -> Saldo.builder()
     .betrag(saldo.getEntries()[0].ready.value.getBigDecimalValue())
-    .datum(saldo.getEntries()[0].ready.timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+//    .datum(saldo.getEntries()[0].ready.timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
     .build();
 }

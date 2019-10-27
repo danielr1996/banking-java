@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -19,8 +20,8 @@ public class Buchung implements Ownable {
   private String id;
   private BigDecimal betrag;
   private String waehrung;
-  private LocalDate buchungstag;
-  private LocalDate valutadatum;
+  private LocalDateTime buchungstag;
+  private LocalDateTime valutadatum;
   private String buchungstext;
   private String verwendungszweck;
   private UUID kontoId;

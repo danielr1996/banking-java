@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -22,7 +23,7 @@ public class Saldo implements Ownable {
   @EqualsAndHashCode.Exclude
   private UUID id;
   private BigDecimal betrag;
-  private LocalDate datum;
+  private LocalDateTime datum;
   private UUID kontoId;
 
   @Override

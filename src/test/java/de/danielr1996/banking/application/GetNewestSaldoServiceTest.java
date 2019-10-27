@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,9 +33,9 @@ class GetNewestSaldoServiceTest {
 
   @Test
   void getNewestSaldoOfThree() throws NewestSaldoNotFoundException {
-    Saldo saldoNeu = Saldo.builder().datum(LocalDate.now()).build();
-    Saldo saldoMittel = Saldo.builder().datum(LocalDate.now().minusDays(1)).build();
-    Saldo saldoAlt = Saldo.builder().datum(LocalDate.now().minusDays(2)).build();
+    Saldo saldoNeu = Saldo.builder().datum(LocalDateTime.now()).build();
+    Saldo saldoMittel = Saldo.builder().datum(LocalDateTime.now().minusDays(1)).build();
+    Saldo saldoAlt = Saldo.builder().datum(LocalDateTime.now().minusDays(2)).build();
 
     saldoRepository.save(saldoAlt);
     saldoRepository.save(saldoNeu);
@@ -48,7 +48,7 @@ class GetNewestSaldoServiceTest {
 
   @Test
   void getNewestSaldoOfOne() throws NewestSaldoNotFoundException {
-    Saldo saldo = Saldo.builder().datum(LocalDate.now()).build();
+    Saldo saldo = Saldo.builder().datum(LocalDateTime.now()).build();
 
     saldoRepository.save(saldo);
 

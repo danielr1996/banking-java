@@ -1,17 +1,10 @@
 package de.danielr1996.banking.infrastructure.fints;
 
-import java.io.File;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Konto;
+import de.danielr1996.banking.domain.entities.Saldo;
 import de.danielr1996.banking.domain.entities.TransaktionsPartner;
-import de.danielr1996.banking.domain.services.BuchungAbrufService;
+import de.danielr1996.banking.domain.services.SaldoAbrufService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRKUms;
+import org.kapott.hbci.GV_Result.GVRSaldoReq;
 import org.kapott.hbci.manager.BankInfo;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -29,16 +23,26 @@ import org.kapott.hbci.status.HBCIExecStatus;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Properties;
+import java.util.Scanner;
+import java.util.UUID;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @Service
 @Primary
 @Slf4j
-public class FinTSUmsatzAbrufService implements BuchungAbrufService {
+public class FinTSSaldoAbrufService implements SaldoAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
-  private UmsatzAbrufResponse getUmsaetze(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
+  private GVRSaldoReq getSaldoReq(Konto konto) {
     Properties props = new Properties();
-    HBCIUtils.init(props, new MyHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), tanSp, tanMediumSp));
+    HBCIUtils.init(props, new MyHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), ()->new Scanner(System.in).nextLine(), ()->new Scanner(System.in).nextLine()));
     final File passportFile = new File(konto.getId() + ".dat");
     HBCIUtils.setParam("client.passport.default", "PinTan"); // Legt als Verfahren PIN/TAN fest.
     HBCIUtils.setParam("client.passport.PinTan.init", "1"); // Stellt sicher, dass der Passport initialisiert wird
@@ -61,9 +65,8 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
 //      log.info("Anzahl Konten: {}", konten.length);
       org.kapott.hbci.structures.Konto k = konten[3];
 //      System.out.println("Konto: " + k.bic);
-      HBCIJob umsatzJob = handle.newJob("KUmsAllCamt");
+      HBCIJob umsatzJob = handle.newJob("SaldoReq");
       umsatzJob.setParam("my", k); // festlegen, welches Konto abgefragt werden soll.
-      umsatzJob.setParam("my.bic", k.bic); // festlegen, welches Konto abgefragt werden soll.
       umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
 
 
@@ -72,18 +75,12 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
       if (!status.isOK())
         log.error("{}", status);
 
-      GVRKUms result = (GVRKUms) umsatzJob.getJobResult();
+      GVRSaldoReq result = (GVRSaldoReq) umsatzJob.getJobResult();
 
       if (!result.isOK())
         log.error("{}", result);
 
-      // Alle Umsatzbuchungen ausgeben
-      List<GVRKUms.UmsLine> umsaetze = result.getFlatData();
-
-      return UmsatzAbrufResponse.builder()
-        .umsaetze(umsaetze)
-        .konto(k)
-        .build();
+      return result;
 
     } finally {
       // Sicherstellen, dass sowohl Passport als auch Handle nach Beendigung geschlossen werden.
@@ -96,45 +93,15 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
   }
 
   @Override
-  public Stream<Buchung> getBuchungen(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
-    UmsatzAbrufResponse res = getUmsaetze(konto, tanSp, tanMediumSp);
-    org.kapott.hbci.structures.Konto self = res.getKonto();
+  public Saldo getSaldo(Konto konto) {
+    org.kapott.hbci.structures.Saldo res = getSaldoReq(konto).getEntries()[0].ready;
 
-    return res.getUmsaetze().stream().map(umsLine -> {
-      TransaktionsPartner otherPartner = null;
-      if(umsLine.other.iban != null){
-        otherPartner=TransaktionsPartner.builder()
-          .bic(umsLine.other.bic)
-          .blz(umsLine.other.blz)
-          .iban(umsLine.other.iban)
-          .name(umsLine.other.name)
-          .build();
-      }
-      return Buchung.builder()
-        .id(umsLine.id)
-        .buchungstag(umsLine.bdate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
-        .valutadatum(umsLine.valuta.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
-        .waehrung(umsLine.value.getCurr())
-        .buchungstext(umsLine.text)
-        .verwendungszweck(String.join("", umsLine.usage))
-        .betrag(umsLine.value.getBigDecimalValue())
-        .otherPartner(otherPartner)
-        .selfPartner(TransaktionsPartner.builder()
-          .iban(self.iban)
-          .bic(self.bic)
-          .name(self.name)
-          .blz(self.blz)
-          .build())
-        .build();
-    });
-  }
-
-  @Data
-  @Builder
-  @AllArgsConstructor
-  @NoArgsConstructor
-  private static class UmsatzAbrufResponse {
-    private List<GVRKUms.UmsLine> umsaetze;
-    private org.kapott.hbci.structures.Konto konto;
+    return Saldo.builder()
+      .betrag(res.value.getBigDecimalValue())
+      .datum(res.timestamp.toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime())
+      .kontoId(konto.getId())
+      .build();
   }
 }

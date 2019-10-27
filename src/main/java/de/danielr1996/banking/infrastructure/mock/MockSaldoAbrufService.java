@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -15,7 +16,7 @@ public class MockSaldoAbrufService implements SaldoAbrufService {
   public Saldo getSaldo(Konto konto) {
     return Saldo.builder()
       .betrag(BigDecimal.TEN)
-      .datum(LocalDate.now())
+      .datum(LocalDateTime.now())
       .kontoId(UUID.randomUUID())
       .build();
   }

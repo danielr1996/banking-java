@@ -24,10 +24,10 @@ public class Buchung implements Ownable {
   private String buchungstext;
   private String verwendungszweck;
   private UUID kontoId;
-//  @OneToOne(cascade = CascadeType.ALL)
-//  private TransaktionsPartner selfPartner;
-//  @OneToOne(cascade = CascadeType.ALL)
-//  private TransaktionsPartner otherPartner;
+  @OneToOne(cascade = CascadeType.ALL)
+  private TransaktionsPartner selfPartner;
+  @OneToOne(cascade = CascadeType.ALL)
+  private TransaktionsPartner otherPartner;
 
 
   @EqualsAndHashCode.Exclude
@@ -37,8 +37,4 @@ public class Buchung implements Ownable {
   public UUID getOwner() {
     return this.kontoId;
   }
-//    @EqualsAndHashCode.Exclude
-//    private GeoLocation location;
-//    @EqualsAndHashCode.Exclude
-//    private String region;
 }

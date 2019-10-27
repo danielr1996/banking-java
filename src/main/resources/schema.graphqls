@@ -49,9 +49,9 @@ type Buchung{
 }
 
 type Transaktionspartner{
-  id: ID
   iban: String
   bic: String
+  blz: String
   name: String
 }
 

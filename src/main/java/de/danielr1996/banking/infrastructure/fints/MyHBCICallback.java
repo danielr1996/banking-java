@@ -48,7 +48,6 @@ public class MyHBCICallback extends AbstractHBCICallback {
    */
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
     // Diese Funktion ist wichtig. Ueber die fragt HBCI4Java die benoetigten Daten von uns ab.
-    log.info("{}", reason);
     switch (reason) {
       // Mit dem Passwort verschluesselt HBCI4Java die Passport-Datei.
       // Wir nehmen hier der Einfachheit halber direkt die PIN. In der Praxis
@@ -213,21 +212,22 @@ public class MyHBCICallback extends AbstractHBCICallback {
       // dass die Bank dennoch die Aufforderung zur Auswahl des TAN-Mediums
       // sendet.
       case NEED_PT_TANMEDIA:
-        log.info("[NEED_PT_TANMEDIA]: {} - {}", msg, retData);
         // Als Parameter werden die verfuegbaren TAN-Medien uebergeben.
         // Der Aufbau des String ist wie folgt:
         // <name1>|<name2>|...
         // Bsp:
         // Privathandy|Firmenhandy
-        // String options = retData.toString();
+         String options = retData.toString();
 
         // Der Callback muss den vom User ausgewaehlten Aliasnamen
         // zurueckliefern. Falls "options" kein "|" enthaelt, ist davon
         // auszugehen, dass nur eine moegliche Option existiert. In dem
         // Fall ist keine Auswahl noetig und "retData" kann unveraendert
         // bleiben
-        if (tanAlias == null) {
-//          tanAlias = new Scanner(System.in).nextLine();
+        if(!options.equals("") && !options.contains("|")){
+          tanAlias = options;
+        }else if (tanAlias == null) {
+          log.info("[NEED_PT_TANMEDIA]: {} - {}", msg, retData);
           tanAlias = tanMediumSp.get();
         }
         retData.replace(0, retData.length(), tanAlias);

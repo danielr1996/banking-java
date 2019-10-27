@@ -35,6 +35,12 @@ databaseChangeLog:
               - column:
                   name: kontoId
                   type: UUID
+              - column:
+                  name: otherPartner_iban
+                  type: VARCHAR(255)
+              - column:
+                  name: selfPartner_iban
+                  type: VARCHAR(255)
             tableName: buchung
   - changeSet:
       id: tbl_saldo
@@ -70,6 +76,9 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: bic
+                  type: VARCHAR(255)
+              - column:
+                  name: blz
                   type: VARCHAR(255)
               - column:
                   name: id

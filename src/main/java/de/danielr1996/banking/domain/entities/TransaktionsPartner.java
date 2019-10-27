@@ -9,14 +9,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@Embeddable
 @Entity
 public class TransaktionsPartner {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private UUID id;
     @Id
     private String iban;
     private String bic;
+    private String blz;
     private String name;
 }

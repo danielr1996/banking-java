@@ -124,7 +124,6 @@ public class GraphQLDataFetchers {
       UserInput userInput = mapper.convertValue(userMap, UserInput.class);
 
       User user = userRepository.findOne(Example.of(User.builder().name(userInput.getName()).build())).get();
-      log.info("{}", user);
       if (user.getPassword().equals(userInput.getPassword())) {
         return user.getName();
       } else {

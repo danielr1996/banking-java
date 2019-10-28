@@ -20,7 +20,6 @@ public class PageBuchungService {
     // FIXME: In Domain/Aplication Service auslagern
     Page<Buchung> buchungen = buchungRepository
       .findAll(Example.of(Buchung.builder().kontoId(kontoId).build()),PageRequest.of(page, size, Sort.by(Sort.Order.desc("id"))));
-
     return BuchungContainer.builder()
       .buchungen(buchungen.getContent())
       .totalElements(buchungen.getTotalElements())

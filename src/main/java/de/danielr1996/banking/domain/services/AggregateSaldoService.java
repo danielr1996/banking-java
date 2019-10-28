@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AggregateSaldoService {
@@ -17,7 +18,7 @@ public class AggregateSaldoService {
    * @param currentSaldo
    * @return
    */
-  public static List<Saldo> aggregateSaldi(List<Buchung> buchungen, Saldo currentSaldo) {
+  public static List<Saldo> aggregateSaldi(UUID kontoId, List<Buchung> buchungen, Saldo currentSaldo) {
     List<Saldo> saldi = new ArrayList<>();
     Collections.sort(buchungen, Comparator.comparing(Buchung::getValutadatum));
     Collections.reverse(buchungen);

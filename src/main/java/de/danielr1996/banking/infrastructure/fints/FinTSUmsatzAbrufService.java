@@ -61,6 +61,7 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
 //      log.info("Anzahl Konten: {}", konten.length);
       org.kapott.hbci.structures.Konto k = konten[3];
 //      System.out.println("Konto: " + k.bic);
+      log.info("Using {}", k);
       HBCIJob umsatzJob = handle.newJob("KUmsAllCamt");
       umsatzJob.setParam("my", k); // festlegen, welches Konto abgefragt werden soll.
       umsatzJob.setParam("my.bic", k.bic); // festlegen, welches Konto abgefragt werden soll.

@@ -96,9 +96,6 @@ databaseChangeLog:
               - column:
                   constraints:
                     - primary_key: true
-                  name: id
-                  type: UUID
-              - column:
                   name: name
                   type: VARCHAR(255)
               - column:
@@ -127,7 +124,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: userId
-                  type: UUID
+                  type: VARCHAR(255)
             tableName: konto
   # Data
   - changeSet:

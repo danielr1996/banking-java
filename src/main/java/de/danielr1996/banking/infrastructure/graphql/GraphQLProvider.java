@@ -63,6 +63,8 @@ public class GraphQLProvider {
         .dataFetcher("signIn", graphQLDataFetchers.signin()))
       .type(newTypeWiring(TYPE_MUTATION)
         .dataFetcher("refresh", graphQLDataFetchers.refresh()))
+      .type(newTypeWiring(TYPE_QUERY)
+        .dataFetcher("konto", graphQLDataFetchers.getKontoDataFetcher()))
       .build();
   }
 }

@@ -8,5 +8,4 @@ import org.springframework.stereotype.Service;
 @Repository
 @Service
 public interface BuchungRepository extends JpaRepository<Buchung, String> {
-
 }

@@ -1,6 +1,7 @@
 package de.danielr1996.banking.infrastructure.graphql;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
@@ -12,8 +13,10 @@ import de.danielr1996.banking.auth.OwnershipService;
 import de.danielr1996.banking.auth.User;
 import de.danielr1996.banking.auth.UserInput;
 import de.danielr1996.banking.domain.entities.Buchung;
+import de.danielr1996.banking.domain.entities.Konto;
 import de.danielr1996.banking.domain.entities.Saldo;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
+import de.danielr1996.banking.domain.repository.KontoRepository;
 import de.danielr1996.banking.domain.repository.UserRepository;
 import de.danielr1996.banking.infrastructure.tasks.ImportTask;
 import graphql.GraphQLException;
@@ -44,6 +47,9 @@ public class GraphQLDataFetchers {
   @Autowired
   OwnershipService ownershipService;
 
+  @Autowired
+  KontoRepository kontoRepository;
+
   //FIXME: Sollte in ordentlichen DomainService ausgelagert werden
   @Autowired
   @Deprecated
@@ -67,12 +73,16 @@ public class GraphQLDataFetchers {
     return dataFetchingEnvironment -> {
       Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
       Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-      return pageBuchungService.getBuchungContainer(page, size);
+      UUID kontoId = UUID.fromString(dataFetchingEnvironment.getArgument("kontoId"));
+      return pageBuchungService.getBuchungContainer(kontoId, page, size);
     };
   }
 
   DataFetcher<Saldo> getSaldoDataFetcher() {
-    return dataFetchingEnvironment -> getNewestSaldoService.getNewestSaldo();
+    return dataFetchingEnvironment -> {
+      UUID kontoId = UUID.fromString(dataFetchingEnvironment.getArgument("kontoId"));
+      return getNewestSaldoService.getNewestSaldo(kontoId);
+    };
   }
 
   DataFetcher<SaldiContainer> getSaldiDataFetcher() {
@@ -80,8 +90,9 @@ public class GraphQLDataFetchers {
       log.info("Context: {}", dataFetchingEnvironment.getContext().toString());
       Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
       Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
+      UUID kontoId = UUID.fromString(dataFetchingEnvironment.getArgument("kontoId"));
 
-      return saldoService.getSaldiContainer(page, size);
+      return saldoService.getSaldiContainer(kontoId, page, size);
     };
   }
 
@@ -92,12 +103,15 @@ public class GraphQLDataFetchers {
       UserInput userInput = mapper.convertValue(userMap, UserInput.class);
 
       User user = User.builder()
-        .id(UUID.randomUUID())
         .name(userInput.getName())
         .password(userInput.getPassword())
         .build();
 
-      userRepository.save(user);
+      if(userRepository.existsById(userInput.getName())){
+        log.warn("User {} already exists, doing nothing!", user.getName());
+      }else{
+        userRepository.save(user);
+      }
 
       return user;
     };
@@ -112,7 +126,7 @@ public class GraphQLDataFetchers {
       User user = userRepository.findOne(Example.of(User.builder().name(userInput.getName()).build())).get();
       log.info("{}", user);
       if (user.getPassword().equals(userInput.getPassword())) {
-        return user.getId().toString();
+        return user.getName();
       } else {
         throw new GraphQLException("Invalid credentials");
       }
@@ -123,6 +137,13 @@ public class GraphQLDataFetchers {
     return dataFetchingEnvironment -> {
       importTask.importIntoDb(() -> new Scanner(System.in).next(), () -> new Scanner(System.in).next());
       return null;
+    };
+  }
+
+  DataFetcher<List<Konto>> getKontoDataFetcher() {
+    return dataFetchingEnvironment -> {
+      String userId = dataFetchingEnvironment.getArgument("userId");
+      return kontoRepository.findAll(Example.of(Konto.builder().userId(userId).build()));
     };
   }
 }

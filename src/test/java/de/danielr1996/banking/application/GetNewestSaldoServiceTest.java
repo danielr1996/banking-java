@@ -42,7 +42,7 @@ class GetNewestSaldoServiceTest {
     saldoRepository.save(saldoMittel);
 
     Saldo expected = saldoNeu;
-    Saldo actual = getNewestSaldoService.getNewestSaldo();
+    Saldo actual = getNewestSaldoService.getNewestSaldo(null);
     assertEquals(expected, actual);
   }
 
@@ -53,7 +53,7 @@ class GetNewestSaldoServiceTest {
     saldoRepository.save(saldo);
 
     Saldo expected = saldo;
-    Saldo actual = getNewestSaldoService.getNewestSaldo();
+    Saldo actual = getNewestSaldoService.getNewestSaldo(null);
     assertEquals(expected, actual);
   }
 

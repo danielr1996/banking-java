@@ -20,5 +20,5 @@ public class Konto {
   private String blz;
   private String password;
   private String kontonummer;
-  private UUID userId;
+  private String userId;
 }

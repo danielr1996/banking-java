@@ -40,6 +40,6 @@ class AggregateSaldoServiceTest {
       Saldo.builder().betrag(BigDecimal.valueOf(200)).datum(LocalDateTime.now().minusDays(7)).build()
     );
 
-    assertEquals(saldi, AggregateSaldoService.aggregateSaldi(buchungen, currentSaldo));
+    assertEquals(saldi, AggregateSaldoService.aggregateSaldi(null,buchungen, currentSaldo));
   }
 }

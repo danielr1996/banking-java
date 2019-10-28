@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity
-public class Saldo implements Ownable {
+public class Saldo implements Ownable<UUID> {
   @Id
   @GeneratedValue
   @ToString.Exclude

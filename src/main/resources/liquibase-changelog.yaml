@@ -58,7 +58,7 @@ databaseChangeLog:
                   type: numeric(19, 2)
               - column:
                   name: datum
-                  type: date
+                  type: datetime
               - column:
                   name: kontoId
                   type: UUID
@@ -130,6 +130,7 @@ databaseChangeLog:
   - changeSet:
       id: DATA_TEST
       author: Daniel Richter
+      context: testdata
       changes:
         - sqlFile:
             encoding: utf8

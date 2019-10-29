@@ -11,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,28 +36,33 @@ class GetNewestSaldoServiceTest {
 
   @Test
   void getNewestSaldoOfThree() throws NewestSaldoNotFoundException {
-    Saldo saldoNeu = Saldo.builder().datum(LocalDateTime.now()).build();
-    Saldo saldoMittel = Saldo.builder().datum(LocalDateTime.now().minusDays(1)).build();
-    Saldo saldoAlt = Saldo.builder().datum(LocalDateTime.now().minusDays(2)).build();
+    UUID kontoId = UUID.randomUUID();
+    Saldo saldoNeu = Saldo.builder().datum(LocalDateTime.now()).kontoId(kontoId).build();
+    Saldo saldoMittel = Saldo.builder().datum(LocalDateTime.now().minusDays(1)).kontoId(kontoId).build();
+    Saldo saldoAlt = Saldo.builder().datum(LocalDateTime.now().minusDays(2)).kontoId(kontoId).build();
 
     saldoRepository.save(saldoAlt);
     saldoRepository.save(saldoNeu);
     saldoRepository.save(saldoMittel);
 
     Saldo expected = saldoNeu;
-    Saldo actual = getNewestSaldoService.getNewestSaldo(null);
-    assertEquals(expected, actual);
+    Saldo actual = getNewestSaldoService.getNewestSaldo(kontoId);
+    assertEquals(expected.getId(), actual.getId());
   }
 
   @Test
   void getNewestSaldoOfOne() throws NewestSaldoNotFoundException {
-    Saldo saldo = Saldo.builder().datum(LocalDateTime.now()).build();
+    UUID kontoId = UUID.randomUUID();
+
+    Saldo saldo = Saldo.builder()
+      .kontoId(kontoId)
+      .datum(LocalDateTime.now()).build();
 
     saldoRepository.save(saldo);
 
     Saldo expected = saldo;
-    Saldo actual = getNewestSaldoService.getNewestSaldo(null);
-    assertEquals(expected, actual);
+    Saldo actual = getNewestSaldoService.getNewestSaldo(kontoId);
+    assertEquals(expected.getId(), actual.getId());
   }
 
   @Test

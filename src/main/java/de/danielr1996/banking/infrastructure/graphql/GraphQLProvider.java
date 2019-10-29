@@ -6,6 +6,11 @@ import java.net.URL;
 import javax.annotation.PostConstruct;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import de.danielr1996.banking.infrastructure.graphql.datafetchers.BuchungDataFetcher;
+import de.danielr1996.banking.infrastructure.graphql.datafetchers.KontoDataFetcher;
+import de.danielr1996.banking.infrastructure.graphql.datafetchers.RefreshDataFetcher;
+import de.danielr1996.banking.infrastructure.graphql.datafetchers.SaldoDataFetcher;
+import de.danielr1996.banking.infrastructure.graphql.datafetchers.UserDataFetcher;
 import graphql.GraphQL;
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLSchema;
@@ -20,11 +25,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class GraphQLProvider {
   private GraphQL graphQL;
-  private String TYPE_QUERY = "Query";
-  private String TYPE_MUTATION = "Mutation";
+  private final String TYPE_QUERY = "Query";
+  private final String TYPE_MUTATION = "Mutation";
 
   @Autowired
-  GraphQLDataFetchers graphQLDataFetchers;
+  KontoDataFetcher kontoDataFetcher;
+
+  @Autowired
+  UserDataFetcher userDataFetcher;
+
+  @Autowired
+  SaldoDataFetcher saldoDataFetcher;
+
+  @Autowired
+  RefreshDataFetcher refreshDataFetcher;
+
+  @Autowired
+  BuchungDataFetcher buchungDataFetcher;
 
   @Bean
   public GraphQL graphQL() {
@@ -50,21 +67,21 @@ public class GraphQLProvider {
     return RuntimeWiring.newRuntimeWiring()
       .scalar(ExtendedScalars.Date)
       .type(newTypeWiring(TYPE_QUERY)
-        .dataFetcher("buchungById", graphQLDataFetchers.getBuchungByIdDataFetcher()))
+        .dataFetcher("buchungById", buchungDataFetcher.getBuchungByIdDataFetcher()))
       .type(newTypeWiring(TYPE_QUERY)
-        .dataFetcher("buchungen", graphQLDataFetchers.getBuchungDataFetcher()))
+        .dataFetcher("buchungen", buchungDataFetcher.getBuchungDataFetcher()))
       .type(newTypeWiring(TYPE_QUERY)
-        .dataFetcher("saldo", graphQLDataFetchers.getSaldoDataFetcher()))
+        .dataFetcher("saldo", saldoDataFetcher.getSaldoDataFetcher()))
       .type(newTypeWiring(TYPE_QUERY)
-        .dataFetcher("saldi", graphQLDataFetchers.getSaldiDataFetcher()))
+        .dataFetcher("saldi", saldoDataFetcher.getSaldiDataFetcher()))
       .type(newTypeWiring(TYPE_MUTATION)
-        .dataFetcher("createUser", graphQLDataFetchers.createUser()))
+        .dataFetcher("createUser", userDataFetcher.createUser()))
       .type(newTypeWiring(TYPE_MUTATION)
-        .dataFetcher("signIn", graphQLDataFetchers.signin()))
+        .dataFetcher("signIn", userDataFetcher.signin()))
       .type(newTypeWiring(TYPE_MUTATION)
-        .dataFetcher("refresh", graphQLDataFetchers.refresh()))
+        .dataFetcher("refresh", refreshDataFetcher.refresh()))
       .type(newTypeWiring(TYPE_QUERY)
-        .dataFetcher("konto", graphQLDataFetchers.getKontoDataFetcher()))
+        .dataFetcher("konto", kontoDataFetcher.getKontoDataFetcher()))
       .build();
   }
 }

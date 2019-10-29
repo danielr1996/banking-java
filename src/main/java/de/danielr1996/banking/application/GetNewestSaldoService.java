@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.UUID;
+
 import de.danielr1996.banking.domain.entities.Saldo;
 import de.danielr1996.banking.domain.exception.NewestSaldoNotFoundException;
 import de.danielr1996.banking.domain.repository.SaldoRepository;
@@ -16,14 +17,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class GetNewestSaldoService {
 
-  @Autowired
   private SaldoRepository saldoRepository;
+
+  public GetNewestSaldoService(@Autowired SaldoRepository saldoRepository) {
+    this.saldoRepository = saldoRepository;
+  }
 
   public Saldo getNewestSaldo(UUID kontoId) {
     return saldoRepository
       .findAll()
       .stream()
-      .filter(saldo->saldo.getKontoId().equals(kontoId))
+      .filter(saldo -> saldo.getKontoId().equals(kontoId))
       .max(Comparator.comparing(Saldo::getDatum))
       .orElseGet(() -> {
         Saldo lastSaldo = Saldo.builder()

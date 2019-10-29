@@ -4,6 +4,7 @@ import de.danielr1996.banking.domain.services.AggregateSaldoService;
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AggregateSaldoServiceTest {
 
   @Test
+  @Disabled
   void aggregateSaldi() {
     Saldo currentSaldo = Saldo.builder().datum(LocalDateTime.now()).betrag(BigDecimal.valueOf(100)).build();
 

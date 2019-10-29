@@ -1,0 +1,69 @@
+scalar Date
+
+type Query {
+  buchungById(id: ID ): Buchung
+  buchungen(kontoId: ID, page: Int, size: Int): BuchungContainer
+  saldo(kontoId: ID): Saldo
+  saldi(kontoId: ID, page: Int, size: Int): SaldiContainer
+  konto(userId: String): [Konto]
+}
+
+type Mutation {
+  createUser(user: UserInput): User
+  signIn(user: UserInput): String
+  refresh(dummy: String): String
+}
+
+type User {
+  name: String
+}
+input UserInput {
+  name: String
+  password: String
+}
+
+type BuchungContainer{
+  buchungen: [Buchung],
+  totalPages: Int,
+  totalElements: Int
+}
+
+type SaldiContainer{
+  saldi: [Saldo],
+  totalPages: Int,
+  totalElements: Int
+}
+
+type Buchung{
+  id: ID
+  ownerId: ID
+  betrag: Float
+  waehrung: String
+  buchungstext: String
+  verwendungszweck: String
+  selfPartner: Transaktionspartner
+  otherPartner: Transaktionspartner
+  buchungstag: Date
+  valutadatum: Date
+  kategorie: String
+}
+
+type Transaktionspartner{
+  iban: String
+  bic: String
+  blz: String
+  name: String
+}
+
+type Saldo{
+  id: ID
+  betrag: Float
+  datum: Date
+  ownerId: ID
+}
+
+type Konto{
+  id: ID
+  blz: String
+  kontonummer: String
+}

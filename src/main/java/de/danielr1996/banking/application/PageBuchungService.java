@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PageBuchungService {
-  @Autowired
   private BuchungRepository buchungRepository;
+
+  public PageBuchungService(@Autowired BuchungRepository buchungRepository){
+    this.buchungRepository = buchungRepository;
+  }
 
   public BuchungContainer getBuchungContainer(UUID kontoId, int page, int size) {
     // FIXME: In Domain/Aplication Service auslagern

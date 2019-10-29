@@ -2,10 +2,7 @@ package de.danielr1996.banking.domain;
 
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +11,11 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class MockBuchungRepository implements BuchungRepository {
-  private List<Buchung> saldos = new ArrayList<>();
+  private List<Buchung> buchungen = new ArrayList<>();
 
   @Override
   public List<Buchung> findAll() {
-    return saldos;
+    return buchungen;
   }
 
   @Override
@@ -35,8 +32,8 @@ public class MockBuchungRepository implements BuchungRepository {
   public <S extends Buchung> List<S> saveAll(Iterable<S> iterable) {
     List<S> buchungen = StreamSupport.stream(iterable.spliterator(), false)
       .collect(Collectors.toList());
-    this.saldos.addAll(buchungen);
-    return new ArrayList<>();
+    this.buchungen.addAll(buchungen);
+    return buchungen.stream().map(s->(S)s).collect(Collectors.toList());
   }
 
   @Override
@@ -66,13 +63,13 @@ public class MockBuchungRepository implements BuchungRepository {
 
   @Override
   public <S extends Buchung> List<S> findAll(Example<S> example) {
-//    return this.saldos.stream().filter(buchung->buchung.equals(example.getProbe())).collect(Collectors.toList());
-    return new ArrayList<>();
+//    return this.buchungen.stream().filter(buchung->buchung.equals(example.getProbe())).collect(Collectors.toList());
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public <S extends Buchung> List<S> findAll(Example<S> example, Sort sort) {
-    return new ArrayList<>();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -82,13 +79,13 @@ public class MockBuchungRepository implements BuchungRepository {
 
   @Override
   public <S extends Buchung> S save(S entity) {
-    this.saldos.add(entity);
+    this.buchungen.add(entity);
     return entity;
   }
 
   @Override
   public Optional<Buchung> findById(String uuid) {
-    return Optional.empty();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -98,7 +95,7 @@ public class MockBuchungRepository implements BuchungRepository {
 
   @Override
   public long count() {
-    return saldos.size();
+    return buchungen.size();
   }
 
   @Override
@@ -118,17 +115,18 @@ public class MockBuchungRepository implements BuchungRepository {
 
   @Override
   public void deleteAll() {
-    this.saldos.clear();
+    this.buchungen.clear();
   }
 
   @Override
   public <S extends Buchung> Optional<S> findOne(Example<S> example) {
-    return Optional.empty();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public <S extends Buchung> Page<S> findAll(Example<S> example, Pageable pageable) {
-    throw new UnsupportedOperationException();
+    List<S> ss = buchungen.stream().filter(buchung->buchung.equals(example.getProbe())).map(b->(S)b).collect(Collectors.toList());
+    return new PageImpl<>(ss);
   }
 
   @Override

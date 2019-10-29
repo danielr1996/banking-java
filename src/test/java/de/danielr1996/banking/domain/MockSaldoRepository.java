@@ -83,7 +83,7 @@ public class MockSaldoRepository implements SaldoRepository {
 
   @Override
   public Optional<Saldo> findById(UUID uuid) {
-    return Optional.empty();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -118,7 +118,7 @@ public class MockSaldoRepository implements SaldoRepository {
 
   @Override
   public <S extends Saldo> Optional<S> findOne(Example<S> example) {
-    return Optional.empty();
+    throw new UnsupportedOperationException();
   }
 
   @Override

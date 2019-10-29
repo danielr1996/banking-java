@@ -13,14 +13,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-//@ExtendWith(SpringExtension.class)
-//@SpringBootTest
 class GetNewestSaldoServiceTest {
 
-  //  @Autowired
   private SaldoRepository saldoRepository = new MockSaldoRepository();
 
   private GetNewestSaldoService getNewestSaldoService = new GetNewestSaldoService(saldoRepository);

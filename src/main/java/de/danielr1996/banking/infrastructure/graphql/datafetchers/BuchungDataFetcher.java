@@ -2,11 +2,11 @@ package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 
 import java.util.Optional;
 import java.util.UUID;
-import de.danielr1996.banking.application.BuchungService;
-import de.danielr1996.banking.application.PageBuchungService;
-import de.danielr1996.banking.auth.OwnershipService;
+import de.danielr1996.banking.application.buchung.BuchungService;
+import de.danielr1996.banking.application.buchung.PageBuchungService;
+import de.danielr1996.banking.application.auth.OwnershipService;
 import de.danielr1996.banking.domain.entities.Buchung;
-import de.danielr1996.banking.application.BuchungContainer;
+import de.danielr1996.banking.application.buchung.BuchungContainer;
 import de.danielr1996.banking.infrastructure.graphql.GraphQLContext;
 import graphql.GraphQLException;
 import graphql.schema.DataFetcher;

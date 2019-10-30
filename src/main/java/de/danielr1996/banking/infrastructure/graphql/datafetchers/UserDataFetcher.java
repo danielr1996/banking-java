@@ -2,8 +2,8 @@ package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 
 import java.util.HashMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.danielr1996.banking.auth.User;
-import de.danielr1996.banking.auth.UserInput;
+import de.danielr1996.banking.application.auth.User;
+import de.danielr1996.banking.application.auth.UserInput;
 import de.danielr1996.banking.domain.repository.UserRepository;
 import graphql.GraphQLException;
 import graphql.schema.DataFetcher;

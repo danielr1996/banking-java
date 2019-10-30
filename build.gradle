@@ -5,12 +5,13 @@
 plugins {
   id 'java'
   id 'maven-publish'
+  id 'org.springframework.boot' version '2.2.0.RELEASE'
 }
 
 repositories {
   repositories {
     mavenLocal()
-    maven {
+/*    maven {
       url = 'http://vam-nexus.sdst.sbaintern.de:8081/nexus/content/groups/public/'
     }
 
@@ -20,7 +21,8 @@ repositories {
 
     maven {
       url = 'http://central'
-    }
+    }*/
+    mavenCentral()
   }
 }
 ext {

@@ -5,7 +5,7 @@ import java.util.UUID;
 import de.danielr1996.banking.application.GetNewestSaldoService;
 import de.danielr1996.banking.application.PageSaldoService;
 import de.danielr1996.banking.domain.entities.Saldo;
-import de.danielr1996.banking.infrastructure.graphql.SaldiContainer;
+import de.danielr1996.banking.application.SaldiContainer;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

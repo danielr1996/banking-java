@@ -2,19 +2,14 @@ package de.danielr1996.banking.application;
 
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
-import de.danielr1996.banking.domain.exception.NewestSaldoNotFoundException;
 import de.danielr1996.banking.domain.services.AggregateSaldoService;
-import de.danielr1996.banking.infrastructure.graphql.SaldiContainer;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
 import de.danielr1996.banking.domain.repository.SaldoRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

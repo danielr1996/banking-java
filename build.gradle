@@ -8,9 +8,19 @@ plugins {
 }
 
 repositories {
-  mavenLocal()
-  maven {
-    url = 'http://repo.maven.apache.org/maven2'
+  repositories {
+    mavenLocal()
+    maven {
+      url = 'http://vam-nexus.sdst.sbaintern.de:8081/nexus/content/groups/public/'
+    }
+
+    maven {
+      url = 'http://nexus.webapp.sdst.sbaintern.de/content/repositories/egov_staging/'
+    }
+
+    maven {
+      url = 'http://central'
+    }
   }
 }
 ext {
@@ -39,7 +49,6 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-api:5+"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5+"
   testCompile "org.junit.jupiter:junit-jupiter-params:5+"
-  testCompile group: "org.springframework.boot", name: "spring-boot-starter-test", version: "$springVersion"
   testCompile 'com.tngtech.archunit:archunit-junit5-api:0.11.0'
   testRuntime 'com.tngtech.archunit:archunit-junit5-engine:0.11.0'
   compileOnly "org.projectlombok:lombok:1.18.10"

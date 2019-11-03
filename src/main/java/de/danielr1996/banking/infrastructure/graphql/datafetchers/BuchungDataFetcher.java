@@ -1,7 +1,10 @@
 package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import de.danielr1996.banking.application.buchung.BuchungService;
 import de.danielr1996.banking.application.buchung.PageBuchungService;
 import de.danielr1996.banking.application.auth.OwnershipService;
@@ -43,8 +46,8 @@ public class BuchungDataFetcher {
     return dataFetchingEnvironment -> {
       Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
       Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-      UUID kontoId = UUID.fromString(dataFetchingEnvironment.getArgument("kontoId"));
-      return pageBuchungService.getBuchungContainer(kontoId, page, size);
+      List<UUID> kontoIds = ((List<String>)dataFetchingEnvironment.getArgument("kontoIds")).stream().map(UUID::fromString).collect(Collectors.toList());
+      return pageBuchungService.getBuchungContainer(kontoIds, page, size);
     };
   }
 }

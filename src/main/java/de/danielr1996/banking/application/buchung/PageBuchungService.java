@@ -1,27 +1,26 @@
 package de.danielr1996.banking.application.buchung;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PageBuchungService {
   private BuchungRepository buchungRepository;
 
-  public PageBuchungService(@Autowired BuchungRepository buchungRepository){
+  public PageBuchungService(@Autowired BuchungRepository buchungRepository) {
     this.buchungRepository = buchungRepository;
   }
 
-  public BuchungContainer getBuchungContainer(UUID kontoId, int page, int size) {
-    // FIXME: In Domain/Aplication Service auslagern
-    Page<Buchung> buchungen = buchungRepository
-      .findAll(Example.of(Buchung.builder().kontoId(kontoId).build()),PageRequest.of(page, size, Sort.by(Sort.Order.desc("id"))));
+  public BuchungContainer getBuchungContainer(List<UUID> kontoIds, int page, int size) {
+    Page<Buchung> buchungen = buchungRepository.findByKontoIdIn(kontoIds, PageRequest.of(page, size, Sort.by(Sort.Order.desc("id"))));
+
     return BuchungContainer.builder()
       .buchungen(buchungen.getContent())
       .totalElements(buchungen.getTotalElements())

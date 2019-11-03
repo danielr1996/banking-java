@@ -22,8 +22,8 @@ INSERT INTO BUCHUNG(id, betrag, buchungstag, buchungstext, valutadatum, verwendu
 
 
 INSERT INTO BUCHUNG(id, betrag, buchungstag, buchungstext, valutadatum, verwendungszweck, waehrung, kontoid, otherpartner_iban, selfpartner_iban) VALUES(
-'201910280705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 4', 'EUR', '6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a', null, null);
+'201910250705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 4', 'EUR', '6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a', null, null);
 INSERT INTO BUCHUNG(id, betrag, buchungstag, buchungstext, valutadatum, verwendungszweck, waehrung, kontoid, otherpartner_iban, selfpartner_iban) VALUES(
-'201910280705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 5', 'EUR', 'd57ba00b-fdc3-4a18-b16f-fb967e02072a', null, null);
+'201910240705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 5', 'EUR', 'd57ba00b-fdc3-4a18-b16f-fb967e02072a', null, null);
 INSERT INTO BUCHUNG(id, betrag, buchungstag, buchungstext, valutadatum, verwendungszweck, waehrung, kontoid, otherpartner_iban, selfpartner_iban) VALUES(
-'201910280705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 6', 'EUR', '4b2d5fca-cb8a-44a9-8fe2-6842e519956d', null, null);
+'201910230705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 6', 'EUR', '4b2d5fca-cb8a-44a9-8fe2-6842e519956d', null, null);

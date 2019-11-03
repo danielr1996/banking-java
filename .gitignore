@@ -52,3 +52,5 @@ Thumbs.db
 testpassport.*
 *.dat*
 *.db
+
+!gradle-wrapper.jar

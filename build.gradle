@@ -27,9 +27,13 @@ repositories {
 }
 ext {
   springVersion = '2.1.4.RELEASE'
+  jjwtVersion = '0.10.7'
 }
 
 dependencies {
+  compile "io.jsonwebtoken:jjwt-api:$jjwtVersion"
+  runtime "io.jsonwebtoken:jjwt-impl:$jjwtVersion"
+  runtime "io.jsonwebtoken:jjwt-jackson:$jjwtVersion"
   compile "org.springframework.boot:spring-boot-starter:$springVersion"
   compile "org.springframework.boot:spring-boot-starter-web:$springVersion"
   compile "org.springframework.boot:spring-boot-starter-data-jpa:$springVersion"

@@ -1,11 +1,11 @@
 scalar Date
 
 type Query {
-  buchungById(id: ID ): Buchung
+  buchungById(id: ID ): BuchungDTO
   buchungen(kontoIds: [ID], page: Int, size: Int): BuchungContainer
   saldo(kontoId: ID): Saldo
   saldi(kontoId: ID, page: Int, size: Int): SaldiContainer
-  konto(userId: String): [Konto]
+  konto(userId: String): [KontoDTO]
 }
 
 type Mutation {
@@ -23,7 +23,7 @@ input UserInput {
 }
 
 type BuchungContainer{
-  buchungen: [Buchung],
+  buchungen: [BuchungDTO],
   totalPages: Int,
   totalElements: Int
 }
@@ -34,9 +34,10 @@ type SaldiContainer{
   totalElements: Int
 }
 
-type Buchung{
+type BuchungDTO{
   id: ID
-  ownerId: ID
+  kontoId: ID
+  konto: KontoDTO
   betrag: Float
   waehrung: String
   buchungstext: String
@@ -62,7 +63,7 @@ type Saldo{
   ownerId: ID
 }
 
-type Konto{
+type KontoDTO{
   id: ID
   blz: String
   kontonummer: String

@@ -3,16 +3,23 @@ package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import de.danielr1996.banking.application.buchung.BuchungDTO;
 import de.danielr1996.banking.application.buchung.BuchungService;
+import de.danielr1996.banking.application.buchung.KontoDTO;
 import de.danielr1996.banking.application.buchung.PageBuchungService;
 import de.danielr1996.banking.application.auth.OwnershipService;
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.application.buchung.BuchungContainer;
+import de.danielr1996.banking.domain.entities.Konto;
+import de.danielr1996.banking.domain.repository.KontoRepository;
 import de.danielr1996.banking.infrastructure.graphql.GraphQLContext;
 import graphql.GraphQLException;
+import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingFieldSelectionSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +34,9 @@ public class BuchungDataFetcher {
 
   @Autowired
   OwnershipService ownershipService;
+
+  @Autowired
+  KontoRepository kontoRepository;
 
   public DataFetcher<Optional<Buchung>> getBuchungByIdDataFetcher() {
     return dataFetchingEnvironment -> {
@@ -44,10 +54,28 @@ public class BuchungDataFetcher {
 
   public DataFetcher<BuchungContainer> getBuchungDataFetcher() {
     return dataFetchingEnvironment -> {
-      Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
-      Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-      List<UUID> kontoIds = ((List<String>)dataFetchingEnvironment.getArgument("kontoIds")).stream().map(UUID::fromString).collect(Collectors.toList());
-      return pageBuchungService.getBuchungContainer(kontoIds, page, size);
+      if (!dataFetchingEnvironment.getSelectionSet().contains("buchungen/konto")) {
+        Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
+        Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
+        List<UUID> kontoIds = ((List<String>) dataFetchingEnvironment.getArgument("kontoIds")).stream().map(UUID::fromString).collect(Collectors.toList());
+        return pageBuchungService.getBuchungContainer(kontoIds, page, size);
+      } else {
+        Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
+        Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
+        List<UUID> kontoIds = ((List<String>) dataFetchingEnvironment.getArgument("kontoIds")).stream().map(UUID::fromString).collect(Collectors.toList());
+        BuchungContainer buchungContainer = pageBuchungService.getBuchungContainer(kontoIds, page, size);
+        List<BuchungDTO> buchungList = buchungContainer.getBuchungen().stream().map(buchung->{
+          Konto konto = kontoRepository.getOne(buchung.getKontoId());
+          buchung.setKonto(KontoDTO.builder()
+            .id(konto.getId())
+            .blz(konto.getBlz())
+            .kontonummer(konto.getKontonummer())
+            .build());
+          return buchung;
+        }).collect(Collectors.toList());
+        buchungContainer.setBuchungen(buchungList);
+        return buchungContainer;
+      }
     };
   }
 }

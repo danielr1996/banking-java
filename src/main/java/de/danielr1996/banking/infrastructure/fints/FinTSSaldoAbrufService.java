@@ -35,7 +35,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Service
-@Primary
 @Slf4j
 public class FinTSSaldoAbrufService implements SaldoAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;

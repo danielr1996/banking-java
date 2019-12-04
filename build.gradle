@@ -5,13 +5,13 @@
 plugins {
   id 'java'
   id 'maven-publish'
-  id 'org.springframework.boot' version '2.2.0.RELEASE'
+//  id 'org.springframework.boot' version '2.2.0.RELEASE'
 }
 
 repositories {
   repositories {
     mavenLocal()
-/*    maven {
+    maven {
       url = 'http://vam-nexus.sdst.sbaintern.de:8081/nexus/content/groups/public/'
     }
 
@@ -21,16 +21,18 @@ repositories {
 
     maven {
       url = 'http://central'
-    }*/
-    mavenCentral()
+    }
+//    mavenCentral()
   }
 }
 ext {
   springVersion = '2.1.4.RELEASE'
   jjwtVersion = '0.10.7'
+  junitVersion = '5.5.2'
 }
 
 dependencies {
+  compile group: 'ch.rasc', name: 'wamp2spring-servlet', version: '2.0.2'
   compile group: 'com.typesafe.akka', name: 'akka-actor_2.13', version: '2.6.0'
   implementation 'com.github.angiolep:akka-wamp_2.12:0.15.2'
   implementation 'io.crossbar.autobahn:autobahn-java:18.5.1'
@@ -55,9 +57,10 @@ dependencies {
   compile "com.github.hbci4j:hbci4j-core:3.1.17"
   runtime "org.postgresql:postgresql:42.2.5"
   runtime "com.h2database:h2:1.4.199"
-  testImplementation "org.junit.jupiter:junit-jupiter-api:5+"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5+"
-  testCompile "org.junit.jupiter:junit-jupiter-params:5+"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+//  testCompile "org.junit.jupiter:junit-jupiter-params:5+"
+  testCompile "org.junit.jupiter:junit-jupiter-params:$junitVersion"
   testCompile 'com.tngtech.archunit:archunit-junit5-api:0.11.0'
   testRuntime 'com.tngtech.archunit:archunit-junit5-engine:0.11.0'
   compileOnly "org.projectlombok:lombok:1.18.10"

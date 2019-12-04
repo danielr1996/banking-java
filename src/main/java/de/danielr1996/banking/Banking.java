@@ -1,17 +1,27 @@
 package de.danielr1996.banking;
 
+import ch.rasc.wamp2spring.servlet.EnableServletWamp;
+import ch.rasc.wamp2spring.servlet.WampServletConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistration;
 
 @SpringBootApplication
 //@EnableScheduling
-public class Banking {
+@EnableServletWamp
+public class Banking implements WampServletConfigurer {
 //  @Autowired
 //  ChatServer chatServer;
 
   public static void main(String[] args) {
 
     SpringApplication.run(Banking.class, args);
+  }
+
+  @Override
+  public void configureWebSocketHandlerRegistration(
+    WebSocketHandlerRegistration registration) {
+    registration.setAllowedOrigins("*");
   }
 
   /*@Configuration

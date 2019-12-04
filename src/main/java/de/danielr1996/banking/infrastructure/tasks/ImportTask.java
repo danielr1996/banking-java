@@ -44,8 +44,14 @@ public class ImportTask {
 
 
   @Scheduled(fixedRate = 60000 * INTERVAL_IN_MINUTES)
-  public void importIntoDb(Supplier<String> tanSp, Supplier<String> tanMediumSp) {
-    kontoRepository.findAll().stream()
+  public void importIntoDb(Supplier<String> tanSp, Supplier<String> tanMediumSp, String username) {
+    kontoRepository.findByUserId(username).stream()
+      .forEach(konto -> {
+        Saldo saldo = saldoAbrufService.getSaldo(konto);
+        System.out.println(saldo);
+      });
+
+    /*kontoRepository.findAll().stream()
       .forEach(konto -> {
         Saldo saldo = saldoAbrufService.getSaldo(konto);
         saldoRepository.save(saldo);
@@ -55,6 +61,7 @@ public class ImportTask {
           buchungRepository.save(buchung);
         });
         log.info("{} Buchungen importiert", buchungRepository.findAll().size());
-      });
+      });*/
+    System.out.println("");
   }
 }

@@ -1,5 +1,12 @@
 package de.danielr1996.banking.infrastructure.fints;
 
+import de.danielr1996.banking.JavaClient;
+import io.crossbar.autobahn.wamp.Client;
+import io.crossbar.autobahn.wamp.Session;
+import io.crossbar.autobahn.wamp.interfaces.ISession;
+import io.crossbar.autobahn.wamp.types.CallResult;
+import io.crossbar.autobahn.wamp.types.ExitInfo;
+import io.crossbar.autobahn.wamp.types.SessionDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
@@ -12,7 +19,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -183,7 +196,7 @@ public class MyHBCICallback extends AbstractHBCICallback {
         // den bankspezifischen Text mit den Instruktionen fuer den User.
         // Der Text aus "msg" sollte daher im Dialog dem User angezeigt
         // werden.
-        log.info("Flicker: {}", retData);
+//        log.info("Flicker: {}", retData);
         String flicker = retData.toString();
         if (flicker != null && flicker.length() > 0) {
           // Ist chipTAN optisch. Es muss ein animierter Barcode angezeigt
@@ -199,8 +212,34 @@ public class MyHBCICallback extends AbstractHBCICallback {
         } else {
           // Ist smsTAN, iTAN, o.ae.
           // Dialog zur TAN-Eingabe anzeigen mit dem Text aus "msg".
-          String tan = new Scanner(System.in).nextLine();
-          System.out.println(tan);
+
+//          String tan = new Scanner(System.in).nextLine();
+//          System.out.println(tan);
+          Session session = new Session();
+          CountDownLatch latch = new CountDownLatch(1);
+          session.addOnJoinListener((Session s, SessionDetails sd)->latch.countDown());
+          Client client = new Client(session, "ws://127.0.0.1:9090/wamp", "default");
+          CompletableFuture<ExitInfo> connection = client.connect();
+
+          try {
+            latch.await();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          List<Object> result = null;
+          try {
+            result = session.call("de.danielr1996.add2", 11, 12).get().results;
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          } catch (ExecutionException e) {
+            e.printStackTrace();
+          }
+          String tan = result.get(0).toString();
+          try {
+            client.connect().get();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
           retData.replace(0, retData.length(), tan);
         }
 
@@ -217,16 +256,16 @@ public class MyHBCICallback extends AbstractHBCICallback {
         // <name1>|<name2>|...
         // Bsp:
         // Privathandy|Firmenhandy
-         String options = retData.toString();
+        String options = retData.toString();
 
         // Der Callback muss den vom User ausgewaehlten Aliasnamen
         // zurueckliefern. Falls "options" kein "|" enthaelt, ist davon
         // auszugehen, dass nur eine moegliche Option existiert. In dem
         // Fall ist keine Auswahl noetig und "retData" kann unveraendert
         // bleiben
-        if(!options.equals("") && !options.contains("|")){
+        if (!options.equals("") && !options.contains("|")) {
           tanAlias = options;
-        }else if (tanAlias == null) {
+        } else if (tanAlias == null) {
           log.info("[NEED_PT_TANMEDIA]: {} - {}", msg, retData);
           tanAlias = tanMediumSp.get();
         }
@@ -248,5 +287,4 @@ public class MyHBCICallback extends AbstractHBCICallback {
   public void status(HBCIPassport passport, int statusTag, Object[] o) {
 //    log.info("Status: {}, Objekt: {}", statusTag, o);
   }
-
 }

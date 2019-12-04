@@ -31,6 +31,9 @@ ext {
 }
 
 dependencies {
+  compile group: 'com.typesafe.akka', name: 'akka-actor_2.13', version: '2.6.0'
+  implementation 'com.github.angiolep:akka-wamp_2.12:0.15.2'
+  implementation 'io.crossbar.autobahn:autobahn-java:18.5.1'
   compile "io.jsonwebtoken:jjwt-api:$jjwtVersion"
   runtime "io.jsonwebtoken:jjwt-impl:$jjwtVersion"
   runtime "io.jsonwebtoken:jjwt-jackson:$jjwtVersion"

@@ -140,6 +140,6 @@ databaseChangeLog:
       changes:
         - sqlFile:
             encoding: utf8
-            path: data-test.sql
+            path: /liquibase/data-test.sql
             relativeToChangeLogFile: true
             stripComments: true

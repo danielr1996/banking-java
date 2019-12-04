@@ -27,12 +27,14 @@ import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.status.HBCIExecStatus;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 
 @Service
 @Primary
 @Slf4j
+@Profile("fints-prod")
 public class FinTSUmsatzAbrufService implements BuchungAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 

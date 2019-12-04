@@ -17,20 +17,18 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
 
 @Slf4j
 public class WampHBCICallback extends AbstractHBCICallback {
   private String blz;
   private String user;
   private String pin;
-  private final static String PASSPORT_PIN = "PASSPORTPIN";
   private String rpcId;
   private String tanMedium;
+  private final static String PASSPORT_PIN = "PASSPORTPIN";
 
   public WampHBCICallback(String blz, String user, String pin, String rpcId) {
     this.blz = blz;
@@ -39,17 +37,6 @@ public class WampHBCICallback extends AbstractHBCICallback {
     this.rpcId = rpcId;
   }
 
-  /**
-   * @see org.kapott.hbci.callback.HBCICallback#log(String, int, Date, StackTraceElement)
-   */
-  public void log(String msg, int level, Date date, StackTraceElement trace) {
-    // Ausgabe von Log-Meldungen bei Bedarf
-    log.info(msg);
-  }
-
-  /**
-   * @see org.kapott.hbci.callback.HBCICallback#callback(HBCIPassport, int, String, int, StringBuffer)
-   */
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
     switch (reason) {
       case NEED_PASSPHRASE_LOAD:
@@ -141,7 +128,6 @@ public class WampHBCICallback extends AbstractHBCICallback {
     try {
       latch.await();
       String methodName = "de.danielr1996." + methodname + "." + rpcId;
-      System.out.println(methodName);
       result = session.call(methodName, 11, 12).get().results;
       client.connect().get();
     } catch (InterruptedException | ExecutionException e) {
@@ -151,10 +137,13 @@ public class WampHBCICallback extends AbstractHBCICallback {
     return tan;
   }
 
-  /**
-   * @see org.kapott.hbci.callback.HBCICallback#status(HBCIPassport, int, Object[])
-   */
+  @Override
   public void status(HBCIPassport passport, int statusTag, Object[] o) {
-//    log.info("Status: {}, Objekt: {}", statusTag, o);
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void log(String msg, int level, Date date, StackTraceElement trace) {
+    throw new UnsupportedOperationException();
   }
 }

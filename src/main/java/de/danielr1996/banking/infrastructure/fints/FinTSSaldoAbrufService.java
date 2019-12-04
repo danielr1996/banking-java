@@ -14,6 +14,7 @@ import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.status.HBCIExecStatus;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -23,7 +24,7 @@ import java.util.Scanner;
 
 @Service
 @Slf4j
-@Primary
+@Profile("fints-prod")
 public class FinTSSaldoAbrufService implements SaldoAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 

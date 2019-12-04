@@ -4,9 +4,7 @@ import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
 import org.springframework.data.domain.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -137,5 +135,10 @@ public class MockBuchungRepository implements BuchungRepository {
   @Override
   public <S extends Buchung> boolean exists(Example<S> example) {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Page<Buchung> findByKontoIdIn(Collection<UUID> kontoIds, Pageable pageable) {
+   throw new UnsupportedOperationException();
   }
 };

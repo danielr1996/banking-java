@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BuchungContainer {
-  private List<Buchung> buchungen;
+  private List<BuchungDTO> buchungen;
   private long totalElements;
   private long totalPages;
 }

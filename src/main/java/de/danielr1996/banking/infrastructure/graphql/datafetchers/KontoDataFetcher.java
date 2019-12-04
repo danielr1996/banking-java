@@ -19,6 +19,7 @@ public class KontoDataFetcher {
   public DataFetcher<List<Konto>> getKontoDataFetcher() {
     return dataFetchingEnvironment -> {
       String userId = dataFetchingEnvironment.getArgument("userId");
+      System.out.println(dataFetchingEnvironment.getLocalContext().toString());
       if(userId == null){
         throw new GraphQLException("Parameter userId must not be null");
       }

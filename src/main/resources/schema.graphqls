@@ -11,6 +11,7 @@ type Query {
 type Mutation {
   createUser(user: UserInput): User
   signIn(user: UserInput): String
+  # FIXME: Remove rpcId
   refresh(username: String, rpcId: String): String
 }
 

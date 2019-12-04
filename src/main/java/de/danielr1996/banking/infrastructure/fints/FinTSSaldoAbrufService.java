@@ -28,6 +28,7 @@ import java.util.Scanner;
 public class FinTSSaldoAbrufService implements SaldoAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
+  // FIXME: Remove rpcId
   private GVRSaldoReq getSaldoReq(Konto konto, String rpcId) {
     Properties props = new Properties();
     HBCIUtils.init(props, new WampHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), rpcId));
@@ -81,6 +82,8 @@ public class FinTSSaldoAbrufService implements SaldoAbrufService {
     }
   }
 
+
+  // FIXME: Remove rpcId
   @Override
   public Saldo getSaldo(Konto konto, String rpcId) {
     org.kapott.hbci.structures.Saldo res = getSaldoReq(konto, rpcId).getEntries()[0].ready;

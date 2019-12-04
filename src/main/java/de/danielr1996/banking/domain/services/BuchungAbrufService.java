@@ -10,5 +10,6 @@ import java.util.stream.Stream;
 
 @Service
 public interface BuchungAbrufService {
+  // FIXME: Remove rpcId
   Stream<Buchung> getBuchungen(Konto konto, String rpcId);
 }

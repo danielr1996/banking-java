@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 public class FinTSUmsatzAbrufService implements BuchungAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
+  // FIXME: Remove rpcId
   private UmsatzAbrufResponse getUmsaetze(Konto konto, String rpcId) {
     Properties props = new Properties();
     HBCIUtils.init(props, new WampHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), rpcId));
@@ -99,6 +100,7 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
     }
   }
 
+  // FIXME: Remove rpcId
   @Override
   public Stream<Buchung> getBuchungen(Konto konto, String rpcId) {
     UmsatzAbrufResponse res = getUmsaetze(konto, rpcId);

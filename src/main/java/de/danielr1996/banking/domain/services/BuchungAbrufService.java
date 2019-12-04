@@ -10,5 +10,5 @@ import java.util.stream.Stream;
 
 @Service
 public interface BuchungAbrufService {
-  Stream<Buchung> getBuchungen(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp);
+  Stream<Buchung> getBuchungen(Konto konto, String rpcId);
 }

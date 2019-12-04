@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Slf4j
-public class MyHBCICallback extends AbstractHBCICallback {
+public class ConsoleHBCICallback extends AbstractHBCICallback {
   private String blz = "76050101";
   private String user = "518222";
   private String pin = "Reich";
@@ -40,20 +40,12 @@ public class MyHBCICallback extends AbstractHBCICallback {
   private Supplier<String> tanMediumSp;
 
 
-  public MyHBCICallback(String blz, String user, String pin, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
+  public ConsoleHBCICallback(String blz, String user, String pin, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
     this.blz = blz;
     this.pin = pin;
     this.user = user;
     this.tanSp = tanSp;
     this.tanMediumSp = tanMediumSp;
-  }
-
-  /**
-   * @see org.kapott.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
-   */
-  public void log(String msg, int level, Date date, StackTraceElement trace) {
-    // Ausgabe von Log-Meldungen bei Bedarf
-    log.info(msg);
   }
 
   /**
@@ -108,11 +100,11 @@ public class MyHBCICallback extends AbstractHBCICallback {
           byte[] buffer = new byte[stream.available()];
           stream.read(buffer);
 
-          File targetFile = new File("C:\\Users\\Daniel\\Desktop\\tan.png");
+          File targetFile = new File("C:\\Users\\Dani\\Desktop\\tan.png");
           targetFile.createNewFile();
           OutputStream outStream = new FileOutputStream(targetFile);
           outStream.write(buffer);
-          BufferedImage img = ImageIO.read(new File("C:\\Users\\Daniel\\Desktop\\tan.png"));
+          BufferedImage img = ImageIO.read(new File("C:\\Users\\Dani\\Desktop\\tan.png"));
           ImageIcon icon = new ImageIcon(img);
           JFrame frame = new JFrame();
           frame.setLayout(new FlowLayout());
@@ -286,5 +278,13 @@ public class MyHBCICallback extends AbstractHBCICallback {
    */
   public void status(HBCIPassport passport, int statusTag, Object[] o) {
 //    log.info("Status: {}, Objekt: {}", statusTag, o);
+  }
+
+  /**
+   * @see org.kapott.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
+   */
+  public void log(String msg, int level, Date date, StackTraceElement trace) {
+    // Ausgabe von Log-Meldungen bei Bedarf
+    log.info(msg);
   }
 }

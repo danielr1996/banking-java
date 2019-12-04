@@ -44,11 +44,17 @@ public class ImportTask {
 
 
   @Scheduled(fixedRate = 60000 * INTERVAL_IN_MINUTES)
-  public void importIntoDb(Supplier<String> tanSp, Supplier<String> tanMediumSp, String username) {
-    kontoRepository.findByUserId(username).stream()
+  public void importIntoDb(Supplier<String> tanSp, Supplier<String> tanMediumSp, String username, String rpcId) {
+    kontoRepository.findByUserId(username)
       .forEach(konto -> {
-        Saldo saldo = saldoAbrufService.getSaldo(konto);
-        System.out.println(saldo);
+//        Saldo saldo = saldoAbrufService.getSaldo(konto, rpcId);
+//        saldoRepository.save(saldo);
+        List<Buchung> buchungen = buchungAbrufService.getBuchungen(konto, rpcId).collect(Collectors.toList());
+        buchungen.forEach(buchung -> {
+          buchung.setKontoId(konto.getId());
+          buchungRepository.save(buchung);
+        });
+//        log.info("{} Buchungen importiert", buchungRepository.findAll().size());
       });
 
     /*kontoRepository.findAll().stream()

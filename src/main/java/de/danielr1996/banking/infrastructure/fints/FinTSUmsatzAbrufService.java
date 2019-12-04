@@ -36,10 +36,11 @@ import org.springframework.stereotype.Service;
 public class FinTSUmsatzAbrufService implements BuchungAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
-  private UmsatzAbrufResponse getUmsaetze(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
+  private UmsatzAbrufResponse getUmsaetze(Konto konto, String rpcId) {
     Properties props = new Properties();
-    HBCIUtils.init(props, new MyHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), tanSp, tanMediumSp));
-    final File passportFile = new File(konto.getId() + ".dat");
+    HBCIUtils.init(props, new WampHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), rpcId));
+    final File passportFile = new File("user-"+konto.getId() + ".dat");
+//    final File passportFile = new File(UUID.randomUUID().toString()+".cat");
     HBCIUtils.setParam("client.passport.default", "PinTan"); // Legt als Verfahren PIN/TAN fest.
     HBCIUtils.setParam("client.passport.PinTan.init", "1"); // Stellt sicher, dass der Passport initialisiert wird
     HBCIPassport passport = AbstractHBCIPassport.getInstance(passportFile);
@@ -97,8 +98,8 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
   }
 
   @Override
-  public Stream<Buchung> getBuchungen(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
-    UmsatzAbrufResponse res = getUmsaetze(konto, tanSp, tanMediumSp);
+  public Stream<Buchung> getBuchungen(Konto konto, String rpcId) {
+    UmsatzAbrufResponse res = getUmsaetze(konto, rpcId);
     org.kapott.hbci.structures.Konto self = res.getKonto();
 
     return res.getUmsaetze().stream().map(umsLine -> {

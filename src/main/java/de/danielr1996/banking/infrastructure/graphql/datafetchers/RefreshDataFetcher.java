@@ -16,7 +16,8 @@ public class RefreshDataFetcher {
   public DataFetcher<String> refresh() {
     return dataFetchingEnvironment -> {
       String username = dataFetchingEnvironment.getArgument("username");
-      importTask.importIntoDb(() -> new Scanner(System.in).next(), () -> new Scanner(System.in).next(),username);
+      String rpcId = dataFetchingEnvironment.getArgument("rpcId");
+      importTask.importIntoDb(() -> new Scanner(System.in).next(), () -> new Scanner(System.in).next(),username, rpcId);
       return null;
     };
   }

@@ -37,7 +37,7 @@ public class UmsatzAbrufPinTan {
     // In "props" koennen optional Kernel-Parameter abgelegt werden, die in der Klasse
     // org.kapott.hbci.manager.HBCIUtils (oben im Javadoc) beschrieben sind.
     Properties props = new Properties();
-    HBCIUtils.init(props, new MyHBCICallback("76050101","518222","Reich", null, null));
+    HBCIUtils.init(props, new ConsoleHBCICallback("76050101","518222","Reich", null, null));
 
     // In der Passport-Datei speichert HBCI4Java die Daten des Bankzugangs (Bankparameterdaten, Benutzer-Parameter, etc.).
     // Die Datei kann problemlos geloescht werden. Sie wird beim naechsten mal automatisch neu erzeugt,

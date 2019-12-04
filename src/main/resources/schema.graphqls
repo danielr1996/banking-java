@@ -11,7 +11,7 @@ type Query {
 type Mutation {
   createUser(user: UserInput): User
   signIn(user: UserInput): String
-  refresh(username: String): String
+  refresh(username: String, rpcId: String): String
 }
 
 type User {

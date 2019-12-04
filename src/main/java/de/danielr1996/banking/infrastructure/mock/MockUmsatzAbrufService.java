@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 @Service
 public class MockUmsatzAbrufService implements BuchungAbrufService {
   @Override
-  public Stream<Buchung> getBuchungen(Konto konto, Supplier<String> tanSp, Supplier<String> tanMediumSp) {
+  public Stream<Buchung> getBuchungen(Konto konto, String rpcId) {
     return Stream.of(
       Buchung.builder()
         .betrag(BigDecimal.valueOf(-100))

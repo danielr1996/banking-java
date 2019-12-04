@@ -125,6 +125,12 @@ databaseChangeLog:
               - column:
                   name: userId
                   type: VARCHAR(255)
+              - column:
+                  name: secmech
+                  type: VARCHAR(255)
+              - column:
+                  name: tanmedia
+                  type: VARCHAR(255)
             tableName: konto
   # Data
   - changeSet:

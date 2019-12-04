@@ -21,4 +21,6 @@ public class Konto {
   private String password;
   private String kontonummer;
   private String userId;
+  private String secmech;
+  private String tanmedia;
 }

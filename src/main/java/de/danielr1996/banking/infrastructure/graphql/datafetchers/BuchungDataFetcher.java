@@ -54,17 +54,16 @@ public class BuchungDataFetcher {
 
   public DataFetcher<BuchungContainer> getBuchungDataFetcher() {
     return dataFetchingEnvironment -> {
+      int page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
+      int size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
+      List<String> kontoIdStrings = dataFetchingEnvironment.getArgument("kontoIds");
+      List<UUID> kontoIds = kontoIdStrings.stream().map(UUID::fromString).collect(Collectors.toList());
+
       if (!dataFetchingEnvironment.getSelectionSet().contains("buchungen/konto")) {
-        Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
-        Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-        List<UUID> kontoIds = ((List<String>) dataFetchingEnvironment.getArgument("kontoIds")).stream().map(UUID::fromString).collect(Collectors.toList());
         return pageBuchungService.getBuchungContainer(kontoIds, page, size);
       } else {
-        Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
-        Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-        List<UUID> kontoIds = ((List<String>) dataFetchingEnvironment.getArgument("kontoIds")).stream().map(UUID::fromString).collect(Collectors.toList());
         BuchungContainer buchungContainer = pageBuchungService.getBuchungContainer(kontoIds, page, size);
-        List<BuchungDTO> buchungList = buchungContainer.getBuchungen().stream().map(buchung->{
+        List<BuchungDTO> buchungList = buchungContainer.getBuchungen().stream().map(buchung -> {
           Konto konto = kontoRepository.getOne(buchung.getKontoId());
           buchung.setKonto(KontoDTO.builder()
             .id(konto.getId())

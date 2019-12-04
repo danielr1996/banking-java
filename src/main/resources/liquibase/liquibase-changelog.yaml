@@ -125,6 +125,12 @@ databaseChangeLog:
               - column:
                   name: userId
                   type: VARCHAR(255)
+              - column:
+                  name: secmech
+                  type: VARCHAR(255)
+              - column:
+                  name: tanmedia
+                  type: VARCHAR(255)
             tableName: konto
   # Data
   - changeSet:
@@ -134,6 +140,6 @@ databaseChangeLog:
       changes:
         - sqlFile:
             encoding: utf8
-            path: data-test.sql
+            path: /liquibase/data-test.sql
             relativeToChangeLogFile: true
             stripComments: true

@@ -7,5 +7,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface SaldoAbrufService {
-  Saldo getSaldo(Konto kontoId);
+  // FIXME: Remove rpcId
+  Saldo getSaldo(Konto kontoId, String rpcId);
 }

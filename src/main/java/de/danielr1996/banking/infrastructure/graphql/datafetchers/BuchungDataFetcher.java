@@ -41,19 +41,28 @@ public class BuchungDataFetcher {
   public DataFetcher<Optional<Buchung>> getBuchungByIdDataFetcher() {
     return dataFetchingEnvironment -> {
       String buchungId = dataFetchingEnvironment.getArgument("id");
+      Buchung buchung = buchungService.findById(buchungId).orElseThrow(() -> new GraphQLException("Not Found"));
       String jwt = dataFetchingEnvironment.<GraphQLContext>getContext().getJwt();
-      Buchung buchung = buchungService.findById(buchungId);
 
-      if (ownershipService.isOwner(UUID.fromString(jwt), buchung)) {
+      if ("".equals(jwt)) {
+        throw new GraphQLException("Not Authorized");
+      } else if (ownershipService.isOwner(UUID.fromString(jwt), buchung)) {
         return Optional.of(buchung);
       } else {
         throw new GraphQLException("Not Authorized");
       }
+
     };
   }
 
   public DataFetcher<BuchungContainer> getBuchungDataFetcher() {
     return dataFetchingEnvironment -> {
+      String jwt = dataFetchingEnvironment.<GraphQLContext>getContext().getJwt();
+
+      if ("".equals(jwt)) {
+        throw new GraphQLException("Not Authorized");
+      }
+
       int page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
       int size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
       List<String> kontoIdStrings = dataFetchingEnvironment.getArgument("kontoIds");

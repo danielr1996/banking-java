@@ -26,6 +26,7 @@ import org.kapott.hbci.manager.HBCIVersion;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.status.HBCIExecStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -38,12 +39,18 @@ import org.springframework.stereotype.Service;
 public class FinTSUmsatzAbrufService implements BuchungAbrufService {
   private final static HBCIVersion VERSION = HBCIVersion.HBCI_300;
 
+  private HBCICallbackFactory hbciCallbackFactory;
+
+  @Autowired
+  private FinTSUmsatzAbrufService(HBCICallbackFactory hbciCallbackFactory){
+    this.hbciCallbackFactory = hbciCallbackFactory;
+  }
+
   // FIXME: Remove rpcId
   private UmsatzAbrufResponse getUmsaetze(Konto konto, String rpcId) {
     Properties props = new Properties();
-    HBCIUtils.init(props, new WampHBCICallback(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), rpcId));
+    HBCIUtils.init(props, hbciCallbackFactory.getCallBack(konto.getBlz(),konto.getKontonummer(),konto.getPassword(),rpcId));
     final File passportFile = new File("user-"+konto.getId() + ".dat");
-//    final File passportFile = new File(UUID.randomUUID().toString()+".cat");
     HBCIUtils.setParam("client.passport.default", "PinTan"); // Legt als Verfahren PIN/TAN fest.
     HBCIUtils.setParam("client.passport.PinTan.init", "1"); // Stellt sicher, dass der Passport initialisiert wird
     HBCIPassport passport = AbstractHBCIPassport.getInstance(passportFile);

@@ -6,9 +6,12 @@ import io.crossbar.autobahn.wamp.types.ExitInfo;
 import io.crossbar.autobahn.wamp.types.SessionDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.callback.AbstractHBCICallback;
+import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.manager.MatrixCode;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -145,5 +148,15 @@ public class WampHBCICallback extends AbstractHBCICallback {
   @Override
   public void log(String msg, int level, Date date, StackTraceElement trace) {
     throw new UnsupportedOperationException();
+  }
+
+  @Service
+  @Profile("hbcicallback-wamp")
+  public static class ConsoleHBCICallbackFactory implements HBCICallbackFactory{
+
+    @Override
+    public HBCICallback getCallBack(String blz, String kontonummer, String password, String rpcId) {
+      return new ConsoleHBCICallback(blz, kontonummer, password);
+    }
   }
 }

@@ -7,36 +7,19 @@ plugins {
   id 'maven-publish'
 }
 
-repositories {
-  repositories {
-    mavenLocal()
-    /*maven {
-      url = 'http://vam-nexus.sdst.sbaintern.de:8081/nexus/content/groups/public/'
-    }
-
-    maven {
-      url = 'http://nexus.webapp.sdst.sbaintern.de/content/repositories/egov_staging/'
-    }
-
-    maven {
-      url = 'http://central'
-    }*/
-    mavenCentral()
-  }
-}
 ext {
-  springVersion = '2.1.4.RELEASE'
+  springBootVersion = '2.2.1.RELEASE'
   jjwtVersion = '0.10.7'
   junitVersion = '5.5.2'
 }
 
 dependencies {
   // Spring
-  compile "org.springframework.boot:spring-boot-starter:$springVersion"
-  compile "org.springframework.boot:spring-boot-starter-web:$springVersion"
-  compile "org.springframework.boot:spring-boot-starter-data-jpa:$springVersion"
-  compile "org.springframework.data:spring-data-jpa:$springVersion"
-  compile "org.springframework.boot:spring-boot-devtools:$springVersion"
+  compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
+  compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+  compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+  compile "org.springframework.data:spring-data-jpa:$springBootVersion"
+  compile "org.springframework.boot:spring-boot-devtools:$springBootVersion"
 
   // Database
   compile "javax.persistence:javax.persistence-api:2.2"

@@ -3,3 +3,7 @@ spring:
     url: jdbc:h2:~/banking;AUTO_SERVER=TRUE
     username: sa
     password: password
+  liquibase:
+    drop-first: true
+  jpa:
+    database: h2

@@ -31,7 +31,7 @@ public class MockBuchungRepository implements BuchungRepository {
     List<S> buchungen = StreamSupport.stream(iterable.spliterator(), false)
       .collect(Collectors.toList());
     this.buchungen.addAll(buchungen);
-    return buchungen.stream().map(s->(S)s).collect(Collectors.toList());
+    return buchungen;
   }
 
   @Override
@@ -123,7 +123,13 @@ public class MockBuchungRepository implements BuchungRepository {
 
   @Override
   public <S extends Buchung> Page<S> findAll(Example<S> example, Pageable pageable) {
-    List<S> ss = buchungen.stream().filter(buchung->buchung.equals(example.getProbe())).map(b->(S)b).collect(Collectors.toList());
+
+    @SuppressWarnings("unchecked")
+    List<S> ss = buchungen
+      .stream()
+      .filter(s -> s.equals(example.getProbe()))
+      .map(b -> (S) b)
+      .collect(Collectors.toList());
     return new PageImpl<>(ss);
   }
 
@@ -139,6 +145,6 @@ public class MockBuchungRepository implements BuchungRepository {
 
   @Override
   public Page<Buchung> findByKontoIdIn(Collection<UUID> kontoIds, Pageable pageable) {
-   throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 };

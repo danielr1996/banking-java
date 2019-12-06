@@ -1,4 +1,4 @@
-package de.danielr1996.banking.domain;
+package de.danielr1996.banking.domain.repository;
 
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.repository.BuchungRepository;

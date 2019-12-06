@@ -4,6 +4,7 @@ spring:
     username: sa
     password: password
   liquibase:
+    contexts: testdata
     drop-first: true
   jpa:
     database: h2

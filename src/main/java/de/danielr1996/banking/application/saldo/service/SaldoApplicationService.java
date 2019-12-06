@@ -1,5 +1,6 @@
-package de.danielr1996.banking.application.saldo;
+package de.danielr1996.banking.application.saldo.service;
 
+import de.danielr1996.banking.application.saldo.dto.SaldiContainer;
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
 import de.danielr1996.banking.domain.services.AggregateSaldoDomainService;
@@ -16,16 +17,13 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class PageSaldoService {
+public class SaldoApplicationService {
 
   @Autowired
   private SaldoRepository saldoRepository;
 
   @Autowired
   private BuchungRepository buchungRepository;
-
-//  @Autowired
-//  private AggregateSaldoService aggregateSaldoService;
 
   @Autowired
   private GetNewestSaldoService getNewestSaldoService;
@@ -34,19 +32,25 @@ public class PageSaldoService {
     List<Buchung> buchungen = buchungRepository
       // FIXME: In Domain/Aplication Service auslagern
       .findAll(Example.of(Buchung.builder().kontoId(kontoId).build()));
-    Saldo lastSaldo = getNewestSaldoService.getNewestSaldo(kontoId);
+    List<Saldo> saldi = saldoRepository.findAll();
+    Saldo lastSaldo = getNewestSaldoService.getNewestSaldo(saldi, kontoId);
 
+    List<Saldo> aggregated = AggregateSaldoDomainService.aggregateSaldi(kontoId, buchungen, lastSaldo);
 
-    List<Saldo> saldi = AggregateSaldoDomainService.aggregateSaldi(kontoId, buchungen, lastSaldo);
-    List<Saldo> filtered = saldi
+    List<Saldo> filtered = aggregated
       .stream()
       .skip(page * size)
       .limit(size)
       .collect(Collectors.toList());
     return SaldiContainer.builder()
       .saldi(filtered)
-      .totalPages((long) Math.ceil((double) saldi.size() / size))
-      .totalElements(saldi.size())
+      .totalPages((long) Math.ceil((double) aggregated.size() / size))
+      .totalElements(aggregated.size())
       .build();
+  }
+
+  public Saldo getNewestSaldo(UUID kontoId) {
+    List<Saldo> saldi = saldoRepository.findAll();
+    return getNewestSaldoService.getNewestSaldo(saldi, kontoId);
   }
 }

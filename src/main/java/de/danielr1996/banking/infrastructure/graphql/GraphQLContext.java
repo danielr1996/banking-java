@@ -1,5 +1,6 @@
 package de.danielr1996.banking.infrastructure.graphql;
 
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GraphQLContext {
-  private String jwt;
+  private Optional<String> jwt;
 }

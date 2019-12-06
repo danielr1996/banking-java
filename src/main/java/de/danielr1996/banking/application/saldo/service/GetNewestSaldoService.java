@@ -1,8 +1,9 @@
-package de.danielr1996.banking.application.saldo;
+package de.danielr1996.banking.application.saldo.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 import de.danielr1996.banking.domain.entities.Saldo;
@@ -16,16 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 class GetNewestSaldoService {
-
-  private SaldoRepository saldoRepository;
-
-  public GetNewestSaldoService(@Autowired SaldoRepository saldoRepository) {
-    this.saldoRepository = saldoRepository;
-  }
-
-  public Saldo getNewestSaldo(UUID kontoId) {
-    return saldoRepository
-      .findAll()
+  public Saldo getNewestSaldo(List<Saldo> saldi, UUID kontoId) {
+    return saldi
       .stream()
       .filter(saldo -> saldo.getKontoId().equals(kontoId))
       .max(Comparator.comparing(Saldo::getDatum))

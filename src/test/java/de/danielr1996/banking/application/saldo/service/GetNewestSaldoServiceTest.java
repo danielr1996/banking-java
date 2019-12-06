@@ -1,7 +1,6 @@
-package de.danielr1996.banking.application.saldo;
+package de.danielr1996.banking.application.saldo.service;
 
-import de.danielr1996.banking.application.saldo.GetNewestSaldoService;
-import de.danielr1996.banking.domain.MockSaldoRepository;
+import de.danielr1996.banking.domain.repository.MockSaldoRepository;
 import de.danielr1996.banking.domain.entities.Saldo;
 import de.danielr1996.banking.domain.exception.NewestSaldoNotFoundException;
 import de.danielr1996.banking.domain.repository.SaldoRepository;
@@ -10,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +19,7 @@ class GetNewestSaldoServiceTest {
 
   private SaldoRepository saldoRepository = new MockSaldoRepository();
 
-  private GetNewestSaldoService getNewestSaldoService = new GetNewestSaldoService(saldoRepository);
+  private GetNewestSaldoService getNewestSaldoService = new GetNewestSaldoService();
 
   @BeforeEach
   public void setup() {
@@ -32,12 +33,8 @@ class GetNewestSaldoServiceTest {
     Saldo saldoMittel = Saldo.builder().datum(LocalDateTime.now().minusDays(1)).kontoId(kontoId).build();
     Saldo saldoAlt = Saldo.builder().datum(LocalDateTime.now().minusDays(2)).kontoId(kontoId).build();
 
-    saldoRepository.save(saldoAlt);
-    saldoRepository.save(saldoNeu);
-    saldoRepository.save(saldoMittel);
-
     Saldo expected = saldoNeu;
-    Saldo actual = getNewestSaldoService.getNewestSaldo(kontoId);
+    Saldo actual = getNewestSaldoService.getNewestSaldo(Arrays.asList(saldoAlt, saldoNeu, saldoMittel), kontoId);
     assertEquals(expected.getId(), actual.getId());
   }
 
@@ -49,15 +46,14 @@ class GetNewestSaldoServiceTest {
       .kontoId(kontoId)
       .datum(LocalDateTime.now()).build();
 
-    saldoRepository.save(saldo);
-
     Saldo expected = saldo;
-    Saldo actual = getNewestSaldoService.getNewestSaldo(kontoId);
+    Saldo actual = getNewestSaldoService.getNewestSaldo(Collections.singletonList(saldo), kontoId);
     assertEquals(expected.getId(), actual.getId());
   }
 
   @Test
   void getNewestSaldoOfNone() {
+    // FIXME: Remove or repair
 //    assertThrows(NoSuchElementException.class, () -> getNewestSaldoService.getNewestSaldo());
   }
 

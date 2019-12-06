@@ -1,19 +1,28 @@
 package de.danielr1996.banking.infrastructure.fints;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Scanner;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.callback.AbstractHBCICallback;
+import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.manager.MatrixCode;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Date;
-import java.util.Scanner;
-
+/**
+ * Implementation of the {@link AbstractHBCICallback} that reads callback values from the Console.
+ */
 @Slf4j
 public class ConsoleHBCICallback extends AbstractHBCICallback {
   private String blz;
@@ -66,6 +75,7 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
           frame.add(lbl);
           frame.setVisible(true);
           frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          log.info("Bitte gebe die Tan ein:");
           String tan = new Scanner(System.in).nextLine();
           retData.replace(0, retData.length(), tan);
         } catch (Exception e) {
@@ -85,6 +95,7 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
         break;
       case NEED_PT_SECMECH:
         log.info("[NEED_PT_SECMECH]: {} - {}", msg, retData);
+        log.info("Bitte gebe den Sicherheitsmechanismus ein:");
         String secmech = new Scanner(System.in).nextLine();
         retData.replace(0, retData.length(), secmech);
         break;
@@ -95,12 +106,14 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
           String tan = null;
           retData.replace(0, retData.length(), tan);
         } else {
+          log.info("Bitte gebe die Tan ein:");
           String tan = new Scanner(System.in).nextLine();
           retData.replace(0, retData.length(), tan);
         }
         break;
       case NEED_PT_TANMEDIA:
         if (tanMedium == null) {
+          log.info("Bitte gebe das Tanmedium ein:");
           tanMedium = new Scanner(System.in).nextLine();
         }
         retData.replace(0, retData.length(), tanMedium);
@@ -122,5 +135,15 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
   @Override
   public void log(String msg, int level, Date date, StackTraceElement trace) {
     throw new UnsupportedOperationException();
+  }
+
+  @Service
+  @Profile("hbcicallback-console")
+  public static class ConsoleHBCICallbackFactory implements HBCICallbackFactory{
+
+    @Override
+    public HBCICallback getCallBack(String blz, String kontonummer, String password, String rpcId) {
+      return new ConsoleHBCICallback(blz, kontonummer, password);
+    }
   }
 }

@@ -76,7 +76,7 @@ public class GraphQLProvider {
         .dataFetcher("saldi", saldoDataFetcher.getSaldiDataFetcher()))
       .type(newTypeWiring(TYPE_MUTATION)
         .dataFetcher("createUser", userDataFetcher.createUser()))
-      .type(newTypeWiring(TYPE_MUTATION)
+      .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("signIn", userDataFetcher.signin()))
       .type(newTypeWiring(TYPE_MUTATION)
         .dataFetcher("refresh", refreshDataFetcher.refresh()))

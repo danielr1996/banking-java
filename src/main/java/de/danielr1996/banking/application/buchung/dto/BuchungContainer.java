@@ -1,6 +1,5 @@
-package de.danielr1996.banking.application.buchung;
+package de.danielr1996.banking.application.buchung.dto;
 
-import de.danielr1996.banking.domain.entities.Buchung;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

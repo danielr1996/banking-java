@@ -1,4 +1,4 @@
-package de.danielr1996.banking.application.saldo;
+package de.danielr1996.banking.application.saldo.dto;
 
 import de.danielr1996.banking.domain.entities.Saldo;
 import lombok.AllArgsConstructor;

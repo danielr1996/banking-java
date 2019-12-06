@@ -1,17 +1,13 @@
 package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 
-import java.security.Key;
 import java.util.HashMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.danielr1996.banking.application.auth.JwtHelper;
+import de.danielr1996.banking.application.auth.TokenGenerator;
 import de.danielr1996.banking.application.auth.User;
 import de.danielr1996.banking.application.auth.UserInput;
 import de.danielr1996.banking.domain.repository.UserRepository;
 import graphql.GraphQLException;
 import graphql.schema.DataFetcher;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -24,7 +20,7 @@ public class UserDataFetcher {
   UserRepository userRepository;
 
   @Autowired
-  JwtHelper jwtHelper;
+  TokenGenerator jwtHelper;
 
   public DataFetcher<User> createUser() {
     return dataFetchingEnvironment -> {
@@ -53,9 +49,9 @@ public class UserDataFetcher {
       ObjectMapper mapper = new ObjectMapper();
       UserInput userInput = mapper.convertValue(userMap, UserInput.class);
 
-      User user = userRepository.findOne(Example.of(User.builder().name(userInput.getName()).build())).get();
+      User user = userRepository.findOne(Example.of(User.builder().name(userInput.getName()).build())).orElseThrow(()->new GraphQLException("Not Found"));
       if (user.getPassword().equals(userInput.getPassword())) {
-        return jwtHelper.generateJwt(user);
+        return jwtHelper.generate(user);
       } else {
         throw new GraphQLException("Invalid credentials");
       }

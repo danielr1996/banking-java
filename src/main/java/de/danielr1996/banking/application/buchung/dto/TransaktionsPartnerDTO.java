@@ -1,4 +1,4 @@
-package de.danielr1996.banking.application.buchung;
+package de.danielr1996.banking.application.buchung.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

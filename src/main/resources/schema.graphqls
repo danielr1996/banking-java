@@ -6,11 +6,11 @@ type Query {
   saldo(kontoId: ID): Saldo
   saldi(kontoId: ID, page: Int, size: Int): SaldiContainer
   konto(userId: String): [KontoDTO]
+  signIn(user: UserInput): String
 }
 
 type Mutation {
   createUser(user: UserInput): User
-  signIn(user: UserInput): String
   # FIXME: Remove rpcId
   refresh(username: String, rpcId: String): String
 }

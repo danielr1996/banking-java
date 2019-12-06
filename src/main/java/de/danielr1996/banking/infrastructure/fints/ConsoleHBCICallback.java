@@ -1,5 +1,16 @@
 package de.danielr1996.banking.infrastructure.fints;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Scanner;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.callback.HBCICallback;
@@ -9,14 +20,9 @@ import org.kapott.hbci.passport.HBCIPassport;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Date;
-import java.util.Scanner;
-
+/**
+ * Implementation of the {@link AbstractHBCICallback} that reads callback values from the Console.
+ */
 @Slf4j
 public class ConsoleHBCICallback extends AbstractHBCICallback {
   private String blz;

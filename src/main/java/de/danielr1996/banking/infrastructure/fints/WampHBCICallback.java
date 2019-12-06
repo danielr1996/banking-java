@@ -24,6 +24,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Implementation of the {@link AbstractHBCICallback} that reads callback values from the user, asking the frontend using WAMP.
+ */
 @Slf4j
 public class WampHBCICallback extends AbstractHBCICallback {
   private String blz;

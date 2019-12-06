@@ -1,25 +1,20 @@
 package de.danielr1996.banking.application.auth;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
-import org.hamcrest.core.StringContains;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 
 // FIXME: Use GraphQL Library instead of Plain HTTP
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -116,8 +111,10 @@ class AuthenticationTest {
       .returnResult()
       .getResponseBody();
 
-//    assertThat(response, containsString("Not Authenticated, JWT Wrong"));
-    assertThat(response, Matchers.allOf(not(("Not Authenticated, JWT Wrong")), not(containsString("Not Authenticated, JWT Empty"))));
+    assertThat(response, Matchers.allOf(
+      not(containsString("error")),
+      not(containsString("Not Authenticated, JWT Wrong")),
+      not(containsString("Not Authenticated, JWT Empty"))));
   }
 
   public String getJwt(String user, String password) {

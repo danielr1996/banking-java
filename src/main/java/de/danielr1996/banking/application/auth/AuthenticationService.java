@@ -18,6 +18,7 @@ public class AuthenticationService {
     try {
       tokenVerifierFactory.ofJwt(jwtString).verify();
     } catch (Exception e) {
+      log.info("Cannot verify token because {}", e.getMessage());
       throw new GraphQLException("Not Authenticated, JWT Wrong");
     }
   }

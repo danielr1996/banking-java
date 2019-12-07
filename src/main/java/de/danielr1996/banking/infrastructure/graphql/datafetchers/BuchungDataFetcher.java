@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import de.danielr1996.banking.application.auth.AuthenticationService;
 import de.danielr1996.banking.application.buchung.dto.BuchungDTO;
-import de.danielr1996.banking.application.buchung.service.BuchungService;
+import de.danielr1996.banking.application.buchung.service.BuchungApplicationService;
 import de.danielr1996.banking.application.buchung.dto.KontoDTO;
 import de.danielr1996.banking.application.auth.OwnershipService;
 import de.danielr1996.banking.domain.entities.Buchung;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class BuchungDataFetcher {
   @Autowired
-  BuchungService buchungService;
+  BuchungApplicationService buchungApplicationService;
 
   @Autowired
   OwnershipService ownershipService;
@@ -42,7 +42,7 @@ public class BuchungDataFetcher {
       authenticationService.isAuthenticated(context.getJwt());
 
       String buchungId = dataFetchingEnvironment.getArgument("id");
-      Buchung buchung = buchungService.findById(buchungId).orElseThrow(() -> new GraphQLException("Not Found"));
+      Buchung buchung = buchungApplicationService.findById(buchungId).orElseThrow(() -> new GraphQLException("Not Found"));
 
       /*if (ownershipService.isOwner(UUID.fromString(jwt), buchung)) {*/
       return Optional.of(buchung);
@@ -63,9 +63,9 @@ public class BuchungDataFetcher {
       List<UUID> kontoIds = kontoIdStrings.stream().map(UUID::fromString).collect(Collectors.toList());
 
       if (!dataFetchingEnvironment.getSelectionSet().contains("buchungen/konto")) {
-        return buchungService.getBuchungContainer(kontoIds, page, size);
+        return buchungApplicationService.getBuchungContainer(kontoIds, page, size);
       } else {
-        BuchungContainer buchungContainer = buchungService.getBuchungContainer(kontoIds, page, size);
+        BuchungContainer buchungContainer = buchungApplicationService.getBuchungContainer(kontoIds, page, size);
         List<BuchungDTO> buchungList = buchungContainer.getBuchungen().stream().map(buchung -> {
           Konto konto = kontoRepository.getOne(buchung.getKontoId());
           buchung.setKonto(KontoDTO.builder()

@@ -21,13 +21,22 @@ public class Saldo implements Ownable<UUID> {
   @GeneratedValue
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
-  private UUID id;
+  private UUID kontoId;
+  //  private UUID id;
   private BigDecimal betrag;
   private LocalDateTime datum;
-  private UUID kontoId;
 
   @Override
   public UUID getOwner() {
     return this.kontoId;
+  }
+
+  public Saldo add(Saldo other) {
+    return Saldo.builder()
+//      .id(UUID.randomUUID())
+      .betrag(this.betrag.add(other.betrag))
+      .datum(this.datum.isAfter(other.datum) ? this.datum : other.datum)
+      .kontoId(this.kontoId)
+      .build();
   }
 }

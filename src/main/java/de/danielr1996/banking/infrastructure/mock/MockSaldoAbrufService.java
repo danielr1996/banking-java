@@ -37,7 +37,7 @@ public class MockSaldoAbrufService implements SaldoAbrufService {
     log.info("MockSaldoAbrufService hat TAN erhalten: {}", tan);
 
     return Saldo.builder()
-      .id(UUID.randomUUID())
+//      .id(UUID.randomUUID())
       .betrag(BigDecimal.TEN)
       .datum(LocalDateTime.now())
       .kontoId(konto.getId())

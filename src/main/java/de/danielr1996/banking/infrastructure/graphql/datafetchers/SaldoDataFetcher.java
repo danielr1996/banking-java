@@ -1,7 +1,10 @@
 package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import de.danielr1996.banking.application.auth.AuthenticationService;
 import de.danielr1996.banking.application.saldo.dto.SaldiContainer;
 import de.danielr1996.banking.application.saldo.service.SaldoApplicationService;
@@ -26,9 +29,9 @@ public class SaldoDataFetcher {
     return dataFetchingEnvironment -> {
       GraphQLContext context = dataFetchingEnvironment.getContext();
       authenticationService.isAuthenticated(context.getJwt());
-
-      UUID kontoId = UUID.fromString(dataFetchingEnvironment.getArgument("kontoId"));
-      return saldoApplicationService.getNewestSaldo(kontoId);
+      List<String> kontoIdStrings = dataFetchingEnvironment.getArgument("kontoIds");
+      List<UUID> kontoIds = kontoIdStrings.stream().map(UUID::fromString).collect(Collectors.toList());
+      return saldoApplicationService.getSaldo(kontoIds);
     };
   }
 
@@ -39,9 +42,10 @@ public class SaldoDataFetcher {
 
       Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
       Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-      UUID kontoId = UUID.fromString(dataFetchingEnvironment.getArgument("kontoId"));
+      List<String> kontoIdStrings = dataFetchingEnvironment.getArgument("kontoIds");
+      List<UUID> kontoIds = kontoIdStrings.stream().map(UUID::fromString).collect(Collectors.toList());
 
-      return saldoApplicationService.getSaldiContainer(kontoId, page, size);
+      return saldoApplicationService.getSaldiContainer(kontoIds, page, size);
     };
   }
 }

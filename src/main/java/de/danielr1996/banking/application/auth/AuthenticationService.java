@@ -14,7 +14,6 @@ public class AuthenticationService {
 
   public void isAuthenticated(Optional<String> jwt) {
     String jwtString = jwt.orElseThrow(() -> new GraphQLException("Not Authenticated, JWT Empty"));
-    log.info("Context: {}", jwt);
     try {
       tokenVerifierFactory.ofJwt(jwtString).verify();
     } catch (Exception e) {

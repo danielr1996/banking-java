@@ -7,10 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class MockSaldoRepository implements SaldoRepository {
   private List<Saldo> saldos = new ArrayList<>();
@@ -134,5 +131,15 @@ public class MockSaldoRepository implements SaldoRepository {
   @Override
   public <S extends Saldo> boolean exists(Example<S> example) {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Saldo findByKontoId(UUID kontoId) {
+    throw new UnsupportedOperationException("MockSaldoRepository.findByKontoId");
+  }
+
+  @Override
+  public Saldo findByKontoIdIn(Collection<UUID> kontoIds) {
+    throw new UnsupportedOperationException("MockSaldoRepository.findByKontoIdIn");
   }
 };

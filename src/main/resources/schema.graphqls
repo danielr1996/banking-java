@@ -3,8 +3,8 @@ scalar Date
 type Query {
   buchungById(id: ID ): BuchungDTO
   buchungen(kontoIds: [ID], page: Int, size: Int): BuchungContainer
-  saldo(kontoId: ID): Saldo
-  saldi(kontoId: ID, page: Int, size: Int): SaldiContainer
+  saldo(kontoIds: [ID]): Saldo
+  saldi(kontoIds: [ID], page: Int, size: Int): SaldiContainer
   konto(userId: String): [KontoDTO]
   signIn(user: UserInput): String
 }

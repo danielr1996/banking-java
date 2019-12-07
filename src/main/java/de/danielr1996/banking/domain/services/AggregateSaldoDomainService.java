@@ -18,7 +18,7 @@ public class AggregateSaldoDomainService {
    * @param currentSaldo
    * @return
    */
-  public static List<Saldo> aggregateSaldi(UUID kontoId, List<Buchung> buchungen, Saldo currentSaldo) {
+  public static List<Saldo> aggregateSaldi(List<Buchung> buchungen, Saldo currentSaldo) {
     List<Saldo> saldi = new ArrayList<>();
     Collections.sort(buchungen, Comparator.comparing(Buchung::getValutadatum));
     Collections.reverse(buchungen);

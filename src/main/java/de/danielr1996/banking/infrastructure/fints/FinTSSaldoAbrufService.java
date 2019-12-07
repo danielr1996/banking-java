@@ -46,7 +46,6 @@ public class FinTSSaldoAbrufService implements SaldoAbrufService {
     HBCIPassport passport = AbstractHBCIPassport.getInstance(passportFile);
     passport.setCountry("DE");
     BankInfo info = HBCIUtils.getBankInfo(konto.getBlz());
-    System.out.println(info.getPinTanAddress());
     passport.setHost(info.getPinTanAddress());
     passport.setPort(443);
     passport.setFilterType("Base64");
@@ -60,9 +59,7 @@ public class FinTSSaldoAbrufService implements SaldoAbrufService {
       if (konten == null || konten.length == 0)
         log.error("Keine Konten ermittelbar");
 
-//      log.info("Anzahl Konten: {}", konten.length);
       org.kapott.hbci.structures.Konto k = konten[3];
-//      System.out.println("Konto: " + k.bic);
       HBCIJob umsatzJob = handle.newJob("SaldoReq");
       umsatzJob.setParam("my", k); // festlegen, welches Konto abgefragt werden soll.
       umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen

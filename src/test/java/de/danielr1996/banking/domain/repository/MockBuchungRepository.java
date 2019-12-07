@@ -145,6 +145,11 @@ public class MockBuchungRepository implements BuchungRepository {
 
   @Override
   public Page<Buchung> findByKontoIdIn(Collection<UUID> kontoIds, Pageable pageable) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("MockBuchungRepository.findByKontoIdIn");
+  }
+
+  @Override
+  public List<Buchung> findByKontoIdIn(Collection<UUID> kontoIds) {
+    throw new UnsupportedOperationException("MockBuchungRepository.findByKontoIdIn");
   }
 };

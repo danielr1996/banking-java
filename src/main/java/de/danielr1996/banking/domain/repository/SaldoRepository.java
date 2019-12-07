@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 @Service
 public interface SaldoRepository extends JpaRepository<Saldo, UUID> {
-
+  Saldo findByKontoId(UUID kontoId);
 }

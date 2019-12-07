@@ -22,11 +22,11 @@ INSERT INTO BUCHUNG(id, betrag, buchungstag, buchungstext, valutadatum, verwendu
 
 
 INSERT INTO BUCHUNG(id, betrag, buchungstag, buchungstext, valutadatum, verwendungszweck, waehrung, kontoid, otherpartner_iban, selfpartner_iban) VALUES(
-'201910250705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 4', 'EUR', '6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a', 'DE45XXXX', 'DE78XXXX');
+'201910250705', 10.0, '2019-10-25', 'Buchungstext', '2019-10-25', 'Verwendungszweck 4', 'EUR', '6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a', 'DE45XXXX', 'DE78XXXX');
 INSERT INTO BUCHUNG(id, betrag, buchungstag, buchungstext, valutadatum, verwendungszweck, waehrung, kontoid, otherpartner_iban, selfpartner_iban) VALUES(
-'201910240705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 5', 'EUR', 'd57ba00b-fdc3-4a18-b16f-fb967e02072a', 'DE45XXXX', 'DE78XXXX');
+'201910240705', 10.0, '2019-10-24', 'Buchungstext', '2019-10-24', 'Verwendungszweck 5', 'EUR', 'd57ba00b-fdc3-4a18-b16f-fb967e02072a', 'DE45XXXX', 'DE78XXXX');
 INSERT INTO BUCHUNG(id, betrag, buchungstag, buchungstext, valutadatum, verwendungszweck, waehrung, kontoid, otherpartner_iban, selfpartner_iban) VALUES(
-'201910230705', 10.0, '2019-10-28', 'Buchungstext', '2019-10-28', 'Verwendungszweck 6', 'EUR', '4b2d5fca-cb8a-44a9-8fe2-6842e519956d', 'DE45XXXX', 'DE78XXXX');
+'201910230705', 10.0, '2019-10-23', 'Buchungstext', '2019-10-23', 'Verwendungszweck 6', 'EUR', '4b2d5fca-cb8a-44a9-8fe2-6842e519956d', 'DE45XXXX', 'DE78XXXX');
 
 INSERT INTO TRANSAKTIONSPARTNER(iban, bic, blz, name) VALUES ('DE45XXXX','SSKNDXX77','76050101','Daniel Richter');
 INSERT INTO TRANSAKTIONSPARTNER(iban, bic, blz, name) VALUES ('DE78XXXX','SSKNDXX77','76050101','Sparkasse Nürnberg');

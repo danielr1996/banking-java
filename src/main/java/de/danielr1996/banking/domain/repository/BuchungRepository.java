@@ -15,4 +15,6 @@ import java.util.UUID;
 @Service
 public interface BuchungRepository extends JpaRepository<Buchung, String> {
   Page<Buchung> findByKontoIdIn(Collection<UUID> kontoIds, Pageable pageable);
+
+  List<Buchung> findByKontoIdIn(Collection<UUID> kontoIds);
 }

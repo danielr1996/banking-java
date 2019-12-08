@@ -7,12 +7,12 @@ type Query {
   saldi(kontoIds: [ID], page: Int, size: Int): SaldiContainer
   konto(userId: String): [KontoDTO]
   signIn(user: UserInput): String
+  # FIXME: Remove rpcId
+  refresh(username: String, rpcId: String): String
 }
 
 type Mutation {
   createUser(user: UserInput): User
-  # FIXME: Remove rpcId
-  refresh(username: String, rpcId: String): String
 }
 
 type User {

@@ -1,5 +1,6 @@
 package de.danielr1996.banking.infrastructure.fints;
 
+import de.danielr1996.banking.domain.entities.Konto;
 import io.crossbar.autobahn.wamp.Client;
 import io.crossbar.autobahn.wamp.Session;
 import io.crossbar.autobahn.wamp.types.ExitInfo;
@@ -36,10 +37,12 @@ public class WampHBCICallback extends AbstractHBCICallback {
   private String tanMedium;
   private final static String PASSPORT_PIN = "PASSPORTPIN";
 
-  public WampHBCICallback(String blz, String user, String pin, String rpcId) {
-    this.blz = blz;
-    this.pin = pin;
-    this.user = user;
+  public WampHBCICallback(Konto konto, String rpcId) {
+    this.blz = konto.getBlz();
+    this.pin = konto.getPasswordhash();
+    this.user = konto.getKontonummer();
+    this.tanMedium = konto.getTanmedia();
+
     this.rpcId = rpcId;
   }
 
@@ -158,8 +161,8 @@ public class WampHBCICallback extends AbstractHBCICallback {
   public static class ConsoleHBCICallbackFactory implements HBCICallbackFactory {
 
     @Override
-    public HBCICallback getCallBack(String blz, String kontonummer, String passwordhash, String rpcId) {
-      return new WampHBCICallback(blz, kontonummer, passwordhash, rpcId);
+    public HBCICallback getCallBack(Konto konto, String rpcId) {
+      return new WampHBCICallback(konto, rpcId);
     }
   }
 }

@@ -1,6 +1,8 @@
 package de.danielr1996.banking.infrastructure.fints;
 
 import java.util.Date;
+
+import de.danielr1996.banking.domain.entities.Konto;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.callback.HBCICallback;
@@ -18,10 +20,10 @@ public class StaticHBCICallback extends AbstractHBCICallback {
   private String pin;
   private final static String PASSPORT_PIN = "PASSPORTPIN";
 
-  public StaticHBCICallback(String blz, String user, String pin) {
-    this.blz = blz;
-    this.pin = pin;
-    this.user = user;
+  public StaticHBCICallback(Konto konto) {
+    this.blz = konto.getBlz();
+    this.pin = konto.getPasswordhash();
+    this.user = konto.getKontonummer();
   }
 
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
@@ -84,8 +86,8 @@ public class StaticHBCICallback extends AbstractHBCICallback {
   public static class StaticHBCICallbackFactory implements HBCICallbackFactory {
 
     @Override
-    public HBCICallback getCallBack(String blz, String kontonummer, String passwordhash, String rpcId) {
-      return new StaticHBCICallback(blz, kontonummer, passwordhash);
+    public HBCICallback getCallBack(Konto konto, String rpcId) {
+      return new StaticHBCICallback(konto);
     }
   }
 }

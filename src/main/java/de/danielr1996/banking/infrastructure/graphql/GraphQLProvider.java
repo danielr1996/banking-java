@@ -50,7 +50,7 @@ public class GraphQLProvider {
 
   @PostConstruct
   public void init() throws IOException {
-    URL url = Resources.getResource("schema.graphqls");
+    URL url = Resources.getResource("graphql/schema.graphqls");
     String sdl = Resources.toString(url, Charsets.UTF_8);
     GraphQLSchema schema = buildSchema(sdl);
     this.graphQL = GraphQL.newGraphQL(schema).build();
@@ -78,7 +78,7 @@ public class GraphQLProvider {
         .dataFetcher("createUser", userDataFetcher.createUser()))
       .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("signIn", userDataFetcher.signin()))
-      .type(newTypeWiring(TYPE_MUTATION)
+      .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("refresh", refreshDataFetcher.refresh()))
       .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("konto", kontoDataFetcher.getKontoDataFetcher()))

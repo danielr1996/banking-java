@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import de.danielr1996.banking.domain.entities.Konto;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.callback.HBCICallback;
@@ -31,10 +33,11 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
   private final static String PASSPORT_PIN = "PASSPORTPIN";
   private String tanMedium;
 
-  public ConsoleHBCICallback(String blz, String user, String pin) {
-    this.blz = blz;
-    this.pin = pin;
-    this.user = user;
+  public ConsoleHBCICallback(Konto konto) {
+    this.blz = konto.getBlz();
+    this.pin = konto.getPasswordhash();
+    this.user = konto.getKontonummer();
+    this.tanMedium = konto.getTanmedia();
   }
 
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
@@ -112,10 +115,6 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
         }
         break;
       case NEED_PT_TANMEDIA:
-        if (tanMedium == null) {
-          log.info("Bitte gebe das Tanmedium ein:");
-          tanMedium = new Scanner(System.in).nextLine();
-        }
         retData.replace(0, retData.length(), tanMedium);
         break;
       case HAVE_ERROR:
@@ -139,11 +138,11 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
 
   @Service
   @Profile("hbcicallback-console")
-  public static class ConsoleHBCICallbackFactory implements HBCICallbackFactory{
+  public static class ConsoleHBCICallbackFactory implements HBCICallbackFactory {
 
     @Override
-    public HBCICallback getCallBack(String blz, String kontonummer, String passwordhash, String rpcId) {
-      return new ConsoleHBCICallback(blz, kontonummer, passwordhash);
+    public HBCICallback getCallBack(Konto konto, String rpcId) {
+      return new ConsoleHBCICallback(konto);
     }
   }
 }

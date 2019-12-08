@@ -1,6 +1,7 @@
 package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 
 import java.util.Scanner;
+
 import de.danielr1996.banking.application.auth.AuthenticationService;
 import de.danielr1996.banking.infrastructure.graphql.GraphQLContext;
 import de.danielr1996.banking.infrastructure.tasks.ImportTask;
@@ -23,14 +24,15 @@ public class RefreshDataFetcher {
   public DataFetcher<String> refresh() {
     return dataFetchingEnvironment -> {
       GraphQLContext context = dataFetchingEnvironment.getContext();
-     authenticationService.isAuthenticated(context.getJwt());
+      authenticationService.isAuthenticated(context.getJwt());
 
       String username = dataFetchingEnvironment.getArgument("username");
 
       // FIXME: Remove rpcId
       String rpcId = dataFetchingEnvironment.getArgument("rpcId");
-      importTask.importIntoDb(() -> new Scanner(System.in).next(), () -> new Scanner(System.in).next(), username, rpcId);
-      return null;
+      importTask.importIntoDb(username, rpcId);
+      System.out.println("Refreshed");
+      return "Refreshed";
     };
   }
 }

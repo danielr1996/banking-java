@@ -55,4 +55,30 @@ public class Saldo implements Ownable<UUID> {
       .kontoId(this.kontoId)
       .build();
   }
+
+  public Saldo substract(Saldo other) {
+    BigDecimal betrag;
+    if (this.betrag == null) {
+      betrag = other.betrag;
+    } else if (other.betrag == null) {
+      betrag = this.betrag;
+    } else {
+      betrag = this.betrag.subtract(other.betrag);
+    }
+
+    LocalDateTime datum;
+    if (this.datum == null) {
+      datum = other.datum;
+    } else if (other.datum == null) {
+      datum = this.datum;
+    } else {
+      datum = this.datum.isAfter(other.datum) ? this.datum : other.datum;
+    }
+
+    return other == null ? this : Saldo.builder()
+      .betrag(betrag)
+      .datum(datum)
+      .kontoId(this.kontoId)
+      .build();
+  }
 }

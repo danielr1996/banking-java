@@ -20,7 +20,7 @@ public class SecretKeyProvider {
   @Qualifier(SIGN_KEY_TOKEN)
   public Key getSigningKey() {
     try {
-      ObjectInputStream ois = new ObjectInputStream(SecretKeyProvider.class.getClassLoader().getResourceAsStream("key.ser"));
+      ObjectInputStream ois = new ObjectInputStream(SecretKeyProvider.class.getClassLoader().getResourceAsStream("encryption/key.ser"));
       return (Key) ois.readObject();
     } catch (IOException | ClassNotFoundException e) {
       log.error("Cannot deserialize signing key, generating new key");

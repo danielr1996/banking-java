@@ -15,12 +15,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@PropertySource("classpath:application.yml")
+@PropertySource("classpath:config/application.yml")
 public class ImportTask {
   private static final int INTERVAL_IN_MINUTES = 100;
 
@@ -44,7 +43,7 @@ public class ImportTask {
 
   // FIXME: Remove rpcId
   @Scheduled(fixedRate = 60000 * INTERVAL_IN_MINUTES)
-  public void importIntoDb(Supplier<String> tanSp, Supplier<String> tanMediumSp, String username, String rpcId) {
+  public void importIntoDb(String username, String rpcId) {
     kontoRepository.findByUserId(username)
       .forEach(konto -> {
         Saldo saldo = saldoAbrufService.getSaldo(konto, rpcId);

@@ -2,15 +2,14 @@ package de.danielr1996.banking.infrastructure.fints;
 
 import java.io.File;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Konto;
-import de.danielr1996.banking.domain.entities.TransaktionsPartner;
+import de.danielr1996.banking.domain.entities.Transaktionspartner;
 import de.danielr1996.banking.domain.services.BuchungAbrufService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRKUms;
+import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.manager.BankInfo;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -48,8 +48,9 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
 
   // FIXME: Remove rpcId
   private UmsatzAbrufResponse getUmsaetze(Konto konto, String rpcId) {
+    // FIXME: auslagern
     Properties props = new Properties();
-    HBCIUtils.init(props, hbciCallbackFactory.getCallBack(konto.getBlz(),konto.getKontonummer(),konto.getPassword(),rpcId));
+    HBCIUtils.init(props, hbciCallbackFactory.getCallBack(konto.getBlz(),konto.getKontonummer(),konto.getPasswordhash(),rpcId));
     final File passportFile = new File("user-"+konto.getId() + ".dat");
     HBCIUtils.setParam("client.passport.default", "PinTan"); // Legt als Verfahren PIN/TAN fest.
     HBCIUtils.setParam("client.passport.PinTan.init", "1"); // Stellt sicher, dass der Passport initialisiert wird
@@ -69,12 +70,21 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
       if (konten == null || konten.length == 0)
         log.error("Keine Konten ermittelbar");
 
+      // FIXME: konto dynamisch auswählen
       org.kapott.hbci.structures.Konto k = konten[3];
       log.info("Using {}", k);
       HBCIJob umsatzJob = handle.newJob("KUmsAllCamt");
+      System.out.println();
+      Arrays.asList(konten).forEach(k1->{
+        System.out.println(k1.iban+" "+k1.bic+" "+k1.number);
+      });
+      umsatzJob.setParam("my.bic", konto.getBic());
       umsatzJob.setParam("my", k); // festlegen, welches Konto abgefragt werden soll.
-      umsatzJob.setParam("my.bic", k.bic); // festlegen, welches Konto abgefragt werden soll.
-      umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
+      try{
+        umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
+      }catch (HBCI_Exception e){
+        e.printStackTrace();
+      }
 
 
       HBCIExecStatus status = handle.execute();
@@ -112,9 +122,9 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
     org.kapott.hbci.structures.Konto self = res.getKonto();
 
     return res.getUmsaetze().stream().map(umsLine -> {
-      TransaktionsPartner otherPartner = null;
+      Transaktionspartner otherPartner = null;
       if(umsLine.other.iban != null){
-        otherPartner=TransaktionsPartner.builder()
+        otherPartner= Transaktionspartner.builder()
           .bic(umsLine.other.bic)
           .blz(umsLine.other.blz)
           .iban(umsLine.other.iban)
@@ -130,7 +140,7 @@ public class FinTSUmsatzAbrufService implements BuchungAbrufService {
         .verwendungszweck(String.join("", umsLine.usage))
         .betrag(umsLine.value.getBigDecimalValue())
         .otherPartner(otherPartner)
-        .selfPartner(TransaktionsPartner.builder()
+        .selfPartner(Transaktionspartner.builder()
           .iban(self.iban)
           .bic(self.bic)
           .name(self.name)

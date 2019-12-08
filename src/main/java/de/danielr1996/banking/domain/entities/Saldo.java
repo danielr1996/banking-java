@@ -18,7 +18,6 @@ import java.util.UUID;
 @Entity
 public class Saldo implements Ownable<UUID> {
   @Id
-  @GeneratedValue
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
   private UUID kontoId;
@@ -32,10 +31,27 @@ public class Saldo implements Ownable<UUID> {
   }
 
   public Saldo add(Saldo other) {
-    return Saldo.builder()
-//      .id(UUID.randomUUID())
-      .betrag(this.betrag.add(other.betrag))
-      .datum(this.datum.isAfter(other.datum) ? this.datum : other.datum)
+    BigDecimal betrag;
+    if (this.betrag == null) {
+      betrag = other.betrag;
+    } else if (other.betrag == null) {
+      betrag = this.betrag;
+    } else {
+      betrag = this.betrag.add(other.betrag);
+    }
+
+    LocalDateTime datum;
+    if (this.datum == null) {
+      datum = other.datum;
+    } else if (other.datum == null) {
+      datum = this.datum;
+    } else {
+      datum = this.datum.isAfter(other.datum) ? this.datum : other.datum;
+    }
+
+    return other == null ? this : Saldo.builder()
+      .betrag(betrag)
+      .datum(datum)
       .kontoId(this.kontoId)
       .build();
   }

@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -26,9 +25,9 @@ public class Buchung implements Ownable {
   private String verwendungszweck;
   private UUID kontoId;
   @OneToOne(cascade = CascadeType.ALL)
-  private TransaktionsPartner selfPartner;
+  private Transaktionspartner selfPartner;
   @OneToOne(cascade = CascadeType.ALL)
-  private TransaktionsPartner otherPartner;
+  private Transaktionspartner otherPartner;
 
 
   @EqualsAndHashCode.Exclude

@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class TransaktionsPartner {
+public class Transaktionspartner {
     @Id
     private String iban;
     private String bic;

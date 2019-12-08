@@ -48,7 +48,6 @@ public class SaldoApplicationService {
   public Saldo getSaldo(List<UUID> kontoIds) {
     return kontoIds.stream()
       .map(kontoId -> saldoRepository.findByKontoId(kontoId))
-      .reduce(Saldo::add)
-      .orElse(Saldo.builder().build());
+      .reduce(Saldo.builder().build(), Saldo::add);
   }
 }

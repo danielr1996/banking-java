@@ -31,7 +31,7 @@ public class MockUmsatzAbrufService implements BuchungAbrufService {
   // TODO: Remove rpcId
   @Override
   public Stream<Buchung> getBuchungen(Konto konto, String rpcId) {
-    HBCICallback hbciCallback = hbciCallbackFactory.getCallBack(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), rpcId);
+    HBCICallback hbciCallback = hbciCallbackFactory.getCallBack(konto.getBlz(), konto.getKontonummer(), konto.getPasswordhash(), rpcId);
 
     StringBuffer tan = new StringBuffer();
     hbciCallback.callback(null, HBCICallback.NEED_PT_TAN, "MockUmsatzAbrufService benötigt TAN", 0, tan);

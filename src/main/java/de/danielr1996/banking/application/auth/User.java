@@ -7,14 +7,16 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "benutzer")
 public class User {
   @Id
   private String name;
-  private String password;
+  private String passwordhash;
 }

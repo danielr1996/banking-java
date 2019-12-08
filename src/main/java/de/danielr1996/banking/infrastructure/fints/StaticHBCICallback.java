@@ -84,8 +84,8 @@ public class StaticHBCICallback extends AbstractHBCICallback {
   public static class StaticHBCICallbackFactory implements HBCICallbackFactory {
 
     @Override
-    public HBCICallback getCallBack(String blz, String kontonummer, String password, String rpcId) {
-      return new StaticHBCICallback(blz, kontonummer, password);
+    public HBCICallback getCallBack(String blz, String kontonummer, String passwordhash, String rpcId) {
+      return new StaticHBCICallback(blz, kontonummer, passwordhash);
     }
   }
 }

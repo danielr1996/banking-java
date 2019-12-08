@@ -33,13 +33,13 @@ databaseChangeLog:
                   name: waehrung
                   type: VARCHAR(255)
               - column:
-                  name: kontoId
+                  name: konto_id
                   type: UUID
               - column:
-                  name: otherPartner_iban
+                  name: other_partner_iban
                   type: VARCHAR(255)
               - column:
-                  name: selfPartner_iban
+                  name: self_partner_iban
                   type: VARCHAR(255)
             tableName: buchung
   - changeSet:
@@ -51,7 +51,7 @@ databaseChangeLog:
               - column:
                   constraints:
                     - primary_key: true
-                  name: id
+                  name: konto_id
                   type: UUID
               - column:
                   name: betrag
@@ -59,9 +59,6 @@ databaseChangeLog:
               - column:
                   name: datum
                   type: datetime
-              - column:
-                  name: kontoId
-                  type: UUID
             tableName: saldo
   - changeSet:
       id: tbl_transaktionspartner
@@ -99,9 +96,9 @@ databaseChangeLog:
                   name: name
                   type: VARCHAR(255)
               - column:
-                  name: password
+                  name: passwordhash
                   type: VARCHAR(255)
-            tableName: user
+            tableName: benutzer
   - changeSet:
       id: tbl_konto
       author: Daniel Richter
@@ -117,13 +114,16 @@ databaseChangeLog:
                   name: blz
                   type: VARCHAR(255)
               - column:
-                  name: password
+                  name: bic
+                  type: VARCHAR(255)
+              - column:
+                  name: passwordhash
                   type: VARCHAR(255)
               - column:
                   name: kontonummer
                   type: VARCHAR(255)
               - column:
-                  name: userId
+                  name: user_id
                   type: VARCHAR(255)
               - column:
                   name: secmech
@@ -136,10 +136,20 @@ databaseChangeLog:
   - changeSet:
       id: DATA_TEST
       author: Daniel Richter
-      context: testdata
+      context: data-test
       changes:
         - sqlFile:
             encoding: utf8
             path: /liquibase/data-test.sql
+            relativeToChangeLogFile: true
+            stripComments: true
+  - changeSet:
+      id: DATA_PROD
+      author: Daniel Richter
+      context: data-prod
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: /liquibase/data-prod.sql
             relativeToChangeLogFile: true
             stripComments: true

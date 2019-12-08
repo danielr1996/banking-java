@@ -32,15 +32,15 @@ public class FinTSSaldoAbrufService implements SaldoAbrufService {
   private HBCICallbackFactory hbciCallbackFactory;
 
   @Autowired
-  private FinTSSaldoAbrufService(HBCICallbackFactory hbciCallbackFactory){
+  private FinTSSaldoAbrufService(HBCICallbackFactory hbciCallbackFactory) {
     this.hbciCallbackFactory = hbciCallbackFactory;
   }
 
   // FIXME: Remove rpcId
   private GVRSaldoReq getSaldoReq(Konto konto, String rpcId) {
     Properties props = new Properties();
-    HBCIUtils.init(props, hbciCallbackFactory.getCallBack(konto.getBlz(), konto.getKontonummer(), konto.getPassword(), rpcId));
-    final File passportFile = new File("user-"+konto.getId() + ".dat");
+    HBCIUtils.init(props, hbciCallbackFactory.getCallBack(konto.getBlz(), konto.getKontonummer(), konto.getPasswordhash(), rpcId));
+    final File passportFile = new File("user-" + konto.getId() + ".dat");
     HBCIUtils.setParam("client.passport.default", "PinTan"); // Legt als Verfahren PIN/TAN fest.
     HBCIUtils.setParam("client.passport.PinTan.init", "1"); // Stellt sicher, dass der Passport initialisiert wird
     HBCIPassport passport = AbstractHBCIPassport.getInstance(passportFile);
@@ -59,9 +59,11 @@ public class FinTSSaldoAbrufService implements SaldoAbrufService {
       if (konten == null || konten.length == 0)
         log.error("Keine Konten ermittelbar");
 
+      // FIXME: auslagern
       org.kapott.hbci.structures.Konto k = konten[3];
       HBCIJob umsatzJob = handle.newJob("SaldoReq");
       umsatzJob.setParam("my", k); // festlegen, welches Konto abgefragt werden soll.
+
       umsatzJob.addToQueue(); // Zur Liste der auszufuehrenden Auftraege hinzufuegen
 
 
@@ -92,13 +94,13 @@ public class FinTSSaldoAbrufService implements SaldoAbrufService {
   @Override
   public Saldo getSaldo(Konto konto, String rpcId) {
     org.kapott.hbci.structures.Saldo res = getSaldoReq(konto, rpcId).getEntries()[0].ready;
-
-    return Saldo.builder()
+    Saldo saldo = Saldo.builder()
       .betrag(res.value.getBigDecimalValue())
       .datum(res.timestamp.toInstant()
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime())
       .kontoId(konto.getId())
       .build();
+    return saldo;
   }
 }

@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserInput {
   private String name;
-  private String password;
+  private String passwordhash;
 }

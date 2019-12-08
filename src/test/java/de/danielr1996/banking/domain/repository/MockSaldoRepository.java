@@ -137,9 +137,4 @@ public class MockSaldoRepository implements SaldoRepository {
   public Saldo findByKontoId(UUID kontoId) {
     throw new UnsupportedOperationException("MockSaldoRepository.findByKontoId");
   }
-
-  @Override
-  public Saldo findByKontoIdIn(Collection<UUID> kontoIds) {
-    throw new UnsupportedOperationException("MockSaldoRepository.findByKontoIdIn");
-  }
 };

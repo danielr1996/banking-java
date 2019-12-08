@@ -30,7 +30,7 @@ public class UserDataFetcher {
 
       User user = User.builder()
         .name(userInput.getName())
-        .password(userInput.getPassword())
+        .passwordhash(userInput.getPasswordhash())
         .build();
 
       if(userRepository.existsById(userInput.getName())){
@@ -50,7 +50,7 @@ public class UserDataFetcher {
       UserInput userInput = mapper.convertValue(userMap, UserInput.class);
 
       User user = userRepository.findOne(Example.of(User.builder().name(userInput.getName()).build())).orElseThrow(()->new GraphQLException("Not Found"));
-      if (user.getPassword().equals(userInput.getPassword())) {
+      if (user.getPasswordhash().equals(userInput.getPasswordhash())) {
         return jwtHelper.generate(user);
       } else {
         throw new GraphQLException("Invalid credentials");

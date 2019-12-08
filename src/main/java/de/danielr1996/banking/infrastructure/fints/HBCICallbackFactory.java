@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 public interface HBCICallbackFactory {
 
   // FIXME: Remove rpcId
-  public HBCICallback getCallBack(String blz, String kontonummer, String password, String rpcId);
+  public HBCICallback getCallBack(String blz, String kontonummer, String passwordhash, String rpcId);
 }

@@ -18,7 +18,8 @@ public class Konto {
   @Id
   private UUID id;
   private String blz;
-  private String password;
+  private String bic;
+  private String passwordhash;
   private String kontonummer;
   private String userId;
   private String secmech;

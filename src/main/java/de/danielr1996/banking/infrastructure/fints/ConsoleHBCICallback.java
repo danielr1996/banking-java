@@ -129,12 +129,12 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
 
   @Override
   public void status(HBCIPassport passport, int statusTag, Object[] o) {
-    throw new UnsupportedOperationException();
+    log.debug("{}", o);
   }
 
   @Override
   public void log(String msg, int level, Date date, StackTraceElement trace) {
-    throw new UnsupportedOperationException();
+    log.info(msg);
   }
 
   @Service
@@ -142,8 +142,8 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
   public static class ConsoleHBCICallbackFactory implements HBCICallbackFactory{
 
     @Override
-    public HBCICallback getCallBack(String blz, String kontonummer, String password, String rpcId) {
-      return new ConsoleHBCICallback(blz, kontonummer, password);
+    public HBCICallback getCallBack(String blz, String kontonummer, String passwordhash, String rpcId) {
+      return new ConsoleHBCICallback(blz, kontonummer, passwordhash);
     }
   }
 }

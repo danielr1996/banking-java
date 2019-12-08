@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class KontoDTO {
   private UUID id;
   private String blz;
-  private String password;
+  private String passwordhash;
   private String kontonummer;
   private String userId;
 }

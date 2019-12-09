@@ -1,4 +1,4 @@
-package de.danielr1996.banking.infrastructure.graphql;
+package de.danielr1996.banking.infrastructure.graphql.config;
 
 import java.util.Optional;
 import lombok.AllArgsConstructor;

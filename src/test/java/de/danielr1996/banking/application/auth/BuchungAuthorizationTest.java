@@ -1,8 +1,12 @@
 package de.danielr1996.banking.application.auth;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -14,10 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-
 // FIXME: Use GraphQL Library instead of Plain HTTP
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
@@ -26,91 +26,53 @@ import static org.hamcrest.Matchers.not;
 @Tags({
   @Tag("graphql"),
   @Tag("application"),
-  @Tag("authentication")
+  @Tag("authorization")
 })
-class AuthenticationTest {
+class BuchungAuthorizationTest {
 
   @Autowired
   WebTestClient webTestClient;
 
-
-  @ParameterizedTest
-  @ValueSource(strings = {
-    "{buchungById(id: \\\"201910280705\\\") {id}}",
-    "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{konto(userId: \\\"user1\\\") {id}}",
-    "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"]) {betrag}}",
-    "{refresh(rpcId: \\\"201910280705\\\", username: \\\"user1\\\")}",
-  })
-  void testAuthenticationWithNoJwtShouldBeForbidden(String query) {
-    String response = webTestClient
-      .post()
-      .uri("/graphql")
-      .contentType(MediaType.APPLICATION_JSON)
-      .bodyValue("{\n" +
-        "\"operationName\": null, \n" +
-        "\"query\": \"" + query + "\",\n" +
-        "\"variables\": {}\n" +
-        "}")
-      .exchange()
-      .expectBody(String.class)
-      .returnResult()
-      .getResponseBody();
-
-    assertThat(response, containsString("Not Authenticated, JWT Empty"));
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {
-    "{buchungById(id: \\\"201910280705\\\") {id}}",
-    "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{konto(userId: \\\"user1\\\") {id}}",
-    "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"]) {betrag}}",
-    "{refresh(rpcId: \\\"201910280705\\\", username: \\\"user1\\\")}",
-  })
-  void testAuthenticationWithWrongJwtShouldBeForbidden(String query) {
-    final String USER_NOT_EXISTENT_JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2Vybm90ZXhpc3RlbmQifQ.bwnNhzzYvjBeykFjApp8FmFolqmKBy9bUmfvfwan5m0";
-
-    String response = webTestClient
-      .post()
-      .uri("/graphql")
-      .contentType(MediaType.APPLICATION_JSON)
-      .header("Authorization", "Bearer " + USER_NOT_EXISTENT_JWT)
-      .bodyValue("{\n" +
-        "\"operationName\": null, \n" +
-        "\"query\": \"" + query + "\",\n" +
-        "\"variables\": {}\n" +
-        "}")
-      .exchange()
-      .expectBody(String.class)
-      .returnResult()
-      .getResponseBody();
-
-    assertThat(response, containsString("Not Authenticated, JWT Wrong"));
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {
-    "{buchungById(id: \\\"201910280705\\\") {id}}",
-    "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{konto(userId: \\\"user1\\\") {id}}",
-    "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"]) {betrag}}",
-    "{refresh(rpcId: \\\"201910280705\\\", username: \\\"user1\\\")}",
-  })
-  void testAuthenticationWithJwtShouldBeAllowed(String query) {
+  @Test
+  void testUser1withCorrectJwtCanAccessBuchungen() {
     final String JWT = getJwt("user1", "password1");
 
     String response = webTestClient
       .post()
       .uri("/graphql")
-      .contentType(MediaType.APPLICATION_JSON)
       .header("Authorization", "Bearer " + JWT)
+      .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + query + "\",\n" +
+        "\"query\": \"" + "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"], page: 0, size: 10) {totalElements buchungen{id}}}" + "\",\n" +
+        "\"variables\": {}\n" +
+        "}")
+      .exchange()
+      .expectBody(String.class)
+      .returnResult()
+      .getResponseBody();
+    System.out.println(response);
+    assertThat(response, Matchers.allOf(
+      not(containsString("error")),
+      not(containsString("Not Authenticated, JWT Wrong")),
+      not(containsString("Not Authenticated, JWT Empty")),
+      not(containsString("Not Authorized")),
+      not(containsString("Not Found"))
+    ));
+  }
+
+  @Test
+  void testUser1withCorrectJwtCanAccessBuchung() {
+    final String JWT = getJwt("user1", "password1");
+
+    String response = webTestClient
+      .post()
+      .uri("/graphql")
+      .header("Authorization", "Bearer " + JWT)
+      .contentType(MediaType.APPLICATION_JSON)
+      .bodyValue("{\n" +
+        "\"operationName\": null, \n" +
+        "\"query\": \"" + "{buchungById(id: \\\"201910280705\\\") {id}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -121,7 +83,60 @@ class AuthenticationTest {
     assertThat(response, Matchers.allOf(
       not(containsString("error")),
       not(containsString("Not Authenticated, JWT Wrong")),
-      not(containsString("Not Authenticated, JWT Empty"))));
+      not(containsString("Not Authenticated, JWT Empty")),
+      not(containsString("Not Authorized")),
+      not(containsString("Not Found"))
+    ));
+  }
+
+  @Test
+  void testUser2withWrongJwtCantAccessBuchungen() {
+    final String JWT = getJwt("user2", "password2");
+    System.out.println(JWT);
+    String response = webTestClient
+      .post()
+      .uri("/graphql")
+      .header("Authorization", "Bearer " + JWT)
+      .contentType(MediaType.APPLICATION_JSON)
+      .bodyValue("{\n" +
+        "\"operationName\": null, \n" +
+        "\"query\": \"" + "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"d57ba00b-fdc3-4a18-b16f-fb967e02072a\\\"], page: 0, size: 10) {totalElements}}" + "\",\n" +
+        "\"variables\": {}\n" +
+        "}")
+      .exchange()
+      .expectBody(String.class)
+      .returnResult()
+      .getResponseBody();
+
+    assertThat(response, Matchers.allOf(
+      containsString("error"),
+      containsString("Not Authorized")
+    ));
+  }
+
+  @Test
+  void testUser2withWrongJwtCantAccessBuchung() {
+    final String JWT = getJwt("user2", "password2");
+
+    String response = webTestClient
+      .post()
+      .uri("/graphql")
+      .header("Authorization", "Bearer " + JWT)
+      .contentType(MediaType.APPLICATION_JSON)
+      .bodyValue("{\n" +
+        "\"operationName\": null, \n" +
+        "\"query\": \"" + "{buchungById(id: \\\"201910280705\\\") {id}}" + "\",\n" +
+        "\"variables\": {}\n" +
+        "}")
+      .exchange()
+      .expectBody(String.class)
+      .returnResult()
+      .getResponseBody();
+
+    assertThat(response, Matchers.allOf(
+      containsString("error"),
+      containsString("Not Authorized")
+    ));
   }
 
   public String getJwt(String user, String password) {

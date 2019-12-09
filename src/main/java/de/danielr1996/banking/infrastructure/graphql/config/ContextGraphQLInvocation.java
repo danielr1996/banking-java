@@ -1,4 +1,4 @@
-package de.danielr1996.banking.infrastructure.graphql;
+package de.danielr1996.banking.infrastructure.graphql.config;
 
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 

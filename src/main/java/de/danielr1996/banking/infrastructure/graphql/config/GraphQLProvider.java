@@ -1,4 +1,4 @@
-package de.danielr1996.banking.infrastructure.graphql;
+package de.danielr1996.banking.infrastructure.graphql.config;
 
 import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 import java.io.IOException;

@@ -4,7 +4,7 @@ import java.util.List;
 import de.danielr1996.banking.application.auth.AuthenticationService;
 import de.danielr1996.banking.domain.entities.Konto;
 import de.danielr1996.banking.domain.repository.KontoRepository;
-import de.danielr1996.banking.infrastructure.graphql.GraphQLContext;
+import de.danielr1996.banking.infrastructure.graphql.config.GraphQLContext;
 import graphql.GraphQLException;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +24,13 @@ public class KontoDataFetcher {
   public DataFetcher<List<Konto>> getKontoDataFetcher() {
     return dataFetchingEnvironment -> {
       GraphQLContext context = dataFetchingEnvironment.getContext();
-      authenticationService.isAuthenticated(context.getJwt());
+      String user = authenticationService.isAuthenticated(context.getJwt()).getSubject();
 
-      String userId;
-      if (!dataFetchingEnvironment.containsArgument("userId")) {
-        throw new GraphQLException("Parameter userId must not be null");
+      String userId = dataFetchingEnvironment.getArgument("userId");
+
+      if (!userId.equals(user)) {
+        throw new GraphQLException("Not Authorized");
       }
-
-      userId = dataFetchingEnvironment.getArgument("userId");
 
       return kontoRepository.findAll(Example.of(Konto.builder().userId(userId).build()));
     };

@@ -1,9 +1,7 @@
 package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 
-import java.util.Scanner;
-
 import de.danielr1996.banking.application.auth.AuthenticationService;
-import de.danielr1996.banking.infrastructure.graphql.GraphQLContext;
+import de.danielr1996.banking.infrastructure.graphql.config.GraphQLContext;
 import de.danielr1996.banking.infrastructure.tasks.ImportTask;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;

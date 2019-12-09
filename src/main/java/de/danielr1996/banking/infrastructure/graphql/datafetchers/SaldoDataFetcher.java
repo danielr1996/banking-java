@@ -9,7 +9,7 @@ import de.danielr1996.banking.application.auth.AuthenticationService;
 import de.danielr1996.banking.application.saldo.dto.SaldiContainer;
 import de.danielr1996.banking.application.saldo.service.SaldoApplicationService;
 import de.danielr1996.banking.domain.entities.Saldo;
-import de.danielr1996.banking.infrastructure.graphql.GraphQLContext;
+import de.danielr1996.banking.infrastructure.graphql.config.GraphQLContext;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

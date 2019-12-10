@@ -20,7 +20,7 @@ type User {
 }
 input UserInput {
   name: String
-  passwordhash: String
+  password: String
 }
 
 type BuchungContainer{

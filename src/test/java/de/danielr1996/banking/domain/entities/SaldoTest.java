@@ -1,5 +1,6 @@
 package de.danielr1996.banking.domain.entities;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+@Tag("unit")
 class SaldoTest {
 
   @Test
@@ -64,20 +66,5 @@ class SaldoTest {
     Saldo actual = saldo2.add(saldo1);
 
     assertThat(actual, is(equalTo(expected)));
-  }
-
-  @Test
-  void saldo1AddNull() {
-    LocalDateTime now = LocalDateTime.now();
-    UUID kontoId = UUID.randomUUID();
-    Saldo saldo1 = Saldo.builder()
-      .betrag(BigDecimal.TEN)
-      .datum(now)
-      .kontoId(kontoId)
-      .build();
-
-    Saldo actual = saldo1.add(null);
-
-    assertThat(actual, is(equalTo(saldo1)));
   }
 }

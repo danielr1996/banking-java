@@ -1,8 +1,12 @@
 package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 
+import java.util.Base64;
 import java.util.HashMap;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.danielr1996.banking.application.auth.TokenGenerator;
+import de.danielr1996.banking.application.auth.Password;
+import de.danielr1996.banking.infrastructure.security.PasswordHasher;
+import de.danielr1996.banking.infrastructure.security.TokenGenerator;
 import de.danielr1996.banking.application.auth.User;
 import de.danielr1996.banking.application.auth.UserInput;
 import de.danielr1996.banking.domain.repository.UserRepository;
@@ -22,6 +26,9 @@ public class UserDataFetcher {
   @Autowired
   TokenGenerator jwtHelper;
 
+  @Autowired
+  PasswordHasher passwordHasher;
+
   public DataFetcher<User> createUser() {
     return dataFetchingEnvironment -> {
       HashMap<Object, Object> userMap = dataFetchingEnvironment.getArgument("user");
@@ -30,12 +37,12 @@ public class UserDataFetcher {
 
       User user = User.builder()
         .name(userInput.getName())
-        .passwordhash(userInput.getPasswordhash())
+        .password(passwordHasher.hash(userInput.getPassword()))
         .build();
 
-      if(userRepository.existsById(userInput.getName())){
+      if (userRepository.existsById(userInput.getName())) {
         log.warn("User {} already exists, doing nothing!", user.getName());
-      }else{
+      } else {
         userRepository.save(user);
       }
 
@@ -49,11 +56,13 @@ public class UserDataFetcher {
       ObjectMapper mapper = new ObjectMapper();
       UserInput userInput = mapper.convertValue(userMap, UserInput.class);
 
-      User user = userRepository.findOne(Example.of(User.builder().name(userInput.getName()).build())).orElseThrow(()->new GraphQLException("Not Found"));
-      if (user.getPasswordhash().equals(userInput.getPasswordhash())) {
+//      User user = userRepository.findOne(Example.of(User.builder().name(userInput.getName()).build())).orElseThrow(() -> new GraphQLException("Not Found"));
+      User user = userRepository.findByName(userInput.getName()).orElseThrow(() -> new GraphQLException("Not Found"));
+      String password = new String(Base64.getDecoder().decode(userInput.getPassword()));
+      if (passwordHasher.verify(password, user.getPassword())) {
         return jwtHelper.generate(user);
       } else {
-        throw new GraphQLException("Invalid credentials");
+        throw new GraphQLException("Invalid Credentials");
       }
     };
   }

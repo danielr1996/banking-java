@@ -1,4 +1,4 @@
-package de.danielr1996.banking.application.auth;
+package de.danielr1996.banking.infrastructure.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 
-import static de.danielr1996.banking.application.auth.SecretKeyProvider.SIGN_KEY_TOKEN;
+import static de.danielr1996.banking.infrastructure.security.SecretKeyProvider.SIGN_KEY_TOKEN;
 
 @Slf4j
 public class TokenVerifier {

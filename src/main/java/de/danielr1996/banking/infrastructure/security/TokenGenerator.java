@@ -1,10 +1,9 @@
-package de.danielr1996.banking.application.auth;
+package de.danielr1996.banking.infrastructure.security;
 
-import static de.danielr1996.banking.application.auth.SecretKeyProvider.SIGN_KEY_TOKEN;
-import io.jsonwebtoken.JwtException;
+import static de.danielr1996.banking.infrastructure.security.SecretKeyProvider.SIGN_KEY_TOKEN;
+
+import de.danielr1996.banking.application.auth.User;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

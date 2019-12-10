@@ -8,3 +8,19 @@
 - fints-prod: Use Live FinTS API
 - hbcicallback-wamp: Use WAMP to get user data from user
 - hbcicallback-console: Get user data from console manually
+
+## Available Test Tags
+### By Test Depth
+- @Tag("integration"),
+- @Tag("unit")
+
+### By Infrastracture
+- @Tag("graphql"),
+
+### By Layer
+- @Tag("application"),
+- @Tag("authentication"),
+- @Tag("authorization")
+
+### Etc
+- @Tag("arch")

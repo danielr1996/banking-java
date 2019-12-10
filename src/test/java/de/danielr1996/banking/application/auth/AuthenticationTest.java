@@ -3,6 +3,7 @@ package de.danielr1996.banking.application.auth;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -26,7 +27,8 @@ import static org.hamcrest.Matchers.not;
 @Tags({
   @Tag("graphql"),
   @Tag("application"),
-  @Tag("authentication")
+  @Tag("authentication"),
+  @Tag("integration"),
 })
 class AuthenticationTest {
 
@@ -124,6 +126,50 @@ class AuthenticationTest {
       not(containsString("Not Authenticated, JWT Empty"))));
   }
 
+  @Test
+  void testUserWithValidCredentialsCanGetJwt() {
+    String response = webTestClient
+      .post()
+      .uri("/graphql")
+      .contentType(MediaType.APPLICATION_JSON)
+      .bodyValue("{\n" +
+        "\"operationName\": null, \n" +
+        "\"query\": \"" + "{signIn(user: {name: \\\"user1\\\", password: \\\"password1\\\"})}" + "\",\n" +
+        "\"variables\": {}\n" +
+        "}")
+      .exchange()
+      .expectBody(String.class)
+      .returnResult()
+      .getResponseBody();
+
+    assertThat(response, Matchers.allOf(
+      not(containsString("error")),
+      not(containsString("Invalid Credentials"))
+    ));
+  }
+
+  @Test
+  void testUserWithInvalidCredentialsCannotGetJwt() {
+    String response = webTestClient
+      .post()
+      .uri("/graphql")
+      .contentType(MediaType.APPLICATION_JSON)
+      .bodyValue("{\n" +
+        "\"operationName\": null, \n" +
+        "\"query\": \"" + "{signIn(user: {name: \\\"user1\\\", password: \\\"invalidpassword\\\"})}" + "\",\n" +
+        "\"variables\": {}\n" +
+        "}")
+      .exchange()
+      .expectBody(String.class)
+      .returnResult()
+      .getResponseBody();
+
+    assertThat(response, Matchers.allOf(
+      containsString("error"),
+      containsString("Invalid Credentials")
+    ));
+  }
+
   public String getJwt(String user, String password) {
     String response = webTestClient
       .post()
@@ -131,7 +177,7 @@ class AuthenticationTest {
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{signIn(user: {name: \\\"" + user + "\\\", passwordhash: \\\"" + password + "\\\"})}" + "\",\n" +
+        "\"query\": \"" + "{signIn(user: {name: \\\"" + user + "\\\", password: \\\"" + password + "\\\"})}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()

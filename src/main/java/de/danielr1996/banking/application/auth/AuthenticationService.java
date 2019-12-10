@@ -1,6 +1,8 @@
 package de.danielr1996.banking.application.auth;
 
 import java.util.Optional;
+
+import de.danielr1996.banking.infrastructure.security.TokenVerifier;
 import graphql.GraphQLException;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;

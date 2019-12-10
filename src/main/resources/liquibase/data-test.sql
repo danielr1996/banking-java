@@ -1,5 +1,7 @@
-INSERT INTO benutzer (name, passwordhash) VALUES ('user1','password1');
-INSERT INTO benutzer (name, passwordhash) VALUES ('user2','password2');
+-- password1
+INSERT INTO benutzer (name, passwordhash, salt, iterations) VALUES ('user1','88312dd9ebe5c0e6af351330191c8ff1f1b2391085ad59b610655113ca1dc6da','2ed04a118578ba2c14d89f7283805afe75ea9f71',200000);
+-- password2
+INSERT INTO benutzer (name, passwordhash, salt, iterations) VALUES ('user2','9aa93ede079da28da894fbd235737dd7b98b8e84e6f9e8c7ca41b7522eafa036','b677bd37c79c689767b77cd9b5168089ea7c9d3f',200000);
 
 INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('42601f3b-6e91-4c80-bb11-c5a21d98fc57', '76050101','Reich', '518222', 'user1','P20');
 INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a', '76050102','Reich', '518221', 'user1','P20');

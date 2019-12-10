@@ -98,6 +98,12 @@ databaseChangeLog:
               - column:
                   name: passwordhash
                   type: VARCHAR(255)
+              - column:
+                  name: salt
+                  type: VARCHAR(255)
+              - column:
+                  name: iterations
+                  type: NUMERIC(19)
             tableName: benutzer
   - changeSet:
       id: tbl_konto

@@ -8,6 +8,7 @@ import org.kapott.hbci.GV_Result.GVRSaldoReq;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,10 @@ public class FinTSSaldoAbrufService extends AbstractFinTSAbrufService implements
   // FIXME: Remove rpcId
   @Override
   public Saldo getSaldo(Konto konto, String rpcId) {
+    ModelMapper modelMapper = new ModelMapper();
     org.kapott.hbci.structures.Saldo res = getSaldoReq(konto, rpcId).getEntries()[0].ready;
+    Saldo saldo = modelMapper.map(res, Saldo.class);
+
     return Saldo.builder()
       .betrag(res.value.getBigDecimalValue())
       .datum(res.timestamp.toInstant()

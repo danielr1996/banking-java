@@ -2,6 +2,7 @@ package de.danielr1996.banking.domain.services;
 
 import de.danielr1996.banking.domain.entities.Buchung;
 import de.danielr1996.banking.domain.entities.Saldo;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class AggregateSaldoDomainServiceTest {
   @Test
   void aggregateSaldi() {

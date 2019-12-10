@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -18,5 +19,6 @@ import javax.persistence.Table;
 public class User {
   @Id
   private String name;
-  private String passwordhash;
+  @Embedded
+  private Password password;
 }

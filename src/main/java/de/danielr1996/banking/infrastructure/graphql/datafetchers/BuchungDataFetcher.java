@@ -50,8 +50,6 @@ public class BuchungDataFetcher {
 
       // FIXME: Authorization
       Konto konto = kontoRepository.findById(buchung.getKontoId()).orElseThrow(() -> new GraphQLException("Not Found"));
-      System.out.println(konto);
-      System.out.println(user);
       if (konto.getUserId().equals(user)) {
         return Optional.of(buchung);
       } else {

@@ -31,6 +31,10 @@ public class Saldo implements Ownable<UUID> {
   }
 
   public Saldo add(Saldo other) {
+    if (other == null) {
+      return this;
+    }
+
     BigDecimal betrag;
     if (this.betrag == null) {
       betrag = other.betrag;
@@ -49,7 +53,7 @@ public class Saldo implements Ownable<UUID> {
       datum = this.datum.isAfter(other.datum) ? this.datum : other.datum;
     }
 
-    return other == null ? this : Saldo.builder()
+    return Saldo.builder()
       .betrag(betrag)
       .datum(datum)
       .kontoId(this.kontoId)

@@ -26,15 +26,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
   @Tag("application"),
   @Tag("authorization")
 })
-class SaldoAuthorizationTest {
-
-  @Autowired
-  WebTestClient webTestClient;
-
+class SaldoAuthorizationTest extends AbstractAuthorizationTest {
   @Test
   void testUser1withCorrectJwtCanAccessSaldi() {
     final String JWT = getJwt("user1", "password1");
-
+    System.out.println("JWT: " + JWT);
     String response = webTestClient
       .post()
       .uri("/graphql")
@@ -70,7 +66,7 @@ class SaldoAuthorizationTest {
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" +  "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"], page: 0, size: 10) {totalElements}}" + "\",\n" +
+        "\"query\": \"" + "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"]) {betrag}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -98,7 +94,7 @@ class SaldoAuthorizationTest {
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "\"{saldi(kontoIds: [\\\\\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\\\\\",\\\\\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\\\\\"], page: 0, size: 10) {totalElements}}\"" + "\",\n" +
+        "\"query\": \"" + "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"], page: 0, size: 10) {totalElements}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -123,7 +119,7 @@ class SaldoAuthorizationTest {
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{buchungById(id: \\\"201910280705\\\") {id}}" + "\",\n" +
+        "\"query\": \"" + "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"]) {betrag}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -135,22 +131,5 @@ class SaldoAuthorizationTest {
       containsString("error"),
       containsString("Not Authorized")
     ));
-  }
-
-  public String getJwt(String user, String password) {
-    String response = webTestClient
-      .post()
-      .uri("/graphql")
-      .contentType(MediaType.APPLICATION_JSON)
-      .bodyValue("{\n" +
-        "\"operationName\": null, \n" +
-        "\"query\": \"" + "{signIn(user: {name: \\\"" + user + "\\\", passwordhash: \\\"" + password + "\\\"})}" + "\",\n" +
-        "\"variables\": {}\n" +
-        "}")
-      .exchange()
-      .expectBody(String.class)
-      .returnResult()
-      .getResponseBody();
-    return response.substring(19, response.length() - 3);
   }
 }

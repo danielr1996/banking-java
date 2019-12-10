@@ -28,10 +28,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
   @Tag("application"),
   @Tag("authorization")
 })
-class BuchungAuthorizationTest {
-
-  @Autowired
-  WebTestClient webTestClient;
+class BuchungAuthorizationTest extends AbstractAuthorizationTest {
 
   @Test
   void testUser1withCorrectJwtCanAccessBuchungen() {
@@ -137,22 +134,5 @@ class BuchungAuthorizationTest {
       containsString("error"),
       containsString("Not Authorized")
     ));
-  }
-
-  public String getJwt(String user, String password) {
-    String response = webTestClient
-      .post()
-      .uri("/graphql")
-      .contentType(MediaType.APPLICATION_JSON)
-      .bodyValue("{\n" +
-        "\"operationName\": null, \n" +
-        "\"query\": \"" + "{signIn(user: {name: \\\"" + user + "\\\", passwordhash: \\\"" + password + "\\\"})}" + "\",\n" +
-        "\"variables\": {}\n" +
-        "}")
-      .exchange()
-      .expectBody(String.class)
-      .returnResult()
-      .getResponseBody();
-    return response.substring(19, response.length() - 3);
   }
 }

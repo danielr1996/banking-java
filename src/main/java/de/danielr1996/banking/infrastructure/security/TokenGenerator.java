@@ -1,31 +1,36 @@
 package de.danielr1996.banking.infrastructure.security;
 
-import static de.danielr1996.banking.infrastructure.security.SecretKeyProvider.SIGN_KEY_TOKEN;
-
 import de.danielr1996.banking.application.auth.User;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.security.PrivateKey;
 import java.sql.Date;
 import java.time.Instant;
-import java.util.Base64;
+
+import static de.danielr1996.banking.infrastructure.security.SecretKeyProvider.JWT_SECRET_KEY;
 
 @Service
 @Slf4j
 public class TokenGenerator {
+  private SecretKey signingKey;
 
-  @Autowired
-  @Qualifier(SIGN_KEY_TOKEN)
-  Key signingKey;
+  public TokenGenerator(@Autowired
+                        @Qualifier(JWT_SECRET_KEY) SecretKey secretKey) {
+    this.signingKey = secretKey;
+  }
 
   public String generate(User user) {
-    String keyId = Base64.getEncoder().encodeToString(this.signingKey.getEncoded());
+    // FIXME: kid sicher ermitteln
+//    String keyId = Base64.getEncoder().encodeToString(this.signingKey.getEncoded());
     return Jwts.builder()
-      .setHeaderParam("kid",keyId)
+//      .setHeaderParam("kid",keyId)
       .setIssuer("banking-service")
       .setIssuedAt(Date.from(Instant.now()))
       .setSubject(user.getName())

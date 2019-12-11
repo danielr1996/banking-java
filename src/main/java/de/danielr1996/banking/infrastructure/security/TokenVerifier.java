@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
-import static de.danielr1996.banking.infrastructure.security.SecretKeyProvider.SIGN_KEY_TOKEN;
+import static de.danielr1996.banking.infrastructure.security.SecretKeyProvider.*;
 
 @Slf4j
 public class TokenVerifier {
@@ -35,12 +38,13 @@ public class TokenVerifier {
 
   @Service
   public static class TokenVerifierFactory {
-    @Autowired
-    @Qualifier(SIGN_KEY_TOKEN)
-    private Key key;
+    private SecretKey validationKey;
+    public TokenVerifierFactory(@Autowired @Qualifier(JWT_SECRET_KEY) SecretKey publicKey){
+      this.validationKey = publicKey;
+    }
 
     public TokenVerifier ofJwt(String jwt) {
-      return new TokenVerifier(this.key, jwt);
+      return new TokenVerifier(this.validationKey, jwt);
     }
   }
 }

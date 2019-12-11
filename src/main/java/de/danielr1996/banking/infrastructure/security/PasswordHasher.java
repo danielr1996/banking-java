@@ -61,6 +61,5 @@ public class PasswordHasher {
 
   public static void main(String[] args) {
     PasswordHasher passwordHasher = new PasswordHasher();
-    System.out.println(passwordHasher.hash("Reichenschwand5"));
   }
 }

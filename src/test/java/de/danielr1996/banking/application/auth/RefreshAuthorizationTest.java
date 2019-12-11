@@ -24,7 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
   @Tag("application"),
   @Tag("authorization")
 })
-class RefreshAuthorizationTest extends AbstractAuthorizationTest {
+class RefreshAuthorizationTest extends AbstractAuthorizationAndAuthenticationTest {
   @Test
   void testUser1withCorrectJwtCanRefresh() {
     final String JWT = getJwt("user1", "password1");

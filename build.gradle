@@ -65,6 +65,10 @@ dependencies {
   compile "com.google.guava:guava:26.0-jre"
   compileOnly "org.projectlombok:lombok:1.18.10"
   annotationProcessor "org.projectlombok:lombok:1.18.10"
+  compile 'org.modelmapper:modelmapper:2.3.0'
+  compile 'commons-io:commons-io:2.6'
+  compile 'org.bouncycastle:bcpkix-jdk15on:1.58'
+
 }
 
 group = 'de.danielr1996'

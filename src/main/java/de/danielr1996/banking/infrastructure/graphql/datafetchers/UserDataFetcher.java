@@ -56,7 +56,6 @@ public class UserDataFetcher {
       ObjectMapper mapper = new ObjectMapper();
       UserInput userInput = mapper.convertValue(userMap, UserInput.class);
 
-//      User user = userRepository.findOne(Example.of(User.builder().name(userInput.getName()).build())).orElseThrow(() -> new GraphQLException("Not Found"));
       User user = userRepository.findByName(userInput.getName()).orElseThrow(() -> new GraphQLException("Not Found"));
       String password = new String(Base64.getDecoder().decode(userInput.getPassword()));
       if (passwordHasher.verify(password, user.getPassword())) {

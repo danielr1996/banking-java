@@ -8,13 +8,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 // FIXME: Use GraphQL Library instead of Plain HTTP
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,7 +24,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
   @Tag("application"),
   @Tag("authorization")
 })
-class SaldoAuthorizationTest extends AbstractAuthorizationTest {
+class SaldoAuthorizationTest extends AbstractAuthorizationAndAuthenticationTest {
   @Test
   void testUser1withCorrectJwtCanAccessSaldi() {
     final String JWT = getJwt("user1", "password1");

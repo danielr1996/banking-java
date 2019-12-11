@@ -104,7 +104,6 @@ class AuthenticationTest extends AbstractAuthorizationAndAuthenticationTest {
   })
   void testAuthenticationWithJwtShouldBeAllowed(String query) {
     final String JWT = getJwt("user1", "password1");
-    System.out.println(JWT);
     String response = webTestClient
       .post()
       .uri("/graphql")

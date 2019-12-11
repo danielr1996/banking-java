@@ -34,7 +34,6 @@ public class RefreshDataFetcher {
       // FIXME: Remove rpcId
       String rpcId = dataFetchingEnvironment.getArgument("rpcId");
       importTask.importIntoDb(username, rpcId);
-      System.out.println("Refreshed");
       return "Refreshed";
     };
   }

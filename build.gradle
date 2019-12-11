@@ -67,7 +67,6 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok:1.18.10"
   compile 'org.modelmapper:modelmapper:2.3.0'
   compile 'commons-io:commons-io:2.6'
-  compile 'org.bouncycastle:bcpkix-jdk15on:1.58'
 
 }
 

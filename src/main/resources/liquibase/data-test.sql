@@ -3,10 +3,10 @@ INSERT INTO benutzer (name, passwordhash, salt, iterations) VALUES ('user1','883
 -- password2
 INSERT INTO benutzer (name, passwordhash, salt, iterations) VALUES ('user2','9aa93ede079da28da894fbd235737dd7b98b8e84e6f9e8c7ca41b7522eafa036','b677bd37c79c689767b77cd9b5168089ea7c9d3f',200000);
 
-INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('42601f3b-6e91-4c80-bb11-c5a21d98fc57', '76050101','Reich', '518222', 'user1','P20');
-INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a', '76050102','Reich', '518221', 'user1','P20');
-INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('d57ba00b-fdc3-4a18-b16f-fb967e02072a', '76050103','Reich', '518223', 'user2','P20');
-INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('4b2d5fca-cb8a-44a9-8fe2-6842e519956d', '76050104','Reich', '518224', 'user2','P20');
+INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('42601f3b-6e91-4c80-bb11-c5a21d98fc57', '76050101','RexohD34Ey6P5TroHv1ocA==', '518222', 'user1','P20');
+INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a', '76050102','RexohD34Ey6P5TroHv1ocA==', '518221', 'user1','P20');
+INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('d57ba00b-fdc3-4a18-b16f-fb967e02072a', '76050103','RexohD34Ey6P5TroHv1ocA==', '518223', 'user2','P20');
+INSERT INTO konto(id, blz, passwordhash, kontonummer, user_id, tanmedia) VALUES ('4b2d5fca-cb8a-44a9-8fe2-6842e519956d', '76050104','RexohD34Ey6P5TroHv1ocA==', '518224', 'user2','P20');
 
 INSERT INTO saldo(betrag, datum, konto_id) VALUES (500.0, current_timestamp , '42601f3b-6e91-4c80-bb11-c5a21d98fc57');
 INSERT INTO saldo(betrag, datum, konto_id) VALUES (400.0, current_timestamp, '6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a');

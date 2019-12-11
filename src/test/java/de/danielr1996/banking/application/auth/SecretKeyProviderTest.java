@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.is;
 /**
  * https://gist.github.com/webtobesocial/5313b0d7abc25e06c2d78f8b767d4bc3
  */
-public class SecretKeyTest {
+public class SecretKeyProviderTest {
 
   @Test
   public void testPublicAsymmtricKey() throws Exception {
@@ -85,7 +85,7 @@ public class SecretKeyTest {
   }
 
   @Test
-  public void testSymmtricKey() throws Exception {
+  public void testHmacSHA256SecretKey() throws Exception {
     //Generate
     SecureRandom random = new SecureRandom();
     byte[] secret = new byte[200];
@@ -110,6 +110,36 @@ public class SecretKeyTest {
       .replaceAll("-----BEGIN SECRET KEY-----\n", "")
       .replaceAll("\n-----END SECRET KEY-----", "");
     SecretKey spec = new SecretKeySpec(Base64.getMimeDecoder().decode(file), "HmacSHA256");
+
+    assertThat(spec.getEncoded(), is(key.getEncoded()));
+  }
+
+  @Test
+  public void testAES256SecretKey() throws Exception {
+    KeyGenerator keyGen = null;
+    try {
+      keyGen = KeyGenerator.getInstance("AES");
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
+    keyGen.init(256);
+    SecretKey key = keyGen.generateKey();
+
+    //Write
+    FileOutputStream fos = new FileOutputStream(new File("aes.pem"));
+
+    fos.write("-----BEGIN SECRET KEY-----\n".getBytes());
+    fos.write(Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes()).encode(key.getEncoded()));
+    fos.write("\n-----END SECRET KEY-----\n".getBytes());
+    fos.flush();
+    fos.close();
+
+    //Read
+    String fileContent = Files.readAllLines(new File("aes.pem").toPath()).stream().collect(Collectors.joining("\n"));
+    String file = fileContent
+      .replaceAll("-----BEGIN SECRET KEY-----\n", "")
+      .replaceAll("\n-----END SECRET KEY-----", "");
+    SecretKey spec = new SecretKeySpec(Base64.getMimeDecoder().decode(file), "AES");
 
     assertThat(spec.getEncoded(), is(key.getEncoded()));
   }

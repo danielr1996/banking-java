@@ -13,6 +13,7 @@ type Query {
 
 type Mutation {
   createUser(user: UserInput): User
+  createKonto(konto: KontoInput): KontoDTO
 }
 
 type User {
@@ -68,4 +69,14 @@ type KontoDTO{
   id: ID
   blz: String
   kontonummer: String
+  tanmedia: String
+  secmech: String
+}
+input KontoInput{
+  blz: String
+  bic: String
+  kontonummer: String
+  tanmedia: String
+  secmech: String
+  password: String
 }

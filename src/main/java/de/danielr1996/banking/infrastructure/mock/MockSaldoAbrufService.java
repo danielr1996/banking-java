@@ -39,8 +39,9 @@ public class MockSaldoAbrufService implements SaldoAbrufService {
     StringBuffer tan = new StringBuffer();
     hbciCallback.callback(null, HBCICallback.NEED_PT_TAN,"MockSaldoAbrufService benötigt TAN",0,tan);
     log.info("MockSaldoAbrufService hat TAN erhalten: {}", tan);
+    hbciCallback.callback(null, HBCICallback.NEED_PT_PIN,"MockSaldoAbrufService benötigt PIN",0,tan);
+    log.info("MockSaldoAbrufService hat PIN erhalten: {}", tan);
     Saldo saldo = Saldo.builder()
-//      .id(UUID.randomUUID())
       .betrag(BigDecimal.valueOf(100))
       .datum(LocalDateTime.now())
       .kontoId(konto.getId())

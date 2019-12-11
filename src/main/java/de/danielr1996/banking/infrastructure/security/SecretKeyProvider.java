@@ -1,7 +1,5 @@
 package de.danielr1996.banking.infrastructure.security;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,37 +10,28 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
 public class SecretKeyProvider {
   public static final String JWT_SECRET_KEY = "JWT_SECRET_KEY";
-  public static final String KONTO_PASSWORD__PUBLIC_KEY = "KONTO_PASSWORD__PUBLIC_KEY";
-  public static final String KONTO_PASSWORD__PRIVATE_KEY = "KONTO_PASSWORD__PRIVATE_KEY";
+  public static final String PASSWORD_SECRET_KEY = "PASSWORD_SECRET_KEY";
 
   @Bean
   @Qualifier(JWT_SECRET_KEY)
   public SecretKey getJwtSignKeyPublic() {
-    return loadSecretKey("encryption/secret.pem");
+    return loadHmacSha256Key("encryption/secret.pem");
   }
 
   @Bean
-  @Qualifier(KONTO_PASSWORD__PUBLIC_KEY)
-  public PublicKey getKontoPasswordPublicKey() {
-    return loadPublicKey("encryption/public.pem");
-  }
-
-  @Bean
-  @Qualifier(KONTO_PASSWORD__PRIVATE_KEY)
-  public PrivateKey getKontoPasswordPrivateKey() {
-    return loadPrivateKey("encryption/private.pem");
+  @Qualifier(PASSWORD_SECRET_KEY)
+  public SecretKey getPasswordSecretKey() {
+    return loadAES256Key("encryption/aes.pem");
   }
 
   private PrivateKey loadPrivateKey(String classPathLocation) {
@@ -75,13 +64,26 @@ public class SecretKeyProvider {
     }
   }
 
-  private SecretKey loadSecretKey(String classPathLocation) {
+  private SecretKey loadHmacSha256Key(String classPathLocation) {
     try {
       String fileContent = IOUtils.toString(SecretKeyProvider.class.getClassLoader().getResourceAsStream(classPathLocation), Charset.defaultCharset());
       String file = fileContent
         .replaceAll("-----BEGIN SECRET KEY-----\n", "")
         .replaceAll("\n-----END SECRET KEY-----", "");
       return new SecretKeySpec(Base64.getMimeDecoder().decode(file), "HmacSHA256");
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  private SecretKey loadAES256Key(String classPathLocation) {
+    try {
+      String fileContent = IOUtils.toString(SecretKeyProvider.class.getClassLoader().getResourceAsStream(classPathLocation), Charset.defaultCharset());
+      String file = fileContent
+        .replaceAll("-----BEGIN SECRET KEY-----\n", "")
+        .replaceAll("\n-----END SECRET KEY-----", "");
+      return new SecretKeySpec(Base64.getMimeDecoder().decode(file), "AES");
     } catch (IOException e) {
       e.printStackTrace();
       return null;

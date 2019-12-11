@@ -12,13 +12,16 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import de.danielr1996.banking.application.auth.Password;
 import de.danielr1996.banking.domain.entities.Konto;
+import de.danielr1996.banking.infrastructure.security.PasswordDecrypter;
 import lombok.extern.slf4j.Slf4j;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.manager.MatrixCode;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +36,9 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
   private final static String PASSPORT_PIN = "PASSPORTPIN";
   private String tanMedium;
 
-  public ConsoleHBCICallback(Konto konto) {
+  public ConsoleHBCICallback(Konto konto, PasswordDecrypter passwordDecrypter) {
     this.blz = konto.getBlz();
-    this.pin = konto.getPasswordhash();
+    this.pin = passwordDecrypter.decrypt(konto.getPasswordhash());
     this.user = konto.getKontonummer();
     this.tanMedium = konto.getTanmedia();
   }
@@ -139,10 +142,12 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
   @Service
   @Profile("hbcicallback-console")
   public static class ConsoleHBCICallbackFactory implements HBCICallbackFactory {
+    @Autowired
+    private PasswordDecrypter passwordDecrypter;
 
     @Override
     public HBCICallback getCallBack(Konto konto, String rpcId) {
-      return new ConsoleHBCICallback(konto);
+      return new ConsoleHBCICallback(konto, passwordDecrypter);
     }
   }
 }

@@ -35,7 +35,6 @@ public class BuchungApplicationService {
 
     return BuchungContainer.builder()
       .buchungen(buchungen.getContent().stream().map(buchung -> {
-        System.out.println(buchung.getOtherPartner());
         TransaktionsPartnerDTO otherPartner;
         if (buchung.getOtherPartner() == null) {
           otherPartner = null;

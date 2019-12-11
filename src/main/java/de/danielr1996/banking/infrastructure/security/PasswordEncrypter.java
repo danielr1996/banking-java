@@ -34,6 +34,6 @@ public class PasswordEncrypter {
   }
 
   public static void main(String[] args) {
-    System.out.println(new PasswordEncrypter(new SecretKeyProvider().getPasswordSecretKey()).encrypt("Reich"));
+    System.out.println(new PasswordEncrypter(new SecretKeyProvider().getPasswordSecretKey()).encrypt("302222"));
   }
 }

@@ -18,8 +18,10 @@ public class Konto {
   @Id
   private UUID id;
   private String blz;
+  @Deprecated
   private String bic;
   private String passwordhash;
+  private String bankaccount;
   private String kontonummer;
   private String userId;
   private String secmech;

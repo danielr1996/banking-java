@@ -25,13 +25,13 @@ public class SecretKeyProvider {
   @Bean
   @Qualifier(JWT_SECRET_KEY)
   public SecretKey getJwtSignKeyPublic() {
-    return loadHmacSha256Key("encryption/secret.pem");
+    return loadHmacSha256Key("encryption/jwtsecret.pem");
   }
 
   @Bean
   @Qualifier(PASSWORD_SECRET_KEY)
   public SecretKey getPasswordSecretKey() {
-    return loadAES256Key("encryption/aes.pem");
+    return loadAES256Key("encryption/passwordsecret.pem");
   }
 
   private PrivateKey loadPrivateKey(String classPathLocation) {

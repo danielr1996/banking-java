@@ -40,7 +40,7 @@ public class WampHBCICallback extends AbstractHBCICallback {
   public WampHBCICallback(Konto konto, String rpcId) {
     this.blz = konto.getBlz();
     this.pin = konto.getPasswordhash();
-    this.user = konto.getKontonummer();
+    this.user = konto.getBankaccount();
     this.tanMedium = konto.getTanmedia();
 
     this.rpcId = rpcId;

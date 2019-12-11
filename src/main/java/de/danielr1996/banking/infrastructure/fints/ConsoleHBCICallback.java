@@ -39,7 +39,7 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
   public ConsoleHBCICallback(Konto konto, PasswordDecrypter passwordDecrypter) {
     this.blz = konto.getBlz();
     this.pin = passwordDecrypter.decrypt(konto.getPasswordhash());
-    this.user = konto.getKontonummer();
+    this.user = konto.getBankaccount();
     this.tanMedium = konto.getTanmedia();
   }
 
@@ -118,6 +118,10 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
         }
         break;
       case NEED_PT_TANMEDIA:
+        if(tanMedium == null){
+          log.info("Bitte gebe die Tan ein:");
+          tanMedium = new Scanner(System.in).nextLine();
+        }
         retData.replace(0, retData.length(), tanMedium);
         break;
       case HAVE_ERROR:

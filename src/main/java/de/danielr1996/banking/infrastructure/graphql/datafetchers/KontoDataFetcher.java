@@ -78,6 +78,7 @@ public class KontoDataFetcher {
   @NoArgsConstructor
   public static class KontoInput {
     private String blz;
+    @Deprecated
     private String bic;
     private String kontonummer;
     private String tanmedia;

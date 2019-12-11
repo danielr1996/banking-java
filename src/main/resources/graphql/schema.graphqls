@@ -13,7 +13,7 @@ type Query {
 
 type Mutation {
   createUser(user: UserInput): User
-  createKonto(konto: KontoInput): KontoDTO
+  createKonto(kontoId: ID, konto: KontoInput): KontoDTO
 }
 
 type User {

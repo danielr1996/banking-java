@@ -129,6 +129,9 @@ databaseChangeLog:
                   name: kontonummer
                   type: VARCHAR(255)
               - column:
+                  name: bankaccount
+                  type: VARCHAR(255)
+              - column:
                   name: user_id
                   type: VARCHAR(255)
               - column:

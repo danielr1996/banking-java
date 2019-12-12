@@ -2,18 +2,19 @@ scalar Date
 
 type Query {
   buchungById(id: ID ): BuchungDTO
-  buchungen(kontoIds: [ID], page: Int, size: Int): BuchungContainer
-  saldo(kontoIds: [ID]): Saldo
-  saldi(kontoIds: [ID], page: Int, size: Int): SaldiContainer
-  konto(userId: String): [KontoDTO]
+  buchungen(username: String): BuchungContainer
+  saldo(username: String): Saldo
+  saldi(username: String): SaldiContainer
+  konten(username: String): [KontoDTO]
   signIn(user: UserInput): String
   # FIXME: Remove rpcId
   refresh(username: String, rpcId: String): String
+  createUser(user: UserInput): User
+  createKonto(konto: KontoInput): KontoDTO
+  deleteKonto(kontoId: String): KontoDTO
 }
 
 type Mutation {
-  createUser(user: UserInput): User
-  createKonto(konto: KontoInput): KontoDTO
 }
 
 type User {
@@ -62,20 +63,23 @@ type Saldo{
   id: ID
   betrag: Float
   datum: Date
-  ownerId: ID
+  kontoId: ID
 }
 
 type KontoDTO{
   id: ID
   blz: String
   kontonummer: String
+  bankaccount: String
   tanmedia: String
   secmech: String
+  active: Boolean
 }
 input KontoInput{
+  id: ID
   blz: String
-  bic: String
   kontonummer: String
+  bankaccount: String
   tanmedia: String
   secmech: String
   password: String

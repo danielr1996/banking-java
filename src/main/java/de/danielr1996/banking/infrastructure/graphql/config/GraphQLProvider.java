@@ -74,16 +74,18 @@ public class GraphQLProvider {
         .dataFetcher("saldo", saldoDataFetcher.getSaldoDataFetcher()))
       .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("saldi", saldoDataFetcher.getSaldiDataFetcher()))
-      .type(newTypeWiring(TYPE_MUTATION)
+      .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("createUser", userDataFetcher.createUser()))
       .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("signIn", userDataFetcher.signin()))
       .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("refresh", refreshDataFetcher.refresh()))
       .type(newTypeWiring(TYPE_QUERY)
-        .dataFetcher("konto", kontoDataFetcher.getKontoDataFetcher()))
-      .type(newTypeWiring(TYPE_MUTATION)
+        .dataFetcher("konten", kontoDataFetcher.getKontoDataFetcher()))
+      .type(newTypeWiring(TYPE_QUERY)
         .dataFetcher("createKonto", kontoDataFetcher.getCreateKontoDataFetcher()))
+      .type(newTypeWiring(TYPE_QUERY)
+        .dataFetcher("deleteKonto", kontoDataFetcher.getDeleteKontoDataFetcher()))
       .build();
   }
 }

@@ -120,9 +120,6 @@ databaseChangeLog:
                   name: blz
                   type: VARCHAR(255)
               - column:
-                  name: bic
-                  type: VARCHAR(255)
-              - column:
                   name: passwordhash
                   type: VARCHAR(255)
               - column:
@@ -140,6 +137,9 @@ databaseChangeLog:
               - column:
                   name: tanmedia
                   type: VARCHAR(255)
+              - column:
+                  name: active
+                  type: BOOLEAN
             tableName: konto
   # Data
   - changeSet:

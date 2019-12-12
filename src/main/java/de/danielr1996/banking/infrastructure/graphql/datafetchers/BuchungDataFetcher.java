@@ -61,29 +61,28 @@ public class BuchungDataFetcher {
   public DataFetcher<BuchungContainer> getBuchungDataFetcher() {
     return dataFetchingEnvironment -> {
       GraphQLContext context = dataFetchingEnvironment.getContext();
-      String user = authenticationService.isAuthenticated(context.getJwt()).getSubject();
-
-      int page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
-      int size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-      List<String> kontoIdStrings = dataFetchingEnvironment.getArgument("kontoIds");
-      List<UUID> kontoIds = kontoIdStrings.stream()
-        .map(UUID::fromString)
-        .collect(Collectors.toList());
+      String actualUser = authenticationService.isAuthenticated(context.getJwt()).getSubject();
+      String requestedUser = dataFetchingEnvironment.getArgument("username");
+//      int page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
+//      int size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
+//      List<UUID> kontoIds = kontoIdStrings.stream()
+//        .map(UUID::fromString)
+//        .collect(Collectors.toList());
 
       // FIXME: Authorization
-      boolean onlyOwnedKontos = kontoIds.stream().allMatch(kontoId -> {
-        Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new GraphQLException("Not Found"));
-        return konto.getUserId().equals(user);
-      });
+//      boolean onlyOwnedKontos = kontoIds.stream().allMatch(kontoId -> {
+//        Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new GraphQLException("Not Found"));
+//        return konto.getUserId().equals(actualUser);
+//      });
 
-      if (!onlyOwnedKontos) {
+      if (!requestedUser.equals(actualUser)) {
         throw new GraphQLException("Not Authorized");
       }
 
       if (!dataFetchingEnvironment.getSelectionSet().contains("buchungen/konto")) {
-        return buchungApplicationService.getBuchungContainer(kontoIds, page, size);
+        return buchungApplicationService.getBuchungContainer(requestedUser);
       } else {
-        BuchungContainer buchungContainer = buchungApplicationService.getBuchungContainer(kontoIds, page, size);
+        BuchungContainer buchungContainer = buchungApplicationService.getBuchungContainer(requestedUser);
         List<BuchungDTO> buchungList = buchungContainer.getBuchungen().stream().map(buchung -> {
           Konto konto = kontoRepository.getOne(buchung.getKontoId());
           buchung.setKonto(KontoDTO.builder()

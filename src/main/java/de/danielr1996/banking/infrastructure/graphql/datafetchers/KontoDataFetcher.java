@@ -3,6 +3,7 @@ package de.danielr1996.banking.infrastructure.graphql.datafetchers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.danielr1996.banking.application.auth.AuthenticationService;
 import de.danielr1996.banking.application.auth.UserInput;
@@ -36,11 +37,10 @@ public class KontoDataFetcher {
   public DataFetcher<List<Konto>> getKontoDataFetcher() {
     return dataFetchingEnvironment -> {
       GraphQLContext context = dataFetchingEnvironment.getContext();
-      String user = authenticationService.isAuthenticated(context.getJwt()).getSubject();
+      String actualUser = authenticationService.isAuthenticated(context.getJwt()).getSubject();
+      String userId = dataFetchingEnvironment.getArgument("username");
 
-      String userId = dataFetchingEnvironment.getArgument("userId");
-
-      if (!userId.equals(user)) {
+      if (!userId.equals(actualUser)) {
         throw new GraphQLException("Not Authorized");
       }
 
@@ -59,16 +59,34 @@ public class KontoDataFetcher {
 
       Konto konto = Konto.builder()
         .userId(user)
-        .bic(kontoInput.getBic())
         .blz(kontoInput.getBlz())
-        .id(UUID.randomUUID())
+        .id(kontoInput.getId())
         .kontonummer(kontoInput.getKontonummer())
         .passwordhash(passwordEncrypter.encrypt(kontoInput.getPassword()))
         .secmech(kontoInput.getSecmech())
         .tanmedia(kontoInput.getTanmedia())
+        .bankaccount(kontoInput.getBankaccount())
         .build();
 
       return kontoRepository.save(konto);
+    };
+  }
+
+  public DataFetcher<Konto> getDeleteKontoDataFetcher() {
+    return dataFetchingEnvironment -> {
+      GraphQLContext context = dataFetchingEnvironment.getContext();
+      String actualUser = authenticationService.isAuthenticated(context.getJwt()).getSubject();
+      UUID kontoId = UUID.fromString(dataFetchingEnvironment.getArgument("kontoId"));
+
+      Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new GraphQLException("Not Found"));
+
+      if (!konto.getUserId().equals(actualUser)) {
+        throw new GraphQLException("Not Authorized");
+      }
+
+      kontoRepository.delete(konto);
+
+      return konto;
     };
   }
 
@@ -78,11 +96,11 @@ public class KontoDataFetcher {
   @NoArgsConstructor
   public static class KontoInput {
     private String blz;
-    @Deprecated
-    private String bic;
     private String kontonummer;
     private String tanmedia;
     private String secmech;
     private String password;
+    private String bankaccount;
+    private UUID id;
   }
 }

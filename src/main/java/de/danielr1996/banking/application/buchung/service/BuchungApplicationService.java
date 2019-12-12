@@ -9,8 +9,10 @@ import de.danielr1996.banking.application.buchung.dto.BuchungContainer;
 import de.danielr1996.banking.application.buchung.dto.BuchungDTO;
 import de.danielr1996.banking.application.buchung.dto.TransaktionsPartnerDTO;
 import de.danielr1996.banking.domain.entities.Buchung;
+import de.danielr1996.banking.domain.entities.Konto;
 import de.danielr1996.banking.domain.entities.Transaktionspartner;
 import de.danielr1996.banking.domain.repository.BuchungRepository;
+import de.danielr1996.banking.domain.repository.KontoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,20 +23,24 @@ import org.springframework.stereotype.Service;
 public class BuchungApplicationService {
   private BuchungRepository buchungRepository;
 
-  public BuchungApplicationService(@Autowired BuchungRepository buchungRepository) {
+  private KontoRepository kontoRepository;
+
+  public BuchungApplicationService(@Autowired KontoRepository kontoRepository, @Autowired BuchungRepository buchungRepository) {
     this.buchungRepository = buchungRepository;
+    this.kontoRepository = kontoRepository;
   }
 
   public Optional<Buchung> findById(String id) {
     return buchungRepository.findById(id);
   }
 
-  public BuchungContainer getBuchungContainer(List<UUID> kontoIds, int page, int size) {
-    Page<Buchung> buchungen = buchungRepository.findByKontoIdIn(kontoIds, PageRequest.of(page, size, Sort.by(Sort.Order.desc("id"))));
+  public BuchungContainer getBuchungContainer(String username) {
+    List<UUID> kontoIds = kontoRepository.findByUserId(username).stream().map(Konto::getId).collect(Collectors.toList());
+    List<Buchung> buchungen = buchungRepository.findByKontoIdIn(kontoIds, Sort.by(Sort.Order.desc("id")));
 
 
     return BuchungContainer.builder()
-      .buchungen(buchungen.getContent().stream().map(buchung -> {
+      .buchungen(buchungen.stream().map(buchung -> {
         TransaktionsPartnerDTO otherPartner;
         if (buchung.getOtherPartner() == null) {
           otherPartner = null;
@@ -64,8 +70,8 @@ public class BuchungApplicationService {
           .otherPartner(otherPartner)
           .build();
       }).collect(Collectors.toList()))
-      .totalElements(buchungen.getTotalElements())
-      .totalPages(buchungen.getTotalPages())
+      .totalElements(0)
+      .totalPages(0)
       .build();
   }
 }

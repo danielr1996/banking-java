@@ -34,45 +34,45 @@ public class SaldoDataFetcher {
   public DataFetcher<Saldo> getSaldoDataFetcher() {
     return dataFetchingEnvironment -> {
       GraphQLContext context = dataFetchingEnvironment.getContext();
-      String user = authenticationService.isAuthenticated(context.getJwt()).getSubject();
-      List<String> kontoIdStrings = dataFetchingEnvironment.getArgument("kontoIds");
-      List<UUID> kontoIds = kontoIdStrings.stream().map(UUID::fromString).collect(Collectors.toList());
+      String actualUser = authenticationService.isAuthenticated(context.getJwt()).getSubject();
+      String requestedUser = dataFetchingEnvironment.getArgument("username");
 
       // FIXME: Authorization
-      boolean onlyOwnedKontos = kontoIds.stream().allMatch(kontoId -> {
+     /* boolean onlyOwnedKontos = kontoIds.stream().allMatch(kontoId -> {
         Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new GraphQLException("Not Found"));
-        return konto.getUserId().equals(user);
-      });
-
-      if (!onlyOwnedKontos) {
+        return konto.getUserId().equals(actualUser);
+      });*/
+      if (!actualUser.equals(requestedUser)) {
         throw new GraphQLException("Not Authorized");
       }
 
-      return saldoApplicationService.getSaldo(kontoIds);
+      return saldoApplicationService.getSaldo(requestedUser);
     };
   }
 
   public DataFetcher<SaldiContainer> getSaldiDataFetcher() {
     return dataFetchingEnvironment -> {
       GraphQLContext context = dataFetchingEnvironment.getContext();
-      String user = authenticationService.isAuthenticated(context.getJwt()).getSubject();
+      String actualUser = authenticationService.isAuthenticated(context.getJwt()).getSubject();
+      String requestedUser = dataFetchingEnvironment.getArgument("username");
 
-      Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
-      Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
-      List<String> kontoIdStrings = dataFetchingEnvironment.getArgument("kontoIds");
-      List<UUID> kontoIds = kontoIdStrings.stream().map(UUID::fromString).collect(Collectors.toList());
+
+//      Integer page = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("page")).orElse(0);
+//      Integer size = Optional.ofNullable(dataFetchingEnvironment.<Integer>getArgument("size")).orElse(10);
+//      List<String> kontoIdStrings = dataFetchingEnvironment.getArgument("kontoIds");
+//      List<UUID> kontoIds = kontoIdStrings.stream().map(UUID::fromString).collect(Collectors.toList());
       // FIXME: Authorization
-      boolean onlyOwnedKontos = kontoIds.stream().allMatch(kontoId -> {
+    /*  boolean onlyOwnedKontos = kontoIds.stream().allMatch(kontoId -> {
         Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new GraphQLException("Not Found"));
         return konto.getUserId().equals(user);
-      });
+      });*/
 
-      if (!onlyOwnedKontos) {
+      if (!actualUser.equals(requestedUser)) {
         throw new GraphQLException("Not Authorized");
       }
 
 
-      return saldoApplicationService.getSaldiContainer(kontoIds, page, size);
+      return saldoApplicationService.getSaldiContainer(requestedUser);
     };
   }
 }

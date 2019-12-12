@@ -58,8 +58,6 @@ public abstract class AbstractFinTSAbrufService {
         Arrays
           .stream(konten)
           .filter(k1 -> {
-            System.out.println(k1.number);
-            System.out.println(konto.getKontonummer());
             return k1.number.equals(konto.getKontonummer());
           })
           .findFirst()

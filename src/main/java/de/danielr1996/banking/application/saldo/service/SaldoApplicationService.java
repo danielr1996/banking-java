@@ -35,8 +35,7 @@ public class SaldoApplicationService {
     List<Buchung> buchungen = buchungRepository.findByKontoIdIn(kontoIds);
     Saldo lastSaldo = kontoIds.stream()
       .map(saldoRepository::findByKontoId)
-      .reduce(Saldo::add)
-      .orElseGet(Saldo::new);
+      .reduce(new Saldo(), Saldo::add);
     List<Saldo> aggregated = AggregateSaldoDomainService.aggregateSaldi(buchungen, lastSaldo);
 
     List<Saldo> filtered = aggregated;

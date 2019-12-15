@@ -21,6 +21,7 @@ import java.util.Base64;
 public class SecretKeyProvider {
   public static final String JWT_SECRET_KEY = "JWT_SECRET_KEY";
   public static final String PASSWORD_SECRET_KEY = "PASSWORD_SECRET_KEY";
+  public static final String PASSPORT_SECRET = "PASSPORT_SECRET";
 
   @Bean
   @Qualifier(JWT_SECRET_KEY)
@@ -32,6 +33,12 @@ public class SecretKeyProvider {
   @Qualifier(PASSWORD_SECRET_KEY)
   public SecretKey getPasswordSecretKey() {
     return loadAES256Key("encryption/passwordsecret.pem");
+  }
+
+  @Bean
+  @Qualifier(PASSPORT_SECRET)
+  public String getPassportSecret() {
+    return loadAES256KeyPlainText("encryption/passportsecret.pem");
   }
 
   private PrivateKey loadPrivateKey(String classPathLocation) {
@@ -78,12 +85,16 @@ public class SecretKeyProvider {
   }
 
   private SecretKey loadAES256Key(String classPathLocation) {
+    String file = loadAES256KeyPlainText(classPathLocation);
+    return new SecretKeySpec(Base64.getMimeDecoder().decode(file), "AES");
+  }
+
+  private String loadAES256KeyPlainText(String classPathLocation) {
     try {
       String fileContent = IOUtils.toString(SecretKeyProvider.class.getClassLoader().getResourceAsStream(classPathLocation), Charset.defaultCharset());
-      String file = fileContent
+      return fileContent
         .replaceAll("-----BEGIN SECRET KEY-----\n", "")
         .replaceAll("\n-----END SECRET KEY-----", "");
-      return new SecretKeySpec(Base64.getMimeDecoder().decode(file), "AES");
     } catch (IOException e) {
       e.printStackTrace();
       return null;

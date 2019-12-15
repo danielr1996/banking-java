@@ -39,10 +39,10 @@ class AuthenticationTest extends AbstractAuthorizationAndAuthenticationTest {
   @ParameterizedTest
   @ValueSource(strings = {
     "{buchungById(id: \\\"201910280705\\\") {id}}",
-    "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{konto(userId: \\\"user1\\\") {id}}",
-    "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"]) {betrag}}",
+    "{buchungen(username:\\\"user1\\\") {totalElements}}",
+    "{konten(username:\\\"user1\\\") {id}}",
+    "{saldi(username:\\\"user1\\\") {totalElements}}",
+    "{saldo(username:\\\"user1\\\") {betrag}}",
     "{refresh(rpcId: \\\"201910280705\\\", username: \\\"user1\\\")}",
   })
   void testAuthenticationWithNoJwtShouldBeForbidden(String query) {
@@ -66,10 +66,10 @@ class AuthenticationTest extends AbstractAuthorizationAndAuthenticationTest {
   @ParameterizedTest
   @ValueSource(strings = {
     "{buchungById(id: \\\"201910280705\\\") {id}}",
-    "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{konto(userId: \\\"user1\\\") {id}}",
-    "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"], page: 0, size: 10) {totalElements}}",
-    "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\"]) {betrag}}",
+    "{buchungen(username:\\\"user1\\\") {totalElements}}",
+    "{konten(username: \\\"user1\\\") {id}}",
+    "{saldi(username:\\\"user1\\\") {totalElements}}",
+    "{saldo(username:\\\"user1\\\") {betrag}}",
     "{refresh(rpcId: \\\"201910280705\\\", username: \\\"user1\\\")}",
   })
   void testAuthenticationWithWrongJwtShouldBeForbidden(String query) {

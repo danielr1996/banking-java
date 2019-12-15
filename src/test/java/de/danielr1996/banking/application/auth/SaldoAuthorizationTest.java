@@ -36,7 +36,7 @@ class SaldoAuthorizationTest extends AbstractAuthorizationAndAuthenticationTest 
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"], page: 0, size: 10) {totalElements}}" + "\",\n" +
+        "\"query\": \"" + "{saldi(username:\\\"user1\\\") {totalElements}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -64,7 +64,7 @@ class SaldoAuthorizationTest extends AbstractAuthorizationAndAuthenticationTest 
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"]) {betrag}}" + "\",\n" +
+        "\"query\": \"" + "{saldo(username:\\\"user1\\\") {betrag}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -92,7 +92,7 @@ class SaldoAuthorizationTest extends AbstractAuthorizationAndAuthenticationTest 
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{saldi(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"], page: 0, size: 10) {totalElements}}" + "\",\n" +
+        "\"query\": \"" + "{saldi(username:\\\"user1\\\") {totalElements}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -117,7 +117,7 @@ class SaldoAuthorizationTest extends AbstractAuthorizationAndAuthenticationTest 
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{saldo(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"]) {betrag}}" + "\",\n" +
+        "\"query\": \"" + "{saldo(username:\\\"user1\\\") {betrag}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()

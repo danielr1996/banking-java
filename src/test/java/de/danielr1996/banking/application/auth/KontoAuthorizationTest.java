@@ -37,7 +37,7 @@ class KontoAuthorizationTest extends AbstractAuthorizationAndAuthenticationTest 
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{konto(userId: \\\"user1\\\") {id}}" + "\",\n" +
+        "\"query\": \"" + "{konten(username: \\\"user1\\\") {id}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -65,7 +65,7 @@ class KontoAuthorizationTest extends AbstractAuthorizationAndAuthenticationTest 
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{konto(userId: \\\"user1\\\") {id}}" + "\",\n" +
+        "\"query\": \"" + "{konten(username: \\\"user1\\\") {id}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()

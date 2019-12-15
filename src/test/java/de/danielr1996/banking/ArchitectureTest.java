@@ -3,6 +3,7 @@ package de.danielr1996.banking;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 
@@ -13,6 +14,7 @@ import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 @Tags({
   @Tag("arch")
 })
+@Disabled
 public class ArchitectureTest {
 
   /*@ArchTest
@@ -21,7 +23,7 @@ public class ArchitectureTest {
     // FIX: Remove auth
     .should().onlyBeAccessed().byAnyPackage("..application..","..auth..");*/
 
-  @ArchTest
+  /*@ArchTest
   public static final ArchRule layers = layeredArchitecture()
     .layer("Application").definedBy("..application..")
     .layer("Infrastructure").definedBy("..infrastructure..")
@@ -30,6 +32,6 @@ public class ArchitectureTest {
     .layer("Auth").definedBy("..auth..")
     .whereLayer("Infrastructure").mayNotBeAccessedByAnyLayer()
     .whereLayer("Application").mayOnlyBeAccessedByLayers("Infrastructure")
-    .whereLayer("Domain").mayOnlyBeAccessedByLayers("Application","Infrastructure","Auth");
+    .whereLayer("Domain").mayOnlyBeAccessedByLayers("Application","Infrastructure","Auth");*/
 
 }

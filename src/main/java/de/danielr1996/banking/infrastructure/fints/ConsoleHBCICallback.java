@@ -22,8 +22,11 @@ import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.manager.MatrixCode;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+
+import static de.danielr1996.banking.infrastructure.security.SecretKeyProvider.PASSPORT_SECRET;
 
 /**
  * Implementation of the {@link AbstractHBCICallback} that reads callback values from the Console.
@@ -33,21 +36,22 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
   private String blz;
   private String user;
   private String pin;
-  private final static String PASSPORT_PIN = "PASSPORTPIN";
   private String tanMedium;
+  private String passportSecret;
 
-  public ConsoleHBCICallback(Konto konto, PasswordDecrypter passwordDecrypter) {
+  public ConsoleHBCICallback(Konto konto, PasswordDecrypter passwordDecrypter, String passportSecret) {
     this.blz = konto.getBlz();
     this.pin = passwordDecrypter.decrypt(konto.getPasswordhash());
     this.user = konto.getBankaccount();
     this.tanMedium = konto.getTanmedia();
+    this.passportSecret = passportSecret;
   }
 
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
     switch (reason) {
       case NEED_PASSPHRASE_LOAD:
       case NEED_PASSPHRASE_SAVE:
-        retData.replace(0, retData.length(), PASSPORT_PIN);
+        retData.replace(0, retData.length(), passportSecret);
         break;
       case NEED_PT_PIN:
         retData.replace(0, retData.length(), pin);
@@ -149,9 +153,13 @@ public class ConsoleHBCICallback extends AbstractHBCICallback {
     @Autowired
     private PasswordDecrypter passwordDecrypter;
 
+    @Autowired
+    @Qualifier(PASSPORT_SECRET)
+    String secret;
+
     @Override
     public HBCICallback getCallBack(Konto konto, String rpcId) {
-      return new ConsoleHBCICallback(konto, passwordDecrypter);
+      return new ConsoleHBCICallback(konto, passwordDecrypter, secret);
     }
   }
 }

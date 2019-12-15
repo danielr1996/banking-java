@@ -34,10 +34,10 @@ public class UserDataFetcher {
       HashMap<Object, Object> userMap = dataFetchingEnvironment.getArgument("user");
       ObjectMapper mapper = new ObjectMapper();
       UserInput userInput = mapper.convertValue(userMap, UserInput.class);
-
+      String password = new String(Base64.getDecoder().decode(userInput.getPassword()));
       User user = User.builder()
         .name(userInput.getName())
-        .password(passwordHasher.hash(userInput.getPassword()))
+        .password(passwordHasher.hash(password))
         .build();
 
       if (userRepository.existsById(userInput.getName())) {

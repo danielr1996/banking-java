@@ -37,7 +37,7 @@ class BuchungAuthorizationTest extends AbstractAuthorizationAndAuthenticationTes
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"6fdf50c3-938f-4aa2-a2b7-a2849b8fc25a\\\"], page: 0, size: 10) {totalElements buchungen{id}}}" + "\",\n" +
+        "\"query\": \"" + "{buchungen(username:\\\"user1\\\") {totalElements buchungen{id}}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()
@@ -93,7 +93,7 @@ class BuchungAuthorizationTest extends AbstractAuthorizationAndAuthenticationTes
       .contentType(MediaType.APPLICATION_JSON)
       .bodyValue("{\n" +
         "\"operationName\": null, \n" +
-        "\"query\": \"" + "{buchungen(kontoIds: [\\\"42601f3b-6e91-4c80-bb11-c5a21d98fc57\\\",\\\"d57ba00b-fdc3-4a18-b16f-fb967e02072a\\\"], page: 0, size: 10) {totalElements}}" + "\",\n" +
+        "\"query\": \"" + "{buchungen(username:\\\"user1\\\") {totalElements}}" + "\",\n" +
         "\"variables\": {}\n" +
         "}")
       .exchange()

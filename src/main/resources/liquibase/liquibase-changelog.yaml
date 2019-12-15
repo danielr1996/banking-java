@@ -120,13 +120,13 @@ databaseChangeLog:
                   name: blz
                   type: VARCHAR(255)
               - column:
-                  name: bic
-                  type: VARCHAR(255)
-              - column:
                   name: passwordhash
                   type: VARCHAR(255)
               - column:
                   name: kontonummer
+                  type: VARCHAR(255)
+              - column:
+                  name: bankaccount
                   type: VARCHAR(255)
               - column:
                   name: user_id
@@ -137,6 +137,9 @@ databaseChangeLog:
               - column:
                   name: tanmedia
                   type: VARCHAR(255)
+              - column:
+                  name: active
+                  type: BOOLEAN
             tableName: konto
   # Data
   - changeSet:
@@ -149,13 +152,13 @@ databaseChangeLog:
             path: /liquibase/data-test.sql
             relativeToChangeLogFile: true
             stripComments: true
-  - changeSet:
-      id: DATA_PROD
-      author: Daniel Richter
-      context: data-prod
-      changes:
-        - sqlFile:
-            encoding: utf8
-            path: /liquibase/data-prod.sql
-            relativeToChangeLogFile: true
-            stripComments: true
+#  - changeSet:
+#      id: DATA_PROD
+#      author: Daniel Richter
+#      context: data-prod
+#      changes:
+#        - sqlFile:
+#            encoding: utf8
+#            path: /liquibase/data-prod.sql
+#            relativeToChangeLogFile: true
+#            stripComments: true

@@ -96,7 +96,7 @@ public class SecretKeyProviderTest {
     sha256_HMAC.init(key);
 
     //Write
-    FileOutputStream fos = new FileOutputStream(new File("secret.pem"));
+    FileOutputStream fos = new FileOutputStream(new File("jwtsecret.pem"));
 
     fos.write("-----BEGIN SECRET KEY-----\n".getBytes());
     fos.write(Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes()).encode(key.getEncoded()));
@@ -105,7 +105,7 @@ public class SecretKeyProviderTest {
     fos.close();
 
     //Read
-    String fileContent = Files.readAllLines(new File("secret.pem").toPath()).stream().collect(Collectors.joining("\n"));
+    String fileContent = Files.readAllLines(new File("jwtsecret.pem").toPath()).stream().collect(Collectors.joining("\n"));
     String file = fileContent
       .replaceAll("-----BEGIN SECRET KEY-----\n", "")
       .replaceAll("\n-----END SECRET KEY-----", "");
@@ -126,7 +126,7 @@ public class SecretKeyProviderTest {
     SecretKey key = keyGen.generateKey();
 
     //Write
-    FileOutputStream fos = new FileOutputStream(new File("aes.pem"));
+    FileOutputStream fos = new FileOutputStream(new File("passwordsecret.pem"));
 
     fos.write("-----BEGIN SECRET KEY-----\n".getBytes());
     fos.write(Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes()).encode(key.getEncoded()));
@@ -135,7 +135,7 @@ public class SecretKeyProviderTest {
     fos.close();
 
     //Read
-    String fileContent = Files.readAllLines(new File("aes.pem").toPath()).stream().collect(Collectors.joining("\n"));
+    String fileContent = Files.readAllLines(new File("passwordsecret.pem").toPath()).stream().collect(Collectors.joining("\n"));
     String file = fileContent
       .replaceAll("-----BEGIN SECRET KEY-----\n", "")
       .replaceAll("\n-----END SECRET KEY-----", "");

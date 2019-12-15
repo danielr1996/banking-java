@@ -58,8 +58,4 @@ public class PasswordHasher {
     BigInteger bigInt = new BigInteger(1, values);
     return bigInt.toString(16);
   }
-
-  public static void main(String[] args) {
-    PasswordHasher passwordHasher = new PasswordHasher();
-  }
 }

@@ -1,6 +1,7 @@
 package de.danielr1996.banking.infrastructure.fints;
 
 import de.danielr1996.banking.domain.entities.Konto;
+import de.danielr1996.banking.infrastructure.security.PasswordDecrypter;
 import io.crossbar.autobahn.wamp.Client;
 import io.crossbar.autobahn.wamp.Session;
 import io.crossbar.autobahn.wamp.types.ExitInfo;
@@ -11,6 +12,8 @@ import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.manager.MatrixCode;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 
+import static de.danielr1996.banking.infrastructure.security.SecretKeyProvider.PASSPORT_SECRET;
+
 /**
  * Implementation of the {@link AbstractHBCICallback} that reads callback values from the user, asking the frontend using WAMP.
  */
@@ -35,14 +40,14 @@ public class WampHBCICallback extends AbstractHBCICallback {
   private String pin;
   private String rpcId;
   private String tanMedium;
-  private final static String PASSPORT_PIN = "PASSPORTPIN";
+  private String passportSecret;
 
-  public WampHBCICallback(Konto konto, String rpcId) {
+  public WampHBCICallback(Konto konto, String rpcId, PasswordDecrypter passwordDecrypter, String passportSecret) {
     this.blz = konto.getBlz();
-    this.pin = konto.getPasswordhash();
-    this.user = konto.getKontonummer();
+    this.pin = passwordDecrypter.decrypt(konto.getPasswordhash());
+    this.user = konto.getBankaccount();
     this.tanMedium = konto.getTanmedia();
-
+    this.passportSecret = passportSecret;
     this.rpcId = rpcId;
   }
 
@@ -50,7 +55,7 @@ public class WampHBCICallback extends AbstractHBCICallback {
     switch (reason) {
       case NEED_PASSPHRASE_LOAD:
       case NEED_PASSPHRASE_SAVE:
-        retData.replace(0, retData.length(), PASSPORT_PIN);
+        retData.replace(0, retData.length(), this.passportSecret);
         break;
       case NEED_PT_PIN:
         retData.replace(0, retData.length(), pin);
@@ -159,10 +164,16 @@ public class WampHBCICallback extends AbstractHBCICallback {
   @Service
   @Profile("hbcicallback-wamp")
   public static class ConsoleHBCICallbackFactory implements HBCICallbackFactory {
+    @Autowired
+    private PasswordDecrypter passwordDecrypter;
+
+    @Autowired
+    @Qualifier(PASSPORT_SECRET)
+    String secret;
 
     @Override
     public HBCICallback getCallBack(Konto konto, String rpcId) {
-      return new WampHBCICallback(konto, rpcId);
+      return new WampHBCICallback(konto, rpcId, passwordDecrypter, secret);
     }
   }
 }

@@ -17,6 +17,7 @@ import org.kapott.hbci.status.HBCIExecStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,7 +34,7 @@ public abstract class AbstractFinTSAbrufService {
   protected HBCIPassport getPassport(Konto konto, String rpcId) {
     Properties props = new Properties();
     HBCIUtils.init(props, this.hbciCallbackFactory.getCallBack(konto, rpcId));
-    final File passportFile = new File("user-" + konto.getId() + ".dat");
+    final File passportFile = new File("konto-" + konto.getId() + ".dat");
     HBCIUtils.setParam("client.passport.default", "PinTan"); // Legt als Verfahren PIN/TAN fest.
     HBCIUtils.setParam("client.passport.PinTan.init", "1"); // Stellt sicher, dass der Passport initialisiert wird
     HBCIPassport passport = AbstractHBCIPassport.getInstance(passportFile);
@@ -48,13 +49,23 @@ public abstract class AbstractFinTSAbrufService {
 
   protected org.kapott.hbci.structures.Konto chooseKonto(Konto konto, HBCIPassport passport) {
     org.kapott.hbci.structures.Konto[] konten = passport.getAccounts();
-    if (konten == null || konten.length == 0)
-      log.error("Keine Konten ermittelbar");
 
-    // FIXME: konto dynamisch auswählen
-    org.kapott.hbci.structures.Konto k = konten[3];
-    log.info("Using {}", k);
-    return k;
+    if (konten == null || konten.length == 0) {
+      log.error("Keine Konten ermittelbar");
+      throw new RuntimeException("Not Found");
+    } else {
+      org.kapott.hbci.structures.Konto k =
+        Arrays
+          .stream(konten)
+          .filter(k1 -> {
+            return k1.number.equals(konto.getKontonummer());
+          })
+          .findFirst()
+          .orElseThrow(() -> new RuntimeException("Not Found"));
+
+      log.info("Using {}", k);
+      return k;
+    }
   }
 
   protected <T extends HBCIJobResult> T getResult(HBCIHandler handle, String jobname, org.kapott.hbci.structures.Konto k) {

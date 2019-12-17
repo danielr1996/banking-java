@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: banking-service
+  labels:
+    app.kubernetes.io/name: banking-service
+    app.kubernetes.io/component: Ingress
+    app.kubernetes.io/part-of: banking
+    app.kubernetes.io/instance: REPLACE_ENV
+    app.kubernetes.io/version: REPLACE_VERSION
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  rules:
+    - host: api.banking.danielr1996.de
+      http:
+        paths:
+          - backend:
+              serviceName: banking-service
+              servicePort: 80
+---

@@ -1,0 +1,3 @@
+- op: replace
+  path: /spec/rules/0/host
+  value: feat-ci.api.banking.danielr1996.de

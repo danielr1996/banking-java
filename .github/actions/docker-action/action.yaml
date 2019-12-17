@@ -1,0 +1,23 @@
+name: 'Docker'
+description: 'Build and publish docker images'
+inputs:
+  imagename:
+    description: 'Name of the created image'
+    required: true
+  imagetag:
+    description: 'Tag of the created image, slashes will translate to dashes'
+    default: latest
+  dockeruser:
+    description: 'Dockerhub user'
+    required: true
+  dockerpassword:
+    description: 'Dockerhub pasword'
+    required: true
+outputs:
+  time:
+    description: 'The time we greeted you'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.who-to-greet }}

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: banking-service
+  labels:
+    app.kubernetes.io/name: banking-service
+    app.kubernetes.io/instance: REPLACE_ENV
+    app.kubernetes.io/version: REPLACE_VERSION
+    app.kubernetes.io/component: Service
+    app.kubernetes.io/part-of: banking
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  type: ClusterIP
+  selector:
+    app: banking-service
+  ports:
+    - port: 80
+      targetPort: 9090
+      protocol: TCP
+---

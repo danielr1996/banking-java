@@ -12,7 +12,9 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: banking-service
+    app.kubernetes.io/name: banking-service
+    app.kubernetes.io/instance: REPLACE_ENV
+    app.kubernetes.io/version: REPLACE_VERSION
   ports:
     - port: 80
       targetPort: 9090

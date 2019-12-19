@@ -4,7 +4,7 @@ metadata:
   name: banking-service
   labels:
     app.kubernetes.io/name: banking-service
-    app.kubernetes.io/component: Frontend
+    app.kubernetes.io/component: Backend
     app.kubernetes.io/part-of: banking
     app.kubernetes.io/instance: REPLACE_ENV
     app.kubernetes.io/version: REPLACE_VERSION
@@ -13,13 +13,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/instance: banking-ui-REPLACE_ENV
+      app.kubernetes.io/name: banking-service
+      app.kubernetes.io/instance: REPLACE_ENV
+      app.kubernetes.io/version: REPLACE_VERSION
   template:
     metadata:
       labels:
-        app: banking-service
         app.kubernetes.io/name: banking-service
-        app.kubernetes.io/component: ReplicaSet
+        app.kubernetes.io/component: Pod
         app.kubernetes.io/part-of: banking-service
         app.kubernetes.io/instance: REPLACE_ENV
         app.kubernetes.io/version: REPLACE_VERSION

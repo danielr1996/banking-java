@@ -3,7 +3,7 @@ kind: Kustomization
 nameSuffix: -develop
 commonLabels:
   app.kubernetes.io/instance: develop
-  app.kubernetes.io/version: ui-1.0.0
+  app.kubernetes.io/version: 1.0.0
 bases:
   - ../../base
 patchesJson6902:

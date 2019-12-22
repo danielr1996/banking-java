@@ -11,6 +11,10 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
         id: sanitize
+      - name: Sanitize branch name
+        shell: bash
+        run: echo "##[set-output name=sha;]$(echo git rev-parse --short $GITHUB_SHA"
+        id: sha
       - name: Build
         uses: ./.github/actions/docker-action
         with:
@@ -26,7 +30,7 @@ jobs:
       - name: Envsubst
         run: envsubst '$VERSION $INSTANCE' < replace.yaml > deployment.yaml
         env:
-          VERSION: ${ GITHUB_SHA }
+          VERSION: ${{ steps.sha.outputs.sha }}
           INSTANCE: ${{ steps.sanitize.outputs.branch }}
       - name: Echo
         run: cat deployment.yaml

@@ -24,7 +24,7 @@ jobs:
         with:
           args: kustomize deployment/overlays/replace > replace.yaml
       - name: Envsubst
-          - run: echo replace.yaml
+        run: echo replace.yaml
       - name: Deploy
         uses: ./.github/actions/kubectl-action
         with:

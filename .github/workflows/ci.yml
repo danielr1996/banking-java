@@ -26,12 +26,12 @@ jobs:
       - name: Envsubst
         run: envsubst '$VERSION $INSTANCE' < replace.yaml > deployment.yaml
         env:
-          VERSION: 4.5.6
-          INSTANCE: rc/prod
+          VERSION: ${{ GITHUB_SHA }}
+          INSTANCE: ${{ steps.sanitize.outputs.branch }}
       - name: Echo
         run: cat deployment.yaml
-#      - name: Deploy
-#        uses: ./.github/actions/kubectl-action
-#        with:
-#          kubeconfig: ${{ secrets.KUBE_CONFIG }}
-#          args: apply -k deployment/overlays/${{ steps.sanitize.outputs.branch }}
+      - name: Deploy
+        uses: ./.github/actions/kubectl-action
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          args: apply -f deployment.yaml

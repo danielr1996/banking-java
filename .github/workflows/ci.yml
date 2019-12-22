@@ -24,10 +24,9 @@ jobs:
         with:
           args: kustomize deployment/overlays/replace > replace.yaml
       - name: Envsubst
-        - run: echo replace.yaml
+          - run: echo replace.yaml
       - name: Deploy
         uses: ./.github/actions/kubectl-action
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
           args: apply -k deployment/overlays/${{ steps.sanitize.outputs.branch }}

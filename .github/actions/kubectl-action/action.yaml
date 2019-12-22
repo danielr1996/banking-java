@@ -1,8 +1,5 @@
 name: 'Kubectl'
 description: 'Execute kubectl commands'
-outputs:
-  kubectl:
-    description: 'Output of kubectl command'
 runs:
   using: 'docker'
   image: 'Dockerfile'

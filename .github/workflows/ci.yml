@@ -22,7 +22,9 @@ jobs:
       - name: Kustomize
         uses: ./.github/actions/kubectl-action
         with:
-          args: kustomize deployment/overlays/replace
+          args: kustomize deployment/overlays/replace > replace.yaml
+      - name: Envsubst
+        - run: echo replace.yaml
       - name: Deploy
         uses: ./.github/actions/kubectl-action
         env:

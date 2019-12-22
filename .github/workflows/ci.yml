@@ -19,6 +19,10 @@ jobs:
           imagetag: ${{ steps.sanitize.outputs.branch }}
           dockeruser: ${{ secrets.DOCKER_USERNAME }}
           dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Kustomize
+        uses: ./.github/actions/kubectl-action
+        with:
+          args: kustomize deployment/overlays/replace
       - name: Deploy
         uses: ./.github/actions/kubectl-action
         env:

@@ -24,9 +24,14 @@ jobs:
         with:
           args: kustomize deployment/overlays/replace > replace.yaml
       - name: Envsubst
-        run: cat replace.yaml
-      - name: Deploy
-        uses: ./.github/actions/kubectl-action
-        with:
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
-          args: apply -k deployment/overlays/${{ steps.sanitize.outputs.branch }}
+        run: envsubst '$VERSION $INSTANCE' < replace.yaml > deployment.yaml
+        env:
+          VERSION: 4.5.6
+          INSTANCE: rc/prod
+      - name: Echo
+        run: cat deployment.yaml
+#      - name: Deploy
+#        uses: ./.github/actions/kubectl-action
+#        with:
+#          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+#          args: apply -k deployment/overlays/${{ steps.sanitize.outputs.branch }}

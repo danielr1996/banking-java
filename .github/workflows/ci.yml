@@ -26,7 +26,7 @@ jobs:
       - name: Envsubst
         run: envsubst '$VERSION $INSTANCE' < replace.yaml > deployment.yaml
         env:
-          VERSION: ${{ GITHUB_SHA }}
+          VERSION: ${ GITHUB_SHA }
           INSTANCE: ${{ steps.sanitize.outputs.branch }}
       - name: Echo
         run: cat deployment.yaml

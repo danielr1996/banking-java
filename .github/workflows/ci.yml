@@ -13,7 +13,7 @@ jobs:
         id: sanitize
       - name: Sanitize branch name
         shell: bash
-        run: echo "##[set-output name=sha;]$(echo git rev-parse --short $GITHUB_SHA"
+        run: echo "##[set-output name=sha;]$(echo git rev-parse --short $GITHUB_SHA)"
         id: sha
       - name: Build
         uses: ./.github/actions/docker-action

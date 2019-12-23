@@ -9,4 +9,5 @@ export KUBECONFIG=/tmp/config
 /opt/kubectl kustomize deployment/overlays/replace > template.yaml
 envsubst '$VERSION $INSTANCE' < template.yaml > deployment.yaml
 cat deployment.yaml
+/opt/kubectl config view
 /opt/kubectl apply -f deployment.yaml

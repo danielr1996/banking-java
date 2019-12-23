@@ -17,7 +17,7 @@ jobs:
           dockeruser: ${{ secrets.DOCKER_USERNAME }}
           dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
       - name: Deploy
-        uses: ./.github/actions/kubectl-deploy-action
+        uses: ./.github/actions/kubectl-action
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
           args: apply -f deployment.yaml

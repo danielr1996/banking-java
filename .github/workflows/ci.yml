@@ -31,7 +31,7 @@ jobs:
       - name: Echo
         run: echo ${DEPLOYMENT}
         env:
-          DEPLOYMENT ${{ steps.kustomize.outputs.kubectl }}
+          DEPLOYMENT: ${{ steps.kustomize.outputs.kubectl }}
 #      - name: Envsubst
 #        run: envsubst '$VERSION $INSTANCE' < replace.yaml > deployment.yaml
 #        env:

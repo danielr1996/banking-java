@@ -28,17 +28,18 @@ jobs:
         with:
           args: kustomize deployment/overlays/replace
         id: kustomize
-      - name: Echo
-        run: echo ${DEPLOYMENT}
-        env:
-          DEPLOYMENT: ${{ steps.kustomize.outputs.kubectl }}
-#      - name: Envsubst
-#        run: envsubst '$VERSION $INSTANCE' < replace.yaml > deployment.yaml
-#        env:
-#          VERSION: ${{ steps.sha.outputs.sha }}
-#          INSTANCE: ${{ steps.sanitize.outputs.branch }}
 #      - name: Echo
-#        run: cat deployment.yaml
+#        run: echo ${DEPLOYMENT}
+#        env:
+#          DEPLOYMENT: ${{ steps.kustomize.outputs.kubectl }}
+      - name: Envsubst
+        run: echo $TEMPLATE | base64 --decode | envsubst '$VERSION $INSTANCE' > deployment.yaml
+        env:
+          TEMPLATE: ${{ steps.kustomize.result }}
+          VERSION: ${{ steps.sha.outputs.sha }}
+          INSTANCE: ${{ steps.sanitize.outputs.branch }}
+      - name: Echo
+        run: cat deployment.yaml
 #      - name: Deploy
 #        uses: ./.github/actions/kubectl-action
 #        with:

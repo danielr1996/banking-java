@@ -6,6 +6,10 @@ echo ########################
 echo ImageName: $INPUT_IMAGENAME
 echo ImageTags: $INPUT_IMAGETAGS
 
+for tag in $INPUT_IMAGETAGS; do
+  echo "Tagging image $tag"
+done
+
 # Login
 echo $INPUT_DOCKERPASSWORD | docker login --username $INPUT_DOCKERUSER --password-stdin
 

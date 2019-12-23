@@ -23,25 +23,28 @@ jobs:
           imagetag: ${{ steps.sanitize.outputs.branch }}
           dockeruser: ${{ secrets.DOCKER_USERNAME }}
           dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Kustomize
-        uses: ./.github/actions/kubectl-action
-        with:
-          args: kustomize deployment/overlays/replace
-        id: kustomize
+#      - name: Kustomize
+#        uses: ./.github/actions/kubectl-action
+#        with:
+#          args: kustomize deployment/overlays/replace
+#        id: kustomize
 #      - name: Echo
 #        run: echo ${DEPLOYMENT}
 #        env:
 #          DEPLOYMENT: ${{ steps.kustomize.outputs.kubectl }}
-      - name: Envsubst
-        run: echo $TEMPLATE | base64 --decode | envsubst '$VERSION $INSTANCE' > deployment.yaml
+#      - name: Envsubst
+#        run: echo $TEMPLATE | base64 --decode | envsubst '$VERSION $INSTANCE' > deployment.yaml
+#        env:
+#          TEMPLATE: ${{ steps.kustomize.result }}
+#          VERSION: ${{ steps.sha.outputs.sha }}
+#          INSTANCE: ${{ steps.sanitize.outputs.branch }}
+#      - name: Echo
+#        run: cat deployment.yaml
+      - name: Deploy
+        uses: ./.github/actions/kubectl-deploy-action
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          args: apply -f deployment.yaml
         env:
-          TEMPLATE: ${{ steps.kustomize.result }}
           VERSION: ${{ steps.sha.outputs.sha }}
           INSTANCE: ${{ steps.sanitize.outputs.branch }}
-      - name: Echo
-        run: cat deployment.yaml
-#      - name: Deploy
-#        uses: ./.github/actions/kubectl-action
-#        with:
-#          kubeconfig: ${{ secrets.KUBE_CONFIG }}
-#          args: apply -f deployment.yaml

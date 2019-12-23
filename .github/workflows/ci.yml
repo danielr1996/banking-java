@@ -15,11 +15,9 @@ jobs:
             ${{ env.GITHUB_SHA_SHORT }}
           dockeruser: ${{ secrets.DOCKER_USERNAME }}
           dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Deploy
-        uses: ./.github/actions/kubectl-action
+      - uses: danielr1996/kubectl-action@0.1.0
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
-          args: apply -f deployment.yaml
         env:
           VERSION: ${{ env.GITHUB_SHA_SHORT }}
           INSTANCE: ${{ env.GITHUB_REF_SLUG }}

@@ -6,4 +6,4 @@ set -e
 echo "$KUBE_CONFIG_DATA" | base64 -d > /tmp/config
 export KUBECONFIG=/tmp/config
 
-echo "##[set-output name=kubectl;]$(/opt/kubectl $*)"
+echo "##[set-output name=kubectl;]$(/opt/kubectl $* | base64)"

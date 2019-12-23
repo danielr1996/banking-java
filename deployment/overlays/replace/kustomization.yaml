@@ -6,6 +6,9 @@ commonLabels:
   app.kubernetes.io/version: ${VERSION}
 bases:
   - ../../base
+
+patchesStrategicMerge:
+  - deployment.yaml
 patchesJson6902:
   - target:
       group: extensions

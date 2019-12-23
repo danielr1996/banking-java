@@ -5,23 +5,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Sanitize branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
-        id: sanitize
+      - uses: actions/checkout@v1
+      - uses: rlespinasse/github-slug-action@master
       - name: Build
         uses: ./.github/actions/docker-action
         with:
-          # TODO: Use Github User and Repository Name
           imagename: danielr1996/banking-service
-          imagetag: ${{ steps.sanitize.outputs.branch }}
+          imagetags: |
+            ${{ env.GITHUB_REF_SLUG }}
+            ${{ env.GITHUB_SHA_SHORT }}
           dockeruser: ${{ secrets.DOCKER_USERNAME }}
           dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
       - name: Deploy
         uses: ./.github/actions/kubectl-action
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         with:
-          args: apply -k deployment/overlays/${{ steps.sanitize.outputs.branch }}
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          args: apply -f deployment.yaml
+        env:
+          VERSION: ${{ env.GITHUB_SHA_SHORT }}
+          INSTANCE: ${{ env.GITHUB_REF_SLUG }}

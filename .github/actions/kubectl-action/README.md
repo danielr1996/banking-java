@@ -1,21 +1,20 @@
-# Hello world docker action
+# kubectl action
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
+This action can be used to interact with the kubectl command line utility.
 
 ## Inputs
 
-### `who-to-greet`
+### `kubeconfig`
 
-**Required** The name of the person to greet. Default `"World"`.
-
-## Outputs
-
-### `time`
-
-The time we greeted you.
+Base64 encoded `.kube/config`
+```shell script
+cat .kube/config | base64
+```
 
 ## Example usage
-
-uses: actions/hello-world-docker-action@v1
-with:
-  who-to-greet: 'Mona the Octocat'
+```
+- name: Kustomize
+  uses: ./.github/actions/kubectl-action
+  with:
+    args: kustomize deployment/overlays/replace > replace.yaml
+```

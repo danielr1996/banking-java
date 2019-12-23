@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: rlespinasse/github-slug-action@master
-      - uses: danielr199/docker-action-multitag@1.0.0
+      - uses: danielr1996/docker-action-multitag@1.0.0
         with:
           imagename: danielr1996/banking-service
           imagetags: |

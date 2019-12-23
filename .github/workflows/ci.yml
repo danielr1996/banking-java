@@ -7,6 +7,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+      - uses: rlespinasse/github-slug-action@master
+      - name: Print slug variables
+        run: |
+          echo ${{ env.GITHUB_REF_SLUG }}
+          echo ${{ env.GITHUB_HEAD_REF_SLUG }}
+          echo ${{ env.GITHUB_BASE_REF_SLUG }}
+          echo ${{ env.GITHUB_SHA_SHORT }}
       - name: Sanitize branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
@@ -23,23 +30,6 @@ jobs:
           imagetag: ${{ steps.sanitize.outputs.branch }}
           dockeruser: ${{ secrets.DOCKER_USERNAME }}
           dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
-#      - name: Kustomize
-#        uses: ./.github/actions/kubectl-action
-#        with:
-#          args: kustomize deployment/overlays/replace
-#        id: kustomize
-#      - name: Echo
-#        run: echo ${DEPLOYMENT}
-#        env:
-#          DEPLOYMENT: ${{ steps.kustomize.outputs.kubectl }}
-#      - name: Envsubst
-#        run: echo $TEMPLATE | base64 --decode | envsubst '$VERSION $INSTANCE' > deployment.yaml
-#        env:
-#          TEMPLATE: ${{ steps.kustomize.result }}
-#          VERSION: ${{ steps.sha.outputs.sha }}
-#          INSTANCE: ${{ steps.sanitize.outputs.branch }}
-#      - name: Echo
-#        run: cat deployment.yaml
       - name: Deploy
         uses: ./.github/actions/kubectl-deploy-action
         with:

@@ -3,7 +3,7 @@ kind: Kustomization
 nameSuffix: -${INSTANCE}
 commonLabels:
   app.kubernetes.io/instance: ${INSTANCE}
-  app.kubernetes.io/version: 0
+  app.kubernetes.io/version: 0.0.0
 bases:
   - ../../base
 

@@ -6,6 +6,6 @@ set -e
 echo "$KUBE_CONFIG_DATA" | base64 -d > /tmp/config
 export KUBECONFIG=/tmp/config
 
-kubectl kustomize deployments/overlays/replace > template.yaml
+/opt/kubectl kustomize deployments/overlays/replace > template.yaml
 envsubst '$VERSION $INSTANCE' < template.yaml > deployment.yaml
 /opt/kubectl apply -f deployment.yaml

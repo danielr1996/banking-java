@@ -1,8 +1,0 @@
-name: 'Kubectl'
-description: 'Execute kubectl commands'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-inputs:
-  kubeconfig:
-    description: 'base64 encoded .kube/config'

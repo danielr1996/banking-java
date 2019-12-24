@@ -18,7 +18,7 @@ jobs:
       - uses: danielr1996/kubectl-action@0.2.0
         with:
           args: kustomize deployment/overlays/replace > template.yaml
-      - uses: danielr1996/envsubst-action
+      - uses: danielr1996/envsubst-action@0.1.0
         with:
           input: template.yaml
           output: deployment.yaml

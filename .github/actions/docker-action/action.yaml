@@ -1,11 +1,15 @@
-name: 'Docker'
+name: 'docker-action'
 description: 'Build and publish docker images'
+author: 'Daniel Richter'
+branding:
+  icon: 'box'
+  color: 'blue'
 inputs:
   imagename:
     description: 'Name of the created image'
     required: true
   imagetag:
-    description: 'Tag of the created image, slashes will translate to dashes'
+    description: 'Tag of the created image'
     default: latest
   dockeruser:
     description: 'Dockerhub user'
@@ -13,11 +17,6 @@ inputs:
   dockerpassword:
     description: 'Dockerhub pasword'
     required: true
-outputs:
-  time:
-    description: 'The time we greeted you'
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.who-to-greet }}

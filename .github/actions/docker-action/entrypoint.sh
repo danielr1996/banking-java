@@ -4,17 +4,22 @@ echo ########################
 echo # Github Docker Action #
 echo ########################
 echo ImageName: $INPUT_IMAGENAME
-echo ImageTag: $INPUT_IMAGETAG
-#IMAGETAG_SLUG=$(echo $INPUT_IMAGETAG | tr / -)
-#echo ImageTagSlug: $IMAGETAG_SLUG
-echo DockerUser: $INPUT_DOCKERUSER
-echo DockerPasword: $INPUT_DOCKERPASSWORD
+echo ImageTags: $INPUT_IMAGETAGS
+
+
 
 # Login
 echo $INPUT_DOCKERPASSWORD | docker login --username $INPUT_DOCKERUSER --password-stdin
 
 # Build
-docker build -t $INPUT_IMAGENAME:$INPUT_IMAGETAG .
+
+docker build -t $INPUT_IMAGENAME .
+
+for TAG in $INPUT_IMAGETAGS; do
+  echo "Tagging image $TAG"
+  docker tag $INPUT_IMAGENAME $INPUT_IMAGENAME:$TAG
+  docker push $INPUT_IMAGENAME:$TAG
+done
 
 # Push
-docker push $INPUT_IMAGENAME:$INPUT_IMAGETAG
+#docker push $INPUT_IMAGENAME:$INPUT_IMAGETAG

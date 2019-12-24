@@ -15,9 +15,11 @@ jobs:
             ${{ env.GITHUB_SHA_SHORT }}
           dockeruser: ${{ secrets.DOCKER_USERNAME }}
           dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
-      - uses: danielr1996/kubectl-action@0.1.0
+      - uses: danielr1996/kubectl-action@0.2.0
         with:
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
-        env:
-          VERSION: ${{ env.GITHUB_SHA_SHORT }}
-          INSTANCE: ${{ env.GITHUB_REF_SLUG }}
+          args: kustomize deployment/overlays/replace > template.yaml
+      - run: cat template.yaml
+#      - uses: danielr1996/kubectl-action@0.1.0
+#        with:
+#          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+#        args: apply -f deployment.yaml

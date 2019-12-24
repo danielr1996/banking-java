@@ -18,7 +18,11 @@ jobs:
       - uses: danielr1996/kubectl-action@0.2.0
         with:
           args: kustomize deployment/overlays/replace > template.yaml
-      - run: cat template.yaml
+      - uses: ./.github/actions/envsubst-action
+        with:
+          input: template.yaml
+          output: deployment.yaml
+      - run: cat deployment.yaml
 #      - uses: danielr1996/kubectl-action@0.1.0
 #        with:
 #          kubeconfig: ${{ secrets.KUBE_CONFIG }}

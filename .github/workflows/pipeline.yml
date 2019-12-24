@@ -16,17 +16,17 @@ jobs:
           dockeruser: ${{ secrets.DOCKER_USERNAME }}
           dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
       - name: Kustomize
-        uses: danielr1996/kubectl-action@0.2.0
+        uses: danielr1996/kubectl-action@1.0.0
         with:
           args: kustomize deployment/overlays/replace > template.yaml
-      - uses: danielr1996/envsubst-action@0.1.0
+      - uses: danielr1996/envsubst-action@1.0.0
         with:
           input: template.yaml
           output: deployment.yaml
         env:
           INSTANCE: ${{ env.GITHUB_REF_SLUG }}
           VERSION: ${{ env.GITHUB_SHA_SHORT }}
-      - uses: danielr1996/kubectl-action@0.2.0
+      - uses: danielr1996/kubectl-action@1.0.0
         name: Deploy
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}

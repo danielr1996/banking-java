@@ -1,4 +1,4 @@
-name: CI
+name: Build Pipeline
 
 on: [push]
 jobs:
@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: rlespinasse/github-slug-action@master
+      - uses: rlespinasse/github-slug-action@1.1.0
       - uses: danielr1996/docker-action-multitag@1.0.1
         with:
           imagename: danielr1996/banking-service

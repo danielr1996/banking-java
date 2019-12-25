@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/banking;AUTO_SERVER=TRUE
+    username: sa
+    password:
+  liquibase:
+    contexts: data-test
+    drop-first: true
+  jpa:
+    database: h2

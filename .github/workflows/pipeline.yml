@@ -1,0 +1,33 @@
+name: Build Pipeline
+
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: rlespinasse/github-slug-action@1.1.0
+      - uses: danielr1996/docker-action-multitag@1.0.1
+        with:
+          imagename: danielr1996/banking-service
+          imagetags: |
+            ${{ env.GITHUB_REF_SLUG }}
+            ${{ env.GITHUB_SHA_SHORT }}
+          dockeruser: ${{ secrets.DOCKER_USERNAME }}
+          dockerpassword: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Kustomize
+        uses: danielr1996/kubectl-action@1.0.0
+        with:
+          args: kustomize deployment/overlays/replace > template.yaml
+      - uses: danielr1996/envsubst-action@1.0.0
+        with:
+          input: template.yaml
+          output: deployment.yaml
+        env:
+          INSTANCE: ${{ env.GITHUB_REF_SLUG }}
+          VERSION: ${{ env.GITHUB_SHA_SHORT }}
+      - uses: danielr1996/kubectl-action@1.0.0
+        name: Deploy
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          args: apply -f deployment.yaml

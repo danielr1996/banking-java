@@ -1,0 +1,8 @@
+spring:
+  output:
+    ansi:
+      enabled: always
+  profiles:
+    active: db, db-h2, fints-mock, hbcicallback-wamp
+server:
+  port: 9090

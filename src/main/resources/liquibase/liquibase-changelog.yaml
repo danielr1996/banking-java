@@ -1,0 +1,154 @@
+databaseChangeLog:
+  # Tables
+  - changeSet:
+      id: tbl_buchung
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: id
+                  type: VARCHAR(255)
+              - column:
+                  name: betrag
+                  type: numeric(19, 2)
+              - column:
+                  name: buchungstag
+                  type: date
+              - column:
+                  name: buchungstext
+                  type: VARCHAR(255)
+              - column:
+                  name: kategorie
+                  type: VARCHAR(255)
+              - column:
+                  name: valutadatum
+                  type: date
+              - column:
+                  name: verwendungszweck
+                  type: VARCHAR(255)
+              - column:
+                  name: waehrung
+                  type: VARCHAR(255)
+              - column:
+                  name: konto_id
+                  type: UUID
+              - column:
+                  name: other_partner_iban
+                  type: VARCHAR(255)
+              - column:
+                  name: self_partner_iban
+                  type: VARCHAR(255)
+            tableName: buchung
+  - changeSet:
+      id: tbl_saldo
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: konto_id
+                  type: UUID
+              - column:
+                  name: betrag
+                  type: numeric(19, 2)
+              - column:
+                  name: datum
+                  type: datetime
+            tableName: saldo
+  - changeSet:
+      id: tbl_transaktionspartner
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: iban
+                  type: VARCHAR(255)
+              - column:
+                  name: bic
+                  type: VARCHAR(255)
+              - column:
+                  name: blz
+                  type: VARCHAR(255)
+              - column:
+                  name: id
+                  type: UUID
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: transaktionspartner
+  - changeSet:
+      id: tbl_user
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: passwordhash
+                  type: VARCHAR(255)
+              - column:
+                  name: salt
+                  type: VARCHAR(255)
+              - column:
+                  name: iterations
+                  type: NUMERIC(19)
+            tableName: benutzer
+  - changeSet:
+      id: tbl_konto
+      author: Daniel Richter
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    - primary_key: true
+                  name: id
+                  type: UUID
+              - column:
+                  name: blz
+                  type: VARCHAR(255)
+              - column:
+                  name: passwordhash
+                  type: VARCHAR(255)
+              - column:
+                  name: kontonummer
+                  type: VARCHAR(255)
+              - column:
+                  name: bankaccount
+                  type: VARCHAR(255)
+              - column:
+                  name: user_id
+                  type: VARCHAR(255)
+              - column:
+                  name: secmech
+                  type: VARCHAR(255)
+              - column:
+                  name: tanmedia
+                  type: VARCHAR(255)
+              - column:
+                  name: active
+                  type: BOOLEAN
+            tableName: konto
+  # Data
+  - changeSet:
+      id: DATA_TEST
+      author: Daniel Richter
+      context: data-test
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: /liquibase/data-test.sql
+            relativeToChangeLogFile: true
+            stripComments: true

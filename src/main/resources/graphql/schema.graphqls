@@ -1,0 +1,86 @@
+scalar Date
+
+type Query {
+  buchungById(id: ID ): BuchungDTO
+  buchungen(username: String): BuchungContainer
+  saldo(username: String): Saldo
+  saldi(username: String): SaldiContainer
+  konten(username: String): [KontoDTO]
+  signIn(user: UserInput): String
+  # FIXME: Remove rpcId
+  refresh(username: String, rpcId: String): String
+  createUser(user: UserInput): User
+  createKonto(konto: KontoInput): KontoDTO
+  deleteKonto(kontoId: String): KontoDTO
+}
+
+type Mutation {
+}
+
+type User {
+  name: String
+}
+input UserInput {
+  name: String
+  password: String
+}
+
+type BuchungContainer{
+  buchungen: [BuchungDTO],
+  totalPages: Int,
+  totalElements: Int
+}
+
+type SaldiContainer{
+  saldi: [Saldo],
+  totalPages: Int,
+  totalElements: Int
+}
+
+type BuchungDTO{
+  id: ID
+  kontoId: ID
+  konto: KontoDTO
+  betrag: Float
+  waehrung: String
+  buchungstext: String
+  verwendungszweck: String
+  selfPartner: Transaktionspartner
+  otherPartner: Transaktionspartner
+  buchungstag: Date
+  valutadatum: Date
+  kategorie: String
+}
+
+type Transaktionspartner{
+  iban: String
+  bic: String
+  blz: String
+  name: String
+}
+
+type Saldo{
+  id: ID
+  betrag: Float
+  datum: Date
+  kontoId: ID
+}
+
+type KontoDTO{
+  id: ID
+  blz: String
+  kontonummer: String
+  bankaccount: String
+  tanmedia: String
+  secmech: String
+  active: Boolean
+}
+input KontoInput{
+  id: ID
+  blz: String
+  kontonummer: String
+  bankaccount: String
+  tanmedia: String
+  secmech: String
+  password: String
+}

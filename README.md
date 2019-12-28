@@ -1,4 +1,5 @@
 # Banking Java
+[![CodeFactor](https://www.codefactor.io/repository/github/danielr1996/banking-java/badge)](https://www.codefactor.io/repository/github/danielr1996/banking-java)
 
 ## Available Profiles
 - db (Active by default, setup common db parameters)

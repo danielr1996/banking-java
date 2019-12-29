@@ -3,6 +3,6 @@ spring:
     ansi:
       enabled: always
   profiles:
-    active: db, db-h2, fints-mock, hbcicallback-wamp
+    active: db, db-h2, fints-mock, hbcicallback-wamp, keys-file
 server:
   port: 9090

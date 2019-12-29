@@ -1,7 +1,4 @@
 spring:
-  output:
-    ansi:
-      enabled: always
   profiles:
     active: db, db-h2, fints-mock, hbcicallback-wamp, keys-file
 server:

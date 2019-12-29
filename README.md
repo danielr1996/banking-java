@@ -11,6 +11,8 @@
 - `hbcicallback-console`: Get user data from console manually
 - `keys-file`: Load Secret keys from file
 - `keys-adhoc`: Generate Secret Keys adhoc
+- `logging-plain`: Log in plain text
+- `logging-json`: Log in structured json
 
 ## Available Test Tags
 ### By Test Depth

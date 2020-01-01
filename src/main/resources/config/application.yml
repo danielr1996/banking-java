@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: db, db-h2, fints-mock, hbcicallback-wamp, keys-file, logging-json
+    active: db, db-h2, fints-mock, hbcicallback-wamp, keys-file, logging-plain
 logging:
   config: classpath:logging/logback.xml
 server:

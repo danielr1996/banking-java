@@ -1,14 +1,14 @@
 <configuration>
-  <springProfile name="logging-plain">
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
-  </springProfile>
+<!--  <springProfile name="logging-plain">-->
+<!--    <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+<!--  </springProfile>-->
 
-  <springProfile name="logging-json">
+<!--  <springProfile name="logging-json">-->
     <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
       <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
     <root level="INFO">
       <appender-ref ref="jsonConsoleAppender"/>
     </root>
-  </springProfile>
+<!--  </springProfile>-->
 </configuration>

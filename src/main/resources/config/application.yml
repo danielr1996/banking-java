@@ -1,8 +1,7 @@
 spring:
-  output:
-    ansi:
-      enabled: always
   profiles:
-    active: db, db-h2, fints-mock, hbcicallback-wamp
+    active: db, db-h2, fints-mock, hbcicallback-wamp, keys-file, logging-plain
+logging:
+  config: classpath:logging/logback.xml
 server:
   port: 9090

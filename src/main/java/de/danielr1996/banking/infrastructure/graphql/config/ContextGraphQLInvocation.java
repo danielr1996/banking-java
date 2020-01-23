@@ -29,6 +29,7 @@ public class ContextGraphQLInvocation implements GraphQLInvocation {
   @Override
   public CompletableFuture<ExecutionResult> invoke(GraphQLInvocationData invocationData, WebRequest webRequest) {
     Optional<String> auth = Optional.ofNullable(webRequest.getHeader(HEADER_AUTHORIZATION));
+    log.info("GraphQL request with {}", auth);
     ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
       .query(invocationData.getQuery())
       .context(GraphQLContext.builder()

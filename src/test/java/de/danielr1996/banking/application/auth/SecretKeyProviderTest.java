@@ -34,9 +34,8 @@ public class SecretKeyProviderTest {
     keyPairGenerator.initialize(2048);
     KeyPair keyPair = keyPairGenerator.generateKeyPair();
     Key key = keyPair.getPublic();
-
     //Write
-    FileOutputStream fos = new FileOutputStream(new File("public.pem"));
+    FileOutputStream fos = new FileOutputStream(new File(System.getProperty("java.io.tmpdir")+"/public.pem"));
     fos.write("-----BEGIN PUBLIC KEY-----\n".getBytes());
     fos.write(Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes()).encode(key.getEncoded()));
     fos.write("\n-----END PUBLIC KEY-----\n".getBytes());
@@ -44,7 +43,7 @@ public class SecretKeyProviderTest {
     fos.close();
 
     //Read
-    String fileContent = Files.readAllLines(new File("public.pem").toPath()).stream().collect(Collectors.joining("\n"));
+    String fileContent = Files.readAllLines(new File(System.getProperty("java.io.tmpdir")+"/public.pem").toPath()).stream().collect(Collectors.joining("\n"));
     String file = fileContent
       .replaceAll("-----BEGIN PUBLIC KEY-----\n", "")
       .replaceAll("\n-----END PUBLIC KEY-----", "");
@@ -64,7 +63,7 @@ public class SecretKeyProviderTest {
     Key key = keyPair.getPrivate();
 
     //Write
-    FileOutputStream fos = new FileOutputStream(new File("private.pem"));
+    FileOutputStream fos = new FileOutputStream(new File(System.getProperty("java.io.tmpdir")+"/private.pem"));
 
     fos.write("-----BEGIN PRIVATE KEY-----\n".getBytes());
     fos.write(Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes()).encode(key.getEncoded()));
@@ -73,7 +72,7 @@ public class SecretKeyProviderTest {
     fos.close();
 
     //Read
-    String fileContent = Files.readAllLines(new File("private.pem").toPath()).stream().collect(Collectors.joining("\n"));
+    String fileContent = Files.readAllLines(new File(System.getProperty("java.io.tmpdir")+"/private.pem").toPath()).stream().collect(Collectors.joining("\n"));
     String file = fileContent
       .replaceAll("-----BEGIN PRIVATE KEY-----\n", "")
       .replaceAll("\n-----END PRIVATE KEY-----", "");
@@ -96,7 +95,7 @@ public class SecretKeyProviderTest {
     sha256_HMAC.init(key);
 
     //Write
-    FileOutputStream fos = new FileOutputStream(new File("jwtsecret.pem"));
+    FileOutputStream fos = new FileOutputStream(new File(System.getProperty("java.io.tmpdir")+"/jwtsecret.pem"));
 
     fos.write("-----BEGIN SECRET KEY-----\n".getBytes());
     fos.write(Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes()).encode(key.getEncoded()));
@@ -105,7 +104,7 @@ public class SecretKeyProviderTest {
     fos.close();
 
     //Read
-    String fileContent = Files.readAllLines(new File("jwtsecret.pem").toPath()).stream().collect(Collectors.joining("\n"));
+    String fileContent = Files.readAllLines(new File(System.getProperty("java.io.tmpdir")+"/jwtsecret.pem").toPath()).stream().collect(Collectors.joining("\n"));
     String file = fileContent
       .replaceAll("-----BEGIN SECRET KEY-----\n", "")
       .replaceAll("\n-----END SECRET KEY-----", "");
@@ -126,7 +125,7 @@ public class SecretKeyProviderTest {
     SecretKey key = keyGen.generateKey();
 
     //Write
-    FileOutputStream fos = new FileOutputStream(new File("passwordsecret.pem"));
+    FileOutputStream fos = new FileOutputStream(new File(System.getProperty("java.io.tmpdir")+"/passwordsecret.pem"));
 
     fos.write("-----BEGIN SECRET KEY-----\n".getBytes());
     fos.write(Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes()).encode(key.getEncoded()));
@@ -135,7 +134,7 @@ public class SecretKeyProviderTest {
     fos.close();
 
     //Read
-    String fileContent = Files.readAllLines(new File("passwordsecret.pem").toPath()).stream().collect(Collectors.joining("\n"));
+    String fileContent = Files.readAllLines(new File(System.getProperty("java.io.tmpdir")+"/passwordsecret.pem").toPath()).stream().collect(Collectors.joining("\n"));
     String file = fileContent
       .replaceAll("-----BEGIN SECRET KEY-----\n", "")
       .replaceAll("\n-----END SECRET KEY-----", "");

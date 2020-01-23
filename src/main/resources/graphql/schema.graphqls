@@ -14,9 +14,6 @@ type Query {
   deleteKonto(kontoId: String): KontoDTO
 }
 
-type Mutation {
-}
-
 type User {
   name: String
 }

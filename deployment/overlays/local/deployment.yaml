@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banking-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: banking-service
+          image: danielr1996/banking-service:master
+---

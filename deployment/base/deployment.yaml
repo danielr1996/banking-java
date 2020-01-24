@@ -34,11 +34,32 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: db, db-pgsql, fints-mock, hbcicallback-wamp, keys-file, logging-plain
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres-service.default:5432/postgresdb
+              value: jdbc:postgresql://localhost:5432/postgresdb
             - name: SPRING_DATASOURCE_USERNAME
               value: postgres
             - name: SPRING_DATASOURCE_PASSWORD
               value: postgres
           ports:
             - containerPort: 9090
+        - name: postgres
+          image: postgres:12.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: postgresdb
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-pvc
 ---

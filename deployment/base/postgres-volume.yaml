@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/component: PersistentVolumeClaim
+    app.kubernetes.io/part-of: banking
+    app.kubernetes.io/instance: REPLACE_ENV
+    app.kubernetes.io/version: REPLACE_VERSION
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: do-block-storage
+---

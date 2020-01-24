@@ -2,19 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
+  labels:
+    app.kubernetes.io/name: postgres-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app.kubernetes.io/name: postgres-service
   template:
     metadata:
       labels:
-        app: postgres
+        app.kubernetes.io/name: postgres-service
     spec:
       containers:
         - name: postgres
-          image: postgres:10.4
+          image: postgres:12.1
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432

@@ -30,6 +30,13 @@ spec:
         - name: banking-service
           image: danielr1996/banking-service
           imagePullPolicy: Always
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-service.default:5432/postgresdb
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: postgres
           ports:
             - containerPort: 9090
 ---

@@ -5,3 +5,18 @@ logging:
   config: classpath:logging/logback.xml
 server:
   port: 9090
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,metrics,info,health
+#management:
+#  endpoint:
+#    metrics:
+#      enabled: true
+#      export:
+#        prometheus:
+#          enabled: true
+#    web:
+#      exposure:
+#        include: "*"

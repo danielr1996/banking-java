@@ -32,7 +32,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: db, db-pgsql, fints-mock, hbcicallback-wamp, keys-file, logging-plain
+              value: db, db-h2, fints-mock, hbcicallback-wamp, keys-file, logging-plain
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://localhost:5432/postgresdb
             - name: SPRING_DATASOURCE_USERNAME

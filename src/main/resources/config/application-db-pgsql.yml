@@ -1,9 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/postgresdb
-#    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: postgres
+    password: d8e2c7faf83a43a6a5e421a75332f6e3
   jpa:
     database: postgresql
   liquibase:
